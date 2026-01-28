@@ -1,0 +1,32 @@
+; This file is maintained by HCW. Do not modify this file directly.
+
+[OPTIONS]
+ERRORLOG=StretchView.Err
+DBCS=Yes
+LCID=0x411 0x0 0x0 ; 日本語
+REPORT=Yes
+CONTENTS=SD00000002
+TITLE=マルチ拡大鏡StretchView
+CNT=StretchView.cnt
+COPYRIGHT=Copyright(C) 吉野情報処理サービス
+BMROOT=..
+ROOT=\
+HLP=StretchView.hlp
+
+[FILES]
+SD00000002.rtf
+SD00000006.rtf
+SD00000009.rtf
+SD00000007.rtf
+SD00000010.rtf
+SD00000012.rtf
+SD00000014.rtf
+
+[MAP]
+#include StretchView.map
+
+[WINDOWS]
+MAIN="マルチ拡大鏡StretchViewのヘルプ",,27904,(r16777215),(r12632256)
+
+[CONFIG]
+BrowseButtons()

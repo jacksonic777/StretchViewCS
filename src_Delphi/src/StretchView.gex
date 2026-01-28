@@ -1,0 +1,11 @@
+[General]
+Name=StretchView
+Project=1
+[Classes]
+Count=6
+Class0="TfrmCap","TForm","UfrmCap","10","C:\project\Stretch\UfrmCap.PAS"
+Class1="ERotateError","Exception","XRotateBitmap","7","C:\project\Stretch\XRotateBitmap.pas"
+Class2="TfrmHelp","TForm","UfrmHelp","9","C:\project\Stretch\UfrmHelp.pas"
+Class3="TIniManager","TObject","uIniManager","8","C:\project\Stretch\uIniManager.pas"
+Class4="TfrmVersion","TForm","UVersion","13","C:\project\Stretch\UVersion.pas"
+Class5="TfrmSetting","TForm","UfrmSetting","8","C:\project\Stretch\UfrmSetting.pas"

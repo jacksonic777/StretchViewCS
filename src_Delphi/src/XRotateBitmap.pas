@@ -1,0 +1,415 @@
+unit XRotateBitmap;
+
+interface
+
+uses Windows, SysUtils, Graphics,Math;           //
+
+type
+  ERotateError = class(Exception);
+  // 任意角度回転
+  function RotateBitmapX(ABitmap: TBitmap;
+                         adeg :integer;  // 回転角度　+360.0 ～ -360.0 の１０倍整数値
+                         flgmirror,flgCircum:boolean): TBitmap;
+  procedure RotateImage(Bitmap: TBitmap; const Angle: Extended);
+
+implementation
+
+type
+  TScanLines = array[0..65535] of Pointer;
+  PScanLines = ^TScanLines;
+  DWordArray = array[0..65535] of DWORD;
+  PDWordArray = ^DWordArray;
+  TRGB = record B, G, R: Byte end;
+  PRGB = ^TRGB;
+  TRGBArray = array[0..65535] of TRGB;
+  PRGBArray = ^TRGBArray;
+
+{public functions}
+
+procedure RotateImage(Bitmap: TBitmap; const Angle: Extended);
+ var
+   RadAngle  : Extended;    // ラジアン角
+   ABmp, BBmp: TBitmap;     // 元画像と、回転後画像
+   B, G, R   : Byte;        // ピクセル読み出し用
+   Lp        : Integer;     // ループに使用する
+   NewX, NewY: Integer;     // 回転後のピクセル座標
+   OldX, OldY: Integer;     // 元画像のピクセル座標
+   NewRect   : TRect;       // 回転後画像の座標
+   PNew, POld: PByteArray;  // 画像のScanLineプロパティアクセス用ポインタ
+   Xp, Yp    : array[0..3] of Integer;   // 各頂点の回転後の座標
+   X, Y      : Integer;                  // 頂点座標の計算に使用
+ begin
+   RadAngle := DegToRad(Angle);
+
+   ABmp := TBitmap.Create;
+   try
+     ABmp.Assign(Bitmap);
+     ABmp.PixelFormat := pf24bit;
+     Xp[0] := 0;
+     Yp[0] := 0;
+     Xp[1] := ABmp.Width - 1;
+     Yp[1] := 0;
+     Xp[2] := 0;
+     Yp[2] := ABmp.Height - 1;
+     Xp[3] := ABmp.Width - 1;
+     Yp[3] := ABmp.Height - 1;
+     for Lp := 0 to 3 do
+     begin
+       X := Xp[Lp];
+       Y := Yp[Lp];
+       Xp[Lp] := Trunc(Cos(RadAngle) * X - Sin(RadAngle) * Y);
+       Yp[Lp] := Trunc(Sin(RadAngle) * X + Cos(RadAngle) * Y);
+     end;
+     NewRect.Left   := MinIntValue(Xp);
+     NewRect.Top    := MinIntValue(Yp);
+     NewRect.Right  := MaxIntValue(Xp);
+     NewRect.Bottom := MaxIntValue(Yp);
+
+     BBmp := TBitmap.Create;
+     try
+       BBmp.PixelFormat := pf24bit;
+       BBmp.Width  := NewRect.Right - NewRect.Left + 1;
+       BBmp.Height := NewRect.Bottom - NewRect.Top + 1;
+       RadAngle := -RadAngle;
+       for NewY := NewRect.Top to NewRect.Bottom do
+         for NewX := NewRect.Left to NewRect.Right do
+         begin
+           OldX := Trunc(Cos(RadAngle) * NewX - Sin(RadAngle) * NewY);
+           OldY := Trunc(Sin(RadAngle) * NewX + Cos(RadAngle) * NewY);
+           if (OldX >= 0) and (OldX < ABmp.Width) and (OldY >= 0) and (OldY < ABmp.Height) then
+           begin
+             POld := ABmp.ScanLine[OldY];
+             B := POld[OldX * 3];
+             G := POld[OldX * 3 + 1];
+             R := POld[OldX * 3 + 2];
+           end
+           else
+           begin
+             B := 255;
+             G := 255;
+             R := 255;
+           end;
+           PNew := BBmp.ScanLine[NewY - NewRect.Top];
+           PNew[(NewX - NewRect.Left) * 3]     := B;
+           PNew[(NewX - NewRect.Left) * 3 + 1] := G;
+           PNew[(NewX - NewRect.Left) * 3 + 2] := R;
+         end;
+
+         if Bitmap.PixelFormat <> pf24bit then
+         begin
+           BBmp.Palette := CopyPalette(Bitmap.Palette);
+           BBmp.PixelFormat := Bitmap.PixelFormat;
+         end;
+         Bitmap.Assign(BBmp);
+
+     finally
+       BBmp.Free;
+     end;
+   finally
+     ABmp.Free;
+   end;
+ end;
+
+  // 任意角度回転
+function RotateBitmapX(ABitmap: TBitmap;
+                       adeg :integer;  // 回転角度　+360.0 ～ -360.0 の１０倍整数値
+                       flgmirror,flgCircum:boolean): TBitmap;
+var
+    NewBitmap: TBitmap;  // 新しいビットマップ
+    pSourceScanLines: PScanLines;
+    pDestScanLines  : PScanLines;
+    x, y, xx, yy,xx0,yy0,xdx,xdy,ydx,ydy :integer;
+    Sx,Sy,Adsin,Adcos,SHeight,SWidth,DHeight,DWidth: Integer;
+    AColor : TRGB;
+    ACol32 : DWord;
+    ACol16 : Word;
+    Palsize : Word;
+    Logpal: TMaxLogPalette;
+    Palnum :Byte;
+    SourceByte, DestByte, Mask: Byte;
+begin
+  // 任意角度回転
+  // ビットマップに大きさがないならエラー
+  if (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+    raise ERotateError.Create('Bitmap Size Error');
+
+  // 元のビットマップが DDB なら DIB に変換する。
+  if ABitmap.PixelFormat = pfDevice then
+    ABitmap.HandleType := bmDIB;
+
+  // 幅、高さは頻繁にアクセスするのでキャッシュする
+  SHeight := ABitmap.Height;
+  SWidth := ABitmap.Width;
+
+  // ＳＩＮ、ＣＯＳ値を計算する
+  // adeg には０～３６０度（１０倍値）が格納されているはず！
+  if adeg >= 0 then begin
+    x := adeg mod 3600;
+   end else begin
+    x := 3600 - (abs(adeg) mod 3600);
+  end;
+  ADsin := round(sin((x / 10) * (pi / 180))*1024);
+  ADcos := round(cos((x / 10) * (pi / 180))*1024);
+
+  // 24bit 白
+  AColor.B := $FF;
+  AColor.G := $FF;
+  AColor.R := $FF;
+
+  // 32bit 白
+  ACol32 := $00FFFFFF ;  //BGB
+
+  // 15,16bit 白
+  ACol16 := $FFFF;  //B5 G6 R5
+
+  // 白色を求める（pf1bit,pf4bit,pf8bit）
+  case ABitmap.PixelFormat of
+   pf1bit,pf4bit,pf8bit: begin // 8bpp
+    GetObject(ABitmap.Palette, 2, @PalSize);  // パレットエントリ数を得る
+
+    // パレットの色を取得
+    GetPaletteEntries(ABitmap.Palette, 0, PalSize, Logpal.palPalEntry);
+
+    y := 0;
+    xx := 0;
+    Palnum := 0;
+    while (y <= (PalSize - 1)) do begin
+      x := Logpal.palPalEntry[y].peBlue;
+      x := (x Shl 8) + Logpal.palPalEntry[y].peGreen;
+      x := (x Shl 8) + Logpal.palPalEntry[y].peRed;
+      if x >= xx then begin xx := x ;Palnum := y; end; // 白色を求める
+      inc(y);
+    end;
+   end;
+   else
+    Palnum := 0;
+  end;
+
+  // 先のビットマップの形式を整える。
+  NewBitmap := TBitmap.Create;
+  try
+    // DIB の形式を同じにする。
+    NewBitmap.PixelFormat := ABitmap.PixelFormat;
+    // カラーテーブルを一致させる
+    if ABitmap.PixelFormat in [pf15bit..pf32bit] then begin
+      // フルカラー時　パレット捨てる
+      NewBitmap.Palette := 0;
+     end else begin
+      // pf1bit～8bit時　パレットコピー
+      NewBitmap.Palette := CopyPalette(ABitmap.Palette);
+    end;
+
+    // 回転後の画像サイズを決める
+    if not(flgCircum) then begin
+      // 元画像のサイズ
+      // 　元画像に無い場所は余白で埋められる
+      //   回転後はみ出た部分は捨てられる
+      DWidth  := SWidth;
+      DHeight := SHeight;
+     end else begin
+      // 回転後の画像が収まるようにサイズを増減させる
+      // 　元画像に無い場所は余白で埋められる
+      DWidth  := (abs(SWidth * ADcos) + abs(SHeight * ADsin) + 512) div 1024;
+      DHeight := (abs(SWidth * ADsin) + abs(SHeight * ADcos) + 512) div 1024;
+    end;
+    // 幅、高さは頻繁にアクセスするのでキャッシュする
+    NewBitmap.Width  := DWidth;
+    NewBitmap.Height := DHeight;
+
+    // 回転スキャンの初期座標を求める（＊１０２４）
+    Sx := round((ADcos * (- (DWidth-1) / 2)) - (ADsin * (- (DHeight-1) / 2)) + ((SWidth-1)  * 512));
+    Sy := round((ADsin * (- (DWidth-1) / 2)) + (ADcos * (- (DHeight-1) / 2)) + ((SHeight-1) * 512));
+
+    // 回転増分を求める
+    xdx := ADcos;
+    xdy := ADsin;
+    ydx := - ADsin;   // cos(deg + pi / 2) = -sin(deg)
+    ydy := ADcos;     // sin(deg + pi / 2) =  cos(deg)
+
+    // 鏡像用補正
+    if flgmirror then begin
+      // スプーンが左手、フォークが右手と鏡ってのは左右が逆になるもの
+      // ・・と思う。上下はそのままだよね。
+      // 左右反転（鏡像）
+      // Ｘ値を最大にして
+      Sx := round(Sx + (xdx * (DWidth - 1)));
+      Sy := round(Sy + (xdy * (DWidth - 1)));
+      // Ｘ値増分を逆にする
+      xdx := - ADcos;   // cos(deg + pi) = -cos(deg)
+      xdy := - ADsin;   // sin(deg + pi) = -sin(deg)
+    end;
+
+    pSourceScanLines := Nil;
+    pDestScanLines := Nil;
+    try
+      // 高速化のためスキャンラインポインタを全てキャッシュ
+      GetMem(pSourceScanLines, SizeOf(Pointer) * SHeight);
+      GetMem(pDestScanLines, Sizeof(Pointer) * DHeight);
+      for y := 0 to SHeight-1 do begin
+        pSourceScanLines^[y] := ABitmap.ScanLine[y];
+      end;
+      for y := 0 to DHeight-1 do begin
+        pDestScanLines^[y] := NewBitmap.ScanLine[y];
+      end;
+
+      // 任意角度回転処理   -------------------------------------------
+      case ABitmap.PixelFormat of
+      pf8bit: // 8bpp
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              PByteArray(pDestScanLines[y])^[x] :=
+               PByteArray(PSourceScanLines[yy])^[xx];
+             end else begin
+              //PByteArray(pDestScanLines[y])^[x] := $ff;
+              PByteArray(pDestScanLines[y])^[x] := Palnum;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      pf15bit, pf16bit: // 16bpp ---------------------------------------
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              PWordArray(pDestScanLines[y])^[x] :=
+                PWordArray(PSourceScanLines[yy])^[xx];
+             end else begin
+              PWordArray(pDestScanLines[y])^[x] := ACol16; //$ffff;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      pf24bit: // 24bpp -----------------------------------------
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              PRGBArray(pDestScanLines[y])^[x] :=
+                PRGBArray(PSourceScanLines[yy])^[xx];
+             end else begin
+              PRGBArray(pDestScanLines[y])^[x] := AColor;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      pf32bit: // 32bpp  ------------------------------------------
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              PDWordArray(pDestScanLines[y])^[x] :=
+                PDWordArray(PSourceScanLines[yy])^[xx];
+             end else begin
+              PDWordArray(pDestScanLines[y])^[x] := ACol32; //$00ffffff;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      pf1bit:  // 1bpp
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              DestByte := PByteArray(pDestScanLines[y])^[x div 8];
+              Mask := Byte($80) shr (x mod 8);
+
+              if (PByteArray(PSourceScanLines[yy])^[xx div 8] and
+                  (Byte($80) shr (xx mod 8))) <> 0 then
+                DestByte := DestByte or Mask
+              else
+                DestByte := DestByte and not Mask;
+
+              PByteArray(pDestScanLines[y])^[x div 8] := DestByte;
+             end else begin
+              DestByte := PByteArray(pDestScanLines[y])^[x div 8];
+              Mask := Byte($80) shr (x mod 8);
+              DestByte := DestByte or Mask;
+              PByteArray(pDestScanLines[y])^[x div 8] := DestByte;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      pf4bit: // 4bpp
+        for y := 0 to DHeight-1 do begin
+          xx0 := Sx + (ydx * y);
+          yy0 := Sy + (ydy * y);
+          for x := 0 to DWidth-1 do begin
+            if xx0 < 0 then xx := (xx0 - 512) div 1024 else xx := (xx0 + 512) div 1024;
+            if yy0 < 0 then yy := (yy0 - 512) div 1024 else yy := (yy0 + 512) div 1024;
+            if   ((0 <= xx) and (xx < SWidth)
+             and  (0 <= yy) and (yy < SHeight)) then begin
+              DestByte := PByteArray(pDestScanLines[y])^[x div 2];
+              SourceByte := PByteArray(PSourceScanLines[yy])^[xx div 2];
+
+              case (x mod 2) * 2 + (xx mod 2) of
+              0: DestByte := (DestByte and $0f) or (SourceByte and $f0);
+              1: DestByte := (DestByte and $0f) or (SourceByte shl 4);
+              2: DestByte := (DestByte and $f0) or (SourceByte shr 4);
+              3: DestByte := (DestByte and $f0) or (SourceByte and $0f);
+              end;
+
+              PByteArray(pDestScanLines[y])^[x div 2] := DestByte;
+             end else begin
+              DestByte := PByteArray(pDestScanLines[y])^[x div 2];
+
+              case (x mod 2) of
+              //0: DestByte := (DestByte and $0f) or $f0;
+              //1: DestByte := (DestByte and $f0) or $0f;
+              0: DestByte := (DestByte and $0f) or (Palnum shl 4);
+              1: DestByte := (DestByte and $f0) or (Palnum and $0f);
+              end;
+
+              PByteArray(pDestScanLines[y])^[x div 2] := DestByte;
+            end;
+            xx0 := xx0 + xdx;
+            yy0 := yy0 + xdy;
+          end;
+        end;
+      else
+        raise ERotateError.Create('Illegal Bitmap');
+      end;
+    finally
+      // スキャンラインポインタのキャッシュを捨てる
+      if pSourceScanLines <> Nil then FreeMem(pSourceScanLines);
+      if pDestScanLines <> Nil then FreeMem(pDestScanLines);
+      //ABitmap := NewBitmap;
+    
+    end;
+  except
+    // エラーなら回転先ビットマップを破棄
+    NewBitmap.Free;
+    raise;
+  end;
+  Result := NewBitmap;
+end;
+
+end.
+
+

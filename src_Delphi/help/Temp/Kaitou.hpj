@@ -1,0 +1,28 @@
+[OPTIONS]
+HCW=0
+ERRORLOG=Kaitou.Err
+DBCS=Yes
+LCID=0x411 0x0 0x0 ;日本語
+CNT=Kaitou.cnt
+Title=解凍＋後始末α
+COPYRIGHT=Copyright(C)
+CONTENTS=SD00000002
+BMROOT=D:\project\KaitouPlusAlpha\help
+ROOT=\
+HLP=D:\project\KaitouPlusAlpha\help\Kaitou.hlp
+
+[FILES]
+SD00000002.rtf
+SD00000008.rtf
+SD00000006.rtf
+SD00000009.rtf
+SD00000010.rtf
+SD00000012.rtf
+SD00000014.rtf
+
+[MAP]
+#include Kaitou.map
+[WINDOWS]
+MAIN="解凍＋後始末αのヘルプ",,27904,(r16777215),(r12632256)
+[CONFIG]
+BrowseButtons()
