@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
@@ -128,17 +129,18 @@ namespace StretchViewCS.Forms
 
             // タイマー設定
             tim.Interval = IniManager.Instance.SamplingRate;
-            this.Bounds = IniManager.Instance.BoundsRect;
 
-            // 設定から読み込み（ウィンドウサイズを設定）
+            // メインウィンドウの位置・サイズを復元（BoundsRect を優先）
+            this.Bounds = IniManager.Instance.BoundsRect;
+            UpdateTransFromClientSize();
+
+            // 拡大率などその他の設定
             capRate = IniManager.Instance.CapRate;
-            int defaultWidth = IniManager.Instance.ScaleWidth > 0 ? IniManager.Instance.ScaleWidth : 300;
-            int defaultHeight = IniManager.Instance.ScaleHeight > 0 ? IniManager.Instance.ScaleHeight : 300;
-            ChgWindowSize(defaultWidth, defaultHeight);
 
             // 固定表示モード
             if (IniManager.Instance.FixView)
             {
+                // 前回終了時の「範囲の指定」位置を復元
                 FixView(true, IniManager.Instance.FixViewX, IniManager.Instance.FixViewY);
             }
 
@@ -159,6 +161,7 @@ namespace StretchViewCS.Forms
             if (tbAtariMode != null) tbAtariMode.Checked = bAtariMode;
             if (tbAtariVisible != null) tbAtariVisible.Checked = bBltAtari;
             if (tbFixSimu != null) tbFixSimu.Checked = bFixed;
+            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
         }
 
         private void frmCap_FormClosing(object? sender, FormClosingEventArgs e)
@@ -168,13 +171,25 @@ namespace StretchViewCS.Forms
             if (bAtariBmpCreate) bmpAtari?.Dispose();
             bmpDisplay?.Dispose();
 
-            // 設定保存
+            // 設定をメモリに反映してから INI に保存
             IniManager.Instance.CapRate = capRate;
             IniManager.Instance.BoundsRect = this.Bounds;
+            IniManager.Instance.ScaleWidth = transW > 0 ? transW : IniManager.Instance.ScaleWidth;
+            IniManager.Instance.ScaleHeight = transH > 0 ? transH : IniManager.Instance.ScaleHeight;
+            IniManager.Instance.FixView = bFixedView;
+            if (bFixedView)
+            {
+                int centerX = baseX + capSizeW / 2;
+                int centerY = baseY + capSizeH / 2;
+                IniManager.Instance.FixViewX = centerX;
+                IniManager.Instance.FixViewY = centerY;
+            }
+            IniManager.Instance.Write();
         }
 
         private void frmCap_FormDestroy(object? sender, EventArgs e)
         {
+            // FormClosing で保存済みのためここでは Write しない
             IniManager.Instance.CapRate = capRate;
             IniManager.Instance.BoundsRect = this.Bounds;
         }
@@ -494,36 +509,75 @@ namespace StretchViewCS.Forms
         private void RegisterMyHotkeys()
         {
             if (bRegistedMHK) return;
+            if (!this.IsHandleCreated) return;
 
             try
             {
-                // ホットキー登録（現在は無効化されているが、必要に応じて有効化可能）
-                // Win32API.RegisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMUP, Win32API.MOD_CONTROL, 0x41); // Ctrl+A
-                // Win32API.RegisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMDOWN, Win32API.MOD_CONTROL, 0x53); // Ctrl+S
-                // ... 他のホットキーも同様に登録
+                // Delphi 版に合わせたホットキー登録（登録失敗時は無視して続行）
+                RegisterHotKeyOne((int)HotKeyID.MHK_ZOOMUP, Win32API.MOD_CONTROL, 0x41);      // Ctrl+A
+                RegisterHotKeyOne((int)HotKeyID.MHK_ZOOMDOWN, Win32API.MOD_CONTROL, 0x53);    // Ctrl+S
+                RegisterHotKeyOne((int)HotKeyID.MHK_FLIPH, Win32API.MOD_CONTROL, 0x44);       // Ctrl+D
+                RegisterHotKeyOne((int)HotKeyID.MHK_FLIPV, Win32API.MOD_CONTROL, 0x46);       // Ctrl+F
+                RegisterHotKeyOne((int)HotKeyID.MHK_AtariMode, Win32API.MOD_CONTROL, Win32API.VK_F2);
+                RegisterHotKeyOne((int)HotKeyID.MHK_AtariBlt, Win32API.MOD_CONTROL, Win32API.VK_F3);
+                RegisterHotKeyOne((int)HotKeyID.MHK_FixMode, Win32API.MOD_CONTROL, 0x45);     // Ctrl+E
+                RegisterHotKeyOne((int)HotKeyID.MHK_MLeft, Win32API.MOD_CONTROL, Win32API.VK_LEFT);
+                RegisterHotKeyOne((int)HotKeyID.MHK_MRight, Win32API.MOD_CONTROL, Win32API.VK_RIGHT);
+                RegisterHotKeyOne((int)HotKeyID.MHK_MUp, Win32API.MOD_CONTROL, Win32API.VK_UP);
+                RegisterHotKeyOne((int)HotKeyID.MHK_MDown, Win32API.MOD_CONTROL, Win32API.VK_DOWN);
+                RegisterHotKeyOne((int)HotKeyID.MHK_FreeRotate, Win32API.MOD_CONTROL, 0x54);  // Ctrl+T
+                RegisterHotKeyOne((int)HotKeyID.MHK_Grid, Win32API.MOD_CONTROL, 0x47);        // Ctrl+G
+                RegisterHotKeyOne((int)HotKeyID.MHK_LRotate, Win32API.MOD_SHIFT, Win32API.VK_LEFT);
+                RegisterHotKeyOne((int)HotKeyID.MHK_RRotate, Win32API.MOD_SHIFT, Win32API.VK_RIGHT);
 
                 bRegistedMHK = true;
             }
             catch
             {
-                // エラー処理
+                // 一部でも登録できていれば true のまま
+            }
+        }
+
+        private void RegisterHotKeyOne(int id, uint mod, uint vk)
+        {
+            try
+            {
+                Win32API.RegisterHotKey(this.Handle, id, mod, vk);
+            }
+            catch
+            {
+                // 競合等で失敗しても続行
             }
         }
 
         private void UnregisterMyHotkeys()
         {
             if (!bRegistedMHK) return;
+            if (!this.IsHandleCreated) return;
 
             try
             {
-                // Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMUP);
-                // ... 他のホットキーも同様に解除
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMUP);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMDOWN);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FLIPH);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FLIPV);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariMode);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariBlt);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FixMode);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MLeft);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MRight);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MUp);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MDown);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FreeRotate);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_Grid);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_LRotate);
+                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_RRotate);
 
                 bRegistedMHK = false;
             }
             catch
             {
-                // エラー処理
+                bRegistedMHK = false;
             }
         }
 
@@ -643,8 +697,25 @@ namespace StretchViewCS.Forms
                                     IntPtr hdc = cvDesk.GetHdc();
                                     try
                                     {
-                                        Win32API.BitBlt(hdc, rTmp.Left, rTmp.Top, rTmp.Width + 4, rTmp.Height + 4,
-                                            Win32API.GetWindowDC(hLastTargetWindow), 0, 0, Win32API.SRCCOPY);
+                                        // 対象ウィンドウの DC を取得して復元（必ず ReleaseDC する）
+                                        IntPtr wndDC = Win32API.GetWindowDC(hLastTargetWindow);
+                                        try
+                                        {
+                                            Win32API.BitBlt(
+                                                hdc,
+                                                rTmp.Left,
+                                                rTmp.Top,
+                                                rTmp.Width + 4,
+                                                rTmp.Height + 4,
+                                                wndDC,
+                                                0,
+                                                0,
+                                                Win32API.SRCCOPY);
+                                        }
+                                        finally
+                                        {
+                                            Win32API.ReleaseDC(hLastTargetWindow, wndDC);
+                                        }
                                     }
                                     finally
                                     {
@@ -708,14 +779,8 @@ namespace StretchViewCS.Forms
                             mmx = Cursor.Position.X;
                             mmy = Cursor.Position.Y;
 
-                            if (bmpBackUp != null)
-                            {
-                                bmpBackUp.Dispose();
-                            }
-                            bmpBackUp = new Bitmap(capSizeW + 4, capSizeH + 4);
-
                             // 前の矩形を復元
-                            if (bDrawedRect)
+                            if (bDrawedRect && bmpBackUp != null)
                             {
                                 IntPtr hdcRestore = cvDesk.GetHdc();
                                 try
@@ -723,8 +788,16 @@ namespace StretchViewCS.Forms
                                     IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdcRestore);
                                     IntPtr hBmp = bmpBackUp.GetHbitmap();
                                     IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
-                                    Win32API.BitBlt(hdcRestore, rcLastDraw.Left, rcLastDraw.Top, rcLastDraw.Width, rcLastDraw.Height,
-                                        bmpHdc, 0, 0, Win32API.SRCCOPY);
+                                    Win32API.BitBlt(
+                                        hdcRestore,
+                                        rcLastDraw.Left,
+                                        rcLastDraw.Top,
+                                        rcLastDraw.Width + 4,
+                                        rcLastDraw.Height + 4,
+                                        bmpHdc,
+                                        0,
+                                        0,
+                                        Win32API.SRCCOPY);
                                     Win32API.SelectObject(bmpHdc, oldBmp);
                                     Win32API.DeleteObject(hBmp);
                                     Win32API.DeleteDC(bmpHdc);
@@ -740,6 +813,12 @@ namespace StretchViewCS.Forms
                                 capSizeW, capSizeH);
 
                             // バックアップを取得
+                            if (bmpBackUp != null)
+                            {
+                                bmpBackUp.Dispose();
+                            }
+                            bmpBackUp = new Bitmap(capSizeW + 4, capSizeH + 4);
+
                             IntPtr hdcBackup = cvDesk.GetHdc();
                             try
                             {
@@ -793,6 +872,43 @@ namespace StretchViewCS.Forms
                 {
                     if (e.Button == MouseButtons.Left)
                     {
+                        // 最後に描画した矩形を元に戻す
+                        try
+                        {
+                            if (bDrawedRect && bmpBackUp != null)
+                            {
+                                IntPtr desktopDC = Win32API.GetWindowDC(Win32API.GetDesktopWindow());
+                                try
+                                {
+                                    IntPtr hdcRestore = desktopDC;
+                                    IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdcRestore);
+                                    IntPtr hBmp = bmpBackUp.GetHbitmap();
+                                    IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
+                                    Win32API.BitBlt(
+                                        hdcRestore,
+                                        rcLastDraw.Left,
+                                        rcLastDraw.Top,
+                                        rcLastDraw.Width + 4,
+                                        rcLastDraw.Height + 4,
+                                        bmpHdc,
+                                        0,
+                                        0,
+                                        Win32API.SRCCOPY);
+                                    Win32API.SelectObject(bmpHdc, oldBmp);
+                                    Win32API.DeleteObject(hBmp);
+                                    Win32API.DeleteDC(bmpHdc);
+                                }
+                                finally
+                                {
+                                    Win32API.ReleaseDC(Win32API.GetDesktopWindow(), desktopDC);
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // 復元失敗時はそのまま続行
+                        }
+
                         bForFixViewCap = false;
                         FixView(true, Cursor.Position.X, Cursor.Position.Y);
                         Win32API.mouse_event(Win32API.MOUSEEVENTF_RIGHTUP, 0, 0, 0, Win32API.GetMessageExtraInfo());
@@ -934,10 +1050,12 @@ namespace StretchViewCS.Forms
             int cy = clientBaseY + (int)(Y / capRate);
 
             // ウィンドウにメッセージ送信
-            if (hTarget != IntPtr.Zero)
+            if (hTarget != IntPtr.Zero && Win32API.IsWindow(hTarget))
             {
                 IntPtr lParam = Win32API.MakeLParam(cx, cy);
-                Win32API.SendMessage(hTarget, (uint)iWM, (IntPtr)iShift, lParam);
+                // 操作投影モード中にターゲットウィンドウが落ちてもこちらが巻き込まれないよう、
+                // 同期 SendMessage ではなく PostMessage を使用する
+                Win32API.PostMessage(hTarget, (uint)iWM, (IntPtr)iShift, lParam);
             }
         }
 
@@ -1226,6 +1344,36 @@ namespace StretchViewCS.Forms
         // ============================================================
         // ウィンドウサイズ変更
         // ============================================================
+
+        /// <summary>
+        /// 現在のフォームの ClientSize から表示領域（transX, transY, transW, transH）と
+        /// バックアップ用ビットマップを更新する。Bounds 復元後に呼ぶ。
+        /// </summary>
+        private void UpdateTransFromClientSize()
+        {
+            int cw = this.ClientSize.Width;
+            int ch = this.ClientSize.Height;
+            int menuHeight = mMainMenu?.Height ?? 24;
+            int controlBarHeight = controlBar1 != null ? controlBar1.Height : 48;
+            int statusBarHeight = sbMain?.Height ?? 22;
+            int infoBarHeight = InfoBar1 != null ? InfoBar1.Height : 0;
+
+            transX = 0;
+            transY = controlBarHeight + menuHeight;
+            transW = cw;
+            transH = ch - (statusBarHeight + infoBarHeight + transY);
+
+            if (transW < 10) transW = 10;
+            if (transH < 10) transH = 10;
+
+            if (bmpBackUp != null)
+            {
+                bmpBackUp.Dispose();
+            }
+            bmpBackUp = new Bitmap(Math.Max(transW, 1), Math.Max(transH, 1));
+
+            bStateUpdate = true;
+        }
 
         private void ChgWindowSize(int iSizeW, int iSizeH)
         {
@@ -1931,24 +2079,35 @@ namespace StretchViewCS.Forms
         {
             try
             {
-                PrintDialog dlg = new PrintDialog();
-                if (dlg.ShowDialog() == DialogResult.OK)
+                Bitmap bmpClip = new Bitmap(transW, transH);
+                using (Graphics g = Graphics.FromImage(bmpClip))
                 {
-                    Bitmap bmpClip = new Bitmap(transW, transH);
-                    using (Graphics g = Graphics.FromImage(bmpClip))
-                    {
-                        g.CopyFromScreen(this.PointToScreen(new Point(transX, transY)),
-                            new Point(0, 0), new Size(transW, transH));
-                    }
-
-                    // 印刷処理（PrintDocumentを使用）
-                    // 簡易実装
-                    bmpClip.Dispose();
+                    g.CopyFromScreen(this.PointToScreen(new Point(transX, transY)),
+                        new Point(0, 0), new Size(transW, transH));
                 }
+
+                using (var printDoc = new PrintDocument())
+                {
+                    printDoc.PrintPage += (s, ev) =>
+                    {
+                        var bounds = ev.MarginBounds;
+                        ev.Graphics?.DrawImage(bmpClip, bounds.X, bounds.Y, bounds.Width, bounds.Height);
+                        ev.HasMorePages = false;
+                    };
+
+                    using (var dlg = new PrintDialog())
+                    {
+                        dlg.Document = printDoc;
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                            printDoc.Print();
+                    }
+                }
+
+                bmpClip.Dispose();
             }
-            catch
+            catch (Exception ex)
             {
-                // エラー処理
+                MessageBox.Show("印刷に失敗しました: " + ex.Message, AppTitle);
             }
         }
 
@@ -2096,23 +2255,50 @@ namespace StretchViewCS.Forms
 
         private void MmFixViewSwClick(object? sender, EventArgs e)
         {
-            if (mmFixViewSw != null)
+            // オーバーレイウィンドウ方式で範囲指定を行う
+            if (!bFixedView)
             {
-                mmFixViewSw.Checked = !mmFixViewSw.Checked;
-                bFixedView = mmFixViewSw.Checked;
-                IniManager.Instance.FixView = bFixedView;
+                try
+                {
+                    using (var overlay = new OverlaySelectionForm())
+                    {
+                        Point selectedCenter = Point.Empty;
+                        overlay.SelectionCompleted += p => selectedCenter = p;
+
+                        // メインウィンドウはそのまま（最前面指定は維持）
+                        overlay.ShowDialog(this);
+
+                        if (selectedCenter != Point.Empty)
+                        {
+                            // 選択された中心座標を用いて固定表示を有効化
+                            FixView(true, selectedCenter.X, selectedCenter.Y);
+                            bFixedView = true;
+                            if (mmFixViewSw != null) mmFixViewSw.Checked = true;
+                        }
+                    }
+                }
+                catch
+                {
+                    // 失敗した場合は従来通りの状態に戻すだけ
+                }
+            }
+            else
+            {
+                // すでに固定中なら固定表示を解除
+                FixView(false, 0, 0);
+                bFixedView = false;
+                if (mmFixViewSw != null) mmFixViewSw.Checked = false;
             }
         }
 
         private void MmFixViewClick(object? sender, EventArgs e)
         {
-            bShowDlgBox = true;
-            SwitchTopMost(false);
-
-            bForFixViewCap = true;
-            StartMyCapture();
-
-            bShowDlgBox = false;
+            // 親メニューを開いたときに各項目の状態を更新するだけ
+            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
+            if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
+            if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
+            if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
+            if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
         }
 
         private void ChangeUIMode(int iMode)

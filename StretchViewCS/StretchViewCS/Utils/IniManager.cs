@@ -37,9 +37,19 @@ namespace StretchViewCS.Utils
         // イベント
         public event EventHandler? OnChange;
 
+        /// <summary>
+        /// 設定ファイルのフルパス（ユーザーフォルダ内）。
+        /// </summary>
+        public string IniPath => _iniPath;
+
         private IniManager()
         {
-            _iniPath = Path.ChangeExtension(Application.ExecutablePath, ".ini");
+            // 書き込み可能なユーザーフォルダに保存（例: %AppData%\StretchViewCS\StretchViewCS.ini）
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appFolder = Path.Combine(appData, "StretchViewCS");
+            if (!Directory.Exists(appFolder))
+                Directory.CreateDirectory(appFolder);
+            _iniPath = Path.Combine(appFolder, "StretchViewCS.ini");
             Read();
         }
 

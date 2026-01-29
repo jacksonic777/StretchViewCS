@@ -21,6 +21,7 @@ namespace StretchViewCS.Forms
             this.SuspendLayout();
 
             // edit1
+            this.edit1.BorderStyle = BorderStyle.FixedSingle;
             this.edit1.Location = new System.Drawing.Point(12, 12);
             this.edit1.Name = "edit1";
             this.edit1.Size = new System.Drawing.Size(360, 19);

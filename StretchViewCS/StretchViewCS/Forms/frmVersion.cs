@@ -44,6 +44,7 @@ namespace StretchViewCS.Forms
             this.okButton.Click += OkButton_Click;
 
             // panel1
+            this.panel1.BorderStyle = BorderStyle.FixedSingle;
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(360, 50);
@@ -58,6 +59,7 @@ namespace StretchViewCS.Forms
             this.version.Text = "バージョン:";
 
             // memo1
+            this.memo1.BorderStyle = BorderStyle.FixedSingle;
             this.memo1.Location = new System.Drawing.Point(12, 80);
             this.memo1.Multiline = true;
             this.memo1.Name = "memo1";
@@ -66,6 +68,7 @@ namespace StretchViewCS.Forms
             this.memo1.TabIndex = 2;
 
             // edit1
+            this.edit1.BorderStyle = BorderStyle.FixedSingle;
             this.edit1.Location = new System.Drawing.Point(12, 160);
             this.edit1.Name = "edit1";
             this.edit1.ReadOnly = true;
@@ -81,6 +84,7 @@ namespace StretchViewCS.Forms
             this.label1.Text = "説明:";
 
             // memo2
+            this.memo2.BorderStyle = BorderStyle.FixedSingle;
             this.memo2.Location = new System.Drawing.Point(12, 190);
             this.memo2.Multiline = true;
             this.memo2.Name = "memo2";

@@ -165,6 +165,9 @@ namespace StretchViewCS.Native
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll")]
+        public static extern bool IsWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
         public static extern IntPtr MAKELPARAM(int low, int high);
 
         public static IntPtr MakeLParam(int low, int high)
