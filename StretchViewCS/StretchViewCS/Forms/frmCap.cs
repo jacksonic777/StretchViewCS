@@ -92,6 +92,9 @@ namespace StretchViewCS.Forms
         private bool bSrcNot = false;
         private int repeatMode = 0;
         private bool FFormShowing = false;
+        private readonly object _bmpDisplayLock = new object();
+        /// <summary>直前のキャプチャ領域の左上（画面座標）。選択枠を自フォーム座標に変換するために使用</summary>
+        private int lastCaptureLeft, lastCaptureTop;
 
         // メニュー項目とツールバー項目はDesignerファイルで定義されています
         // ツールバー項目の参照はDesigner.csで自動生成されます
@@ -239,10 +242,30 @@ namespace StretchViewCS.Forms
                 }
                 else if (bFixed)
                 {
-                    Win32API.GetWindowRect(hTarget, out rW);
-                    rLeft = baseX;
-                    rTop = baseY;
+                    // ターゲットウィンドウが無効（閉じられた等）の場合は固定モードを解除し、
+                    // GetWindowRect による UI スレッドのブロック・応答なしを防ぐ
+                    if (hTarget == IntPtr.Zero || !Win32API.IsWindow(hTarget))
+                    {
+                        bFixed = false;
+                        if (mmFix != null) mmFix.Checked = false;
+                        if (tbFixSimu != null) tbFixSimu.Checked = false;
+                        if (mmLeft != null) mmLeft.Enabled = false;
+                        if (mmRight != null) mmRight.Enabled = false;
+                        if (mmUpper != null) mmUpper.Enabled = false;
+                        if (mmDowner != null) mmDowner.Enabled = false;
+                        if (mmWndInfo != null) mmWndInfo.Enabled = false;
+                        UpdateCaption();
+                    }
+                    else
+                    {
+                        Win32API.GetWindowRect(hTarget, out rW);
+                        rLeft = baseX;
+                        rTop = baseY;
+                    }
                 }
+
+                lastCaptureLeft = rLeft;
+                lastCaptureTop = rTop;
 
                 // キャプチャ処理
                 CaptureAndDisplay(desktopDC, rLeft, rTop, tmpMx, tmpMy);
@@ -344,8 +367,8 @@ namespace StretchViewCS.Forms
                     Bitmap displayBmp = bmpRotated ?? bmpTmp;
                     DrawOptions(displayBmp, mmx, mmy, rLeft, rTop);
 
-                    // 表示用ビットマップを更新
-                    lock (this)
+                    // 表示用ビットマップを更新（フォーム本体のロックは避けデッドロックを防止）
+                    lock (_bmpDisplayLock)
                     {
                         if (bmpDisplay != null)
                         {
@@ -607,7 +630,9 @@ namespace StretchViewCS.Forms
 
                 if (bFixed)
                 {
-                    if (Form.ActiveForm != this) this.Activate();
+                    // ターゲットを前面に出してからメッセージを送る（多くのアプリは前面でないとマウスメッセージを処理しない）
+                    if (hTarget != IntPtr.Zero && Win32API.IsWindow(hTarget))
+                        SetAbsoluteForegroundWindow(hTarget);
 
                     int iWM = (e.Button == MouseButtons.Left) ? Win32API.WM_LBUTTONDOWN : Win32API.WM_RBUTTONDOWN;
                     TranslateXY(e.X, e.Y, e.Button, Control.ModifierKeys, iWM);
@@ -675,6 +700,16 @@ namespace StretchViewCS.Forms
         {
             try
             {
+                if (!bForFixViewCap)
+                {
+                    // 操作投影モード：デスクトップには描画せず、カーソル下のウィンドウだけ記録して
+                    // 自フォームの Paint で選択枠を描画する（デスクトップの描画乱れを防ぐ）
+                    IntPtr hTmp = GetTargetWindow(Cursor.Position);
+                    hLastTargetWindow = hTmp != IntPtr.Zero ? hTmp : IntPtr.Zero;
+                    this.Invalidate();
+                    return;
+                }
+
                 IntPtr desktopDC = Win32API.GetWindowDC(Win32API.GetDesktopWindow());
                 try
                 {
@@ -685,87 +720,8 @@ namespace StretchViewCS.Forms
                         int halfCapW = capSizeW / 2;
                         int halfCapH = capSizeH / 2;
 
-                        if (!bForFixViewCap)
+                        // 固定表示範囲の選択（従来どおりデスクトップに枠描画）
                         {
-                            // 前のウィンドウを復元
-                            if (bDrawedRect && hLastTargetWindow != IntPtr.Zero)
-                            {
-                                Win32API.RECT rTmp;
-                                Win32API.GetWindowRect(hLastTargetWindow, out rTmp);
-                                if (bmpBackUp != null)
-                                {
-                                    IntPtr hdc = cvDesk.GetHdc();
-                                    try
-                                    {
-                                        // 対象ウィンドウの DC を取得して復元（必ず ReleaseDC する）
-                                        IntPtr wndDC = Win32API.GetWindowDC(hLastTargetWindow);
-                                        try
-                                        {
-                                            Win32API.BitBlt(
-                                                hdc,
-                                                rTmp.Left,
-                                                rTmp.Top,
-                                                rTmp.Width + 4,
-                                                rTmp.Height + 4,
-                                                wndDC,
-                                                0,
-                                                0,
-                                                Win32API.SRCCOPY);
-                                        }
-                                        finally
-                                        {
-                                            Win32API.ReleaseDC(hLastTargetWindow, wndDC);
-                                        }
-                                    }
-                                    finally
-                                    {
-                                        cvDesk.ReleaseHdc(hdc);
-                                    }
-                                }
-                            }
-
-                            // 新しいターゲットウィンドウを取得
-                            IntPtr hTmp = GetTargetWindow(Cursor.Position);
-                            if (hTmp != IntPtr.Zero)
-                            {
-                                Win32API.RECT rTmp;
-                                Win32API.GetWindowRect(hTmp, out rTmp);
-                                hLastTargetWindow = hTmp;
-
-                                if (bmpBackUp != null)
-                                {
-                                    bmpBackUp.Dispose();
-                                }
-                                bmpBackUp = new Bitmap(rTmp.Width + 4, rTmp.Height + 4);
-                                IntPtr hdc = cvDesk.GetHdc();
-                                try
-                                {
-                                IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdc);
-                                IntPtr hBmp = bmpBackUp.GetHbitmap();
-                                IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
-                                Win32API.BitBlt(bmpHdc, 0, 0, rTmp.Width + 4, rTmp.Height + 4,
-                                    hdc, rTmp.Left, rTmp.Top, Win32API.SRCCOPY);
-                                Win32API.SelectObject(bmpHdc, oldBmp);
-                                Win32API.DeleteObject(hBmp);
-                                Win32API.DeleteDC(bmpHdc);
-                                }
-                                finally
-                                {
-                                    cvDesk.ReleaseHdc(hdc);
-                                }
-
-                                // 矩形を描画
-                                using (Pen pen = new Pen(Color.Red, 2))
-                                {
-                                    Rectangle rect = new Rectangle(rTmp.Left + 2, rTmp.Top + 2,
-                                        rTmp.Width - 4, rTmp.Height - 4);
-                                    cvDesk.DrawRectangle(pen, rect);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // 固定表示範囲の選択
                             Rectangle desktopRect = Screen.PrimaryScreen.Bounds;
                             if (mmx < desktopRect.Left + halfCapW)
                                 Win32API.SetCursorPos(desktopRect.Left + halfCapW, mmy);
@@ -1045,18 +1001,20 @@ namespace StretchViewCS.Forms
                 X += (int)(1 * capRate);
             }
 
-            // クライアント座標に変換
-            int cx = clientBaseX + (int)(X / capRate);
-            int cy = clientBaseY + (int)(Y / capRate);
+            // 表示座標 → 画面座標 → ターゲットのクライアント座標に変換
+            // （ScreenToClient によりウィンドウ移動後も正しい座標になる）
+            if (hTarget == IntPtr.Zero || !Win32API.IsWindow(hTarget))
+                return;
 
-            // ウィンドウにメッセージ送信
-            if (hTarget != IntPtr.Zero && Win32API.IsWindow(hTarget))
-            {
-                IntPtr lParam = Win32API.MakeLParam(cx, cy);
-                // 操作投影モード中にターゲットウィンドウが落ちてもこちらが巻き込まれないよう、
-                // 同期 SendMessage ではなく PostMessage を使用する
-                Win32API.PostMessage(hTarget, (uint)iWM, (IntPtr)iShift, lParam);
-            }
+            Point screenPt = new Point(
+                baseX + (int)(X / capRate),
+                baseY + (int)(Y / capRate));
+            Win32API.ScreenToClient(hTarget, ref screenPt);
+
+            IntPtr lParam = Win32API.MakeLParam(screenPt.X, screenPt.Y);
+            // 操作投影モード中にターゲットウィンドウが落ちてもこちらが巻き込まれないよう、
+            // 同期 SendMessage ではなく PostMessage を使用する
+            Win32API.PostMessage(hTarget, (uint)iWM, (IntPtr)iShift, lParam);
         }
 
         // ============================================================
@@ -2032,6 +1990,42 @@ namespace StretchViewCS.Forms
             bShowDlgBox = false;
         }
 
+        private void MmColorPickerClick(object? sender, EventArgs e)
+        {
+            OpenColorPicker();
+        }
+
+        private void TbColorPickerClick(object? sender, EventArgs e)
+        {
+            OpenColorPicker();
+        }
+
+        private void OpenColorPicker()
+        {
+            using (var picker = new ColorPickerForm())
+            {
+                picker.ShowDialog();
+            }
+        }
+
+        private void MmRulerClick(object? sender, EventArgs e)
+        {
+            OpenRuler();
+        }
+
+        private void TbRulerClick(object? sender, EventArgs e)
+        {
+            OpenRuler();
+        }
+
+        private void OpenRuler()
+        {
+            using (var ruler = new RulerForm())
+            {
+                ruler.ShowDialog();
+            }
+        }
+
         private void MmSaveViewFileClick(object? sender, EventArgs e)
         {
             try
@@ -2317,7 +2311,7 @@ namespace StretchViewCS.Forms
 
             if (bmpDisplay != null)
             {
-                lock (this)
+                lock (_bmpDisplayLock)
                 {
                     e.Graphics.DrawImage(bmpDisplay, transX, transY);
                 }
@@ -2336,6 +2330,20 @@ namespace StretchViewCS.Forms
                         int size = (int)(5 * capRate);
                         e.Graphics.DrawRectangle(pen, mousePos.X - size / 2, mousePos.Y - size / 2, size, size);
                     }
+                }
+            }
+
+            // 操作投影モードのターゲット選択中：自フォーム内に選択枠のみ描画（デスクトップは触らない）
+            if (bMouseCap && !bForFixViewCap && hLastTargetWindow != IntPtr.Zero && Win32API.IsWindow(hLastTargetWindow))
+            {
+                Win32API.GetWindowRect(hLastTargetWindow, out Win32API.RECT rSel);
+                int x1 = transX + (int)((rSel.Left - lastCaptureLeft) * capRate);
+                int y1 = transY + (int)((rSel.Top - lastCaptureTop) * capRate);
+                int w = (int)((rSel.Right - rSel.Left) * capRate);
+                int h = (int)((rSel.Bottom - rSel.Top) * capRate);
+                using (Pen pen = new Pen(Color.Red, 2))
+                {
+                    e.Graphics.DrawRectangle(pen, x1, y1, w, h);
                 }
             }
         }

@@ -58,6 +58,8 @@ namespace StretchViewCS.Native
         public const int SPI_SETFOREGROUNDLOCKTIMEOUT = 0x2001;
 
         public const int BITSPIXEL = 12;
+        public const int LOGPIXELSX = 88;
+        public const int LOGPIXELSY = 90;
 
         public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
         public const uint MOUSEEVENTF_LEFTUP = 0x0004;
@@ -86,6 +88,9 @@ namespace StretchViewCS.Native
 
         [DllImport("gdi32.dll")]
         public static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+        [DllImport("gdi32.dll")]
+        public static extern uint GetPixel(IntPtr hdc, int x, int y);
 
         // User32.dll
         [DllImport("user32.dll")]
