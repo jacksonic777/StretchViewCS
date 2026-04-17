@@ -12,6 +12,7 @@ namespace StretchViewCS.Forms
     public partial class frmSetting : Form
     {
         private CheckBox chkResistProgram;
+        private CheckBox chkHotkeysEnabled;
         private Button btnOK;
         private Button btnCancel;
         private GroupBox groupBox1;
@@ -25,6 +26,7 @@ namespace StretchViewCS.Forms
         {
             this.groupBox1 = new GroupBox();
             this.chkResistProgram = new CheckBox();
+            this.chkHotkeysEnabled = new CheckBox();
             this.btnOK = new Button();
             this.btnCancel = new Button();
             this.SuspendLayout();
@@ -32,7 +34,7 @@ namespace StretchViewCS.Forms
             // groupBox1
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 60);
+            this.groupBox1.Size = new System.Drawing.Size(360, 90);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "設定";
@@ -45,20 +47,28 @@ namespace StretchViewCS.Forms
             this.chkResistProgram.TabIndex = 0;
             this.chkResistProgram.Text = "スタートメニューに登録";
 
+            // chkHotkeysEnabled
+            this.chkHotkeysEnabled.AutoSize = true;
+            this.chkHotkeysEnabled.Location = new System.Drawing.Point(20, 55);
+            this.chkHotkeysEnabled.Name = "chkHotkeysEnabled";
+            this.chkHotkeysEnabled.Size = new System.Drawing.Size(165, 16);
+            this.chkHotkeysEnabled.TabIndex = 1;
+            this.chkHotkeysEnabled.Text = "ホットキーを有効にする";
+
             // btnOK
-            this.btnOK.Location = new System.Drawing.Point(216, 90);
+            this.btnOK.Location = new System.Drawing.Point(216, 120);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 1;
+            this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += BtnOK_Click;
 
             // btnCancel
-            this.btnCancel.Location = new System.Drawing.Point(297, 90);
+            this.btnCancel.Location = new System.Drawing.Point(297, 120);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
+            this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "キャンセル";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += BtnCancel_Click;
@@ -66,11 +76,12 @@ namespace StretchViewCS.Forms
             // frmSetting
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 125);
+            this.ClientSize = new System.Drawing.Size(384, 155);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
             this.groupBox1.Controls.Add(this.chkResistProgram);
+            this.groupBox1.Controls.Add(this.chkHotkeysEnabled);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -103,13 +114,36 @@ namespace StretchViewCS.Forms
 
         private void BtnOK_Click(object? sender, EventArgs e)
         {
+            frmCap? mainForm = FindMainForm();
+
+            IniManager.Instance.HotkeysEnabled = chkHotkeysEnabled.Checked;
             ResisterStartMenu(false, chkResistProgram.Checked, "StretchViewCS");
+
+            if (mainForm != null)
+            {
+                mainForm.SetHotkeysEnabled(chkHotkeysEnabled.Checked);
+            }
+
             this.Close();
         }
 
         private void FrmSetting_Shown(object? sender, EventArgs e)
         {
             chkResistProgram.Checked = ResisterStartMenu(true, false, "StretchViewCS");
+            chkHotkeysEnabled.Checked = IniManager.Instance.HotkeysEnabled;
+        }
+
+        private frmCap? FindMainForm()
+        {
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is frmCap mainForm)
+                {
+                    return mainForm;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>

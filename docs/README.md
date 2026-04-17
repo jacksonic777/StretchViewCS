@@ -89,6 +89,13 @@ StretchViewCS/
 - [変換作業の進捗状況](./変換作業の進捗状況.md)
 - [Delphi版移植の未完了項目](./Delphi版移植の未完了項目.md)
 - [設定の保存と復元](./設定の保存と復元.md)
+- [MSIインストーラー作成計画](./MSIインストーラー作成計画.md)
+- [Windows版VisualStudio確認チェックリスト](./Windows版VisualStudio確認チェックリスト.md)
+- [Windows版回帰確認表](./Windows版回帰確認表.md)
+- [不具合報告テンプレート](./不具合報告テンプレート.md)
+- [frmCap責務分解メモ](./frmCap責務分解メモ.md)
+- [macOS対応移行計画](./macOS対応移行計画.md)
+- [HTMLヘルプ移行メモ](./HTMLヘルプ移行メモ.md)
 
 ## ライセンス
 

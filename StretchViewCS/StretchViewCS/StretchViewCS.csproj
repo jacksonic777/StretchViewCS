@@ -34,6 +34,12 @@
   <ItemGroup>
     <None Include="app.manifest" />
     <None Include="appIcon.ico" />
+    <Content Include="help\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="help\style.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

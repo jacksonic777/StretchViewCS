@@ -66,6 +66,8 @@ namespace StretchViewCS.Forms
         private Bitmap? bmpBackUp;
         private Bitmap? bmpAtari;
         private Bitmap? bmpDisplay; // 表示用ビットマップ
+        private Bitmap? bmpCaptureWork;
+        private Bitmap? bmpScaleWork;
         private bool bDrawedRect = false;
         private bool bGraph = false;
         private int iCutPixel = 60;
@@ -92,6 +94,7 @@ namespace StretchViewCS.Forms
         private bool bSrcNot = false;
         private int repeatMode = 0;
         private bool FFormShowing = false;
+        private bool hotkeysEnabled = false;
         private readonly object _bmpDisplayLock = new object();
         /// <summary>直前のキャプチャ領域の左上（画面座標）。選択枠を自フォーム座標に変換するために使用</summary>
         private int lastCaptureLeft, lastCaptureTop;
@@ -118,7 +121,7 @@ namespace StretchViewCS.Forms
 
         private void frmCap_Load(object? sender, EventArgs e)
         {
-            Application.ApplicationExit += (s, args) => { UnregisterMyHotkeys(); };
+            Application.ApplicationExit += OnApplicationExit;
 
             // 初期化
             gAngle = 0;
@@ -134,11 +137,12 @@ namespace StretchViewCS.Forms
             tim.Interval = IniManager.Instance.SamplingRate;
 
             // メインウィンドウの位置・サイズを復元（BoundsRect を優先）
-            this.Bounds = IniManager.Instance.BoundsRect;
+            this.Bounds = GetValidatedStartupBounds(IniManager.Instance.BoundsRect, this.Bounds);
             UpdateTransFromClientSize();
 
             // 拡大率などその他の設定
             capRate = IniManager.Instance.CapRate;
+            hotkeysEnabled = IniManager.Instance.HotkeysEnabled;
 
             // 固定表示モード
             if (IniManager.Instance.FixView)
@@ -169,17 +173,23 @@ namespace StretchViewCS.Forms
 
         private void frmCap_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            tim.Enabled = false;
+            timRepeat.Enabled = false;
+            Application.ApplicationExit -= OnApplicationExit;
             UnregisterMyHotkeys();
             bmpBackUp?.Dispose();
             if (bAtariBmpCreate) bmpAtari?.Dispose();
             bmpDisplay?.Dispose();
+            bmpCaptureWork?.Dispose();
+            bmpScaleWork?.Dispose();
 
             // 設定をメモリに反映してから INI に保存
             IniManager.Instance.CapRate = capRate;
-            IniManager.Instance.BoundsRect = this.Bounds;
+            IniManager.Instance.BoundsRect = GetBoundsForPersistence();
             IniManager.Instance.ScaleWidth = transW > 0 ? transW : IniManager.Instance.ScaleWidth;
             IniManager.Instance.ScaleHeight = transH > 0 ? transH : IniManager.Instance.ScaleHeight;
             IniManager.Instance.FixView = bFixedView;
+            IniManager.Instance.HotkeysEnabled = hotkeysEnabled;
             if (bFixedView)
             {
                 int centerX = baseX + capSizeW / 2;
@@ -194,13 +204,58 @@ namespace StretchViewCS.Forms
         {
             // FormClosing で保存済みのためここでは Write しない
             IniManager.Instance.CapRate = capRate;
-            IniManager.Instance.BoundsRect = this.Bounds;
+            IniManager.Instance.BoundsRect = GetBoundsForPersistence();
+        }
+
+        private void OnApplicationExit(object? sender, EventArgs e)
+        {
+            UnregisterMyHotkeys();
+        }
+
+        private Rectangle GetBoundsForPersistence()
+        {
+            Rectangle boundsToSave = this.WindowState == FormWindowState.Normal ? this.Bounds : this.RestoreBounds;
+            if (boundsToSave.Width < 100 || boundsToSave.Height < 100)
+            {
+                return this.Bounds;
+            }
+
+            return boundsToSave;
+        }
+
+        private Rectangle GetValidatedStartupBounds(Rectangle storedBounds, Rectangle defaultBounds)
+        {
+            if (storedBounds.Width < 100 || storedBounds.Height < 100)
+            {
+                return defaultBounds;
+            }
+
+            if (storedBounds.Left <= -30000 || storedBounds.Top <= -30000)
+            {
+                return defaultBounds;
+            }
+
+            Rectangle virtualScreen = SystemInformation.VirtualScreen;
+            Rectangle paddedBounds = new Rectangle(
+                storedBounds.Left,
+                storedBounds.Top,
+                Math.Max(storedBounds.Width, 100),
+                Math.Max(storedBounds.Height, 100));
+
+            if (!virtualScreen.IntersectsWith(paddedBounds))
+            {
+                return defaultBounds;
+            }
+
+            return storedBounds;
         }
 
         private void tim_Tick(object? sender, EventArgs e)
         {
             if (bShowDlgBox) return;
             bStateUpdate = false;
+            IntPtr desktopWindow = Win32API.GetDesktopWindow();
+            IntPtr desktopDC = IntPtr.Zero;
 
             try
             {
@@ -210,7 +265,11 @@ namespace StretchViewCS.Forms
                 int tmpMy = mousePos.Y;
 
                 // デスクトップDC取得
-                IntPtr desktopDC = Win32API.GetWindowDC(Win32API.GetDesktopWindow());
+                desktopDC = Win32API.GetWindowDC(desktopWindow);
+                if (desktopDC == IntPtr.Zero)
+                {
+                    throw new InvalidOperationException("デスクトップ DC の取得に失敗しました。");
+                }
 
                 if (capRate == 0) capRate = 1;
 
@@ -269,12 +328,17 @@ namespace StretchViewCS.Forms
 
                 // キャプチャ処理
                 CaptureAndDisplay(desktopDC, rLeft, rTop, tmpMx, tmpMy);
-
-                Win32API.ReleaseDC(Win32API.GetDesktopWindow(), desktopDC);
             }
             catch
             {
                 // エラー処理
+            }
+            finally
+            {
+                if (desktopDC != IntPtr.Zero)
+                {
+                    Win32API.ReleaseDC(desktopWindow, desktopDC);
+                }
             }
         }
 
@@ -282,7 +346,6 @@ namespace StretchViewCS.Forms
         {
             try
             {
-                Bitmap? bmpTmp = null;
                 Bitmap? bmpRotated = null;
                 Bitmap? bmpFlipped = null;
                 bool bRotated = false;
@@ -291,18 +354,13 @@ namespace StretchViewCS.Forms
                 try
                 {
                     // デバイスのビット深度を取得
-                    int bpp = Win32API.GetDeviceCaps(desktopDC, Win32API.BITSPIXEL);
-                    PixelFormat pixelFormat = PixelFormat.Format24bppRgb;
-                    if (bpp == 32) pixelFormat = PixelFormat.Format32bppRgb;
-                    else if (bpp == 24) pixelFormat = PixelFormat.Format24bppRgb;
-                    else if (bpp == 16) pixelFormat = PixelFormat.Format16bppRgb565;
-                    else if (bpp == 15) pixelFormat = PixelFormat.Format16bppRgb555;
-                    else if (bpp == 8) pixelFormat = PixelFormat.Format8bppIndexed;
-
-                    bmpTmp = new Bitmap(capSizeW, capSizeH, pixelFormat);
+                    PixelFormat pixelFormat = GetDesktopPixelFormat(desktopDC);
+                    Bitmap captureBmp = GetOrCreateWorkBitmap(ref bmpCaptureWork, capSizeW, capSizeH, pixelFormat);
+                    Bitmap scaledBmp = GetOrCreateWorkBitmap(ref bmpScaleWork, transW, transH, PixelFormat.Format32bppArgb);
+                    Bitmap sourceBmp = captureBmp;
 
                     // デスクトップからキャプチャ
-                    using (Graphics g = Graphics.FromImage(bmpTmp))
+                    using (Graphics g = Graphics.FromImage(captureBmp))
                     {
                         IntPtr hdc = g.GetHdc();
                         try
@@ -320,21 +378,19 @@ namespace StretchViewCS.Forms
                     // 当たり判定レイヤーの合成
                     if (bBltAtari && bmpAtari != null)
                     {
-                        using (Graphics g = Graphics.FromImage(bmpTmp))
+                        using (Graphics g = Graphics.FromImage(captureBmp))
                         {
                             g.DrawImage(bmpAtari, 0, 0, capSizeW, capSizeH);
                         }
                     }
 
                     // 拡大
-                    Bitmap bmpScaled = new Bitmap(transW, transH);
-                    using (Graphics g = Graphics.FromImage(bmpScaled))
+                    using (Graphics g = Graphics.FromImage(scaledBmp))
                     {
                         g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                        g.DrawImage(bmpTmp, 0, 0, transW, transH);
+                        g.DrawImage(captureBmp, 0, 0, transW, transH);
                     }
-                    bmpTmp.Dispose();
-                    bmpTmp = bmpScaled;
+                    sourceBmp = scaledBmp;
 
                     // 回転・反転処理
                     if (bHFlip || bVFlip || gAngle != 0)
@@ -342,7 +398,7 @@ namespace StretchViewCS.Forms
                         if ((bHFlip || bVFlip) && gAngle == 0)
                         {
                             // 反転のみ
-                            bmpFlipped = XRotateBitmap.RotateBitmapX(bmpTmp, gAngle, (bHFlip || bVFlip), false);
+                            bmpFlipped = XRotateBitmap.RotateBitmapX(sourceBmp, gAngle, (bHFlip || bVFlip), false);
                             bFlipped = true;
                             bmpRotated = bmpFlipped;
                         }
@@ -351,38 +407,30 @@ namespace StretchViewCS.Forms
                             // 回転
                             if (bVFlip || bHFlip)
                             {
-                                bmpFlipped = XRotateBitmap.RotateBitmapX(bmpTmp, 0, (bHFlip || bVFlip), false);
+                                bmpFlipped = XRotateBitmap.RotateBitmapX(sourceBmp, 0, (bHFlip || bVFlip), false);
                                 bFlipped = true;
                                 bmpRotated = XRotateBitmap.RotateBitmapX(bmpFlipped, gAngle, false, false);
                             }
                             else
                             {
-                                bmpRotated = XRotateBitmap.RotateBitmapX(bmpTmp, gAngle, false, false);
+                                bmpRotated = XRotateBitmap.RotateBitmapX(sourceBmp, gAngle, false, false);
                             }
                             bRotated = true;
                         }
                     }
 
                     // オプション描画（グリッド、クロスなど）
-                    Bitmap displayBmp = bmpRotated ?? bmpTmp;
+                    Bitmap displayBmp = bmpRotated ?? sourceBmp;
                     DrawOptions(displayBmp, mmx, mmy, rLeft, rTop);
 
                     // 表示用ビットマップを更新（フォーム本体のロックは避けデッドロックを防止）
-                    lock (_bmpDisplayLock)
-                    {
-                        if (bmpDisplay != null)
-                        {
-                            bmpDisplay.Dispose();
-                        }
-                        bmpDisplay = new Bitmap(displayBmp);
-                    }
+                    UpdateDisplayBitmap(displayBmp);
 
                     // 再描画を要求
                     this.Invalidate(new Rectangle(transX, transY, transW, transH));
                 }
                 finally
                 {
-                    bmpTmp?.Dispose();
                     if (bRotated) bmpRotated?.Dispose();
                     if (bFlipped) bmpFlipped?.Dispose();
                 }
@@ -400,8 +448,8 @@ namespace StretchViewCS.Forms
             try
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
+                using (Pen pen = new Pen(Color.Black, 1))
                 {
-                    Pen pen = new Pen(Color.Black, 1);
                     pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 
                     // クロス表示
@@ -531,6 +579,7 @@ namespace StretchViewCS.Forms
 
         private void RegisterMyHotkeys()
         {
+            if (!hotkeysEnabled) return;
             if (bRegistedMHK) return;
             if (!this.IsHandleCreated) return;
 
@@ -660,16 +709,20 @@ namespace StretchViewCS.Forms
                 {
                     using (Graphics g = Graphics.FromImage(bmpAtari))
                     {
-                        Pen pen = new Pen(MyAtariColor, iAtariLineWidth);
                         if (e.Button == MouseButtons.Left && (Control.ModifierKeys & Keys.Control) == 0)
                         {
-                            g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
+                            using (Pen pen = new Pen(MyAtariColor, iAtariLineWidth))
+                            {
+                                g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
+                            }
                         }
                         else if ((e.Button == MouseButtons.Left && (Control.ModifierKeys & Keys.Control) != 0) ||
                                  e.Button == MouseButtons.Right)
                         {
-                            pen = new Pen(Color.White, Math.Max(5, iAtariLineWidth * 4));
-                            g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
+                            using (Pen pen = new Pen(Color.White, Math.Max(5, iAtariLineWidth * 4)))
+                            {
+                                g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
+                            }
                         }
                     }
                     pCStart = new Point(x, y);
@@ -738,30 +791,7 @@ namespace StretchViewCS.Forms
                             // 前の矩形を復元
                             if (bDrawedRect && bmpBackUp != null)
                             {
-                                IntPtr hdcRestore = cvDesk.GetHdc();
-                                try
-                                {
-                                    IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdcRestore);
-                                    IntPtr hBmp = bmpBackUp.GetHbitmap();
-                                    IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
-                                    Win32API.BitBlt(
-                                        hdcRestore,
-                                        rcLastDraw.Left,
-                                        rcLastDraw.Top,
-                                        rcLastDraw.Width + 4,
-                                        rcLastDraw.Height + 4,
-                                        bmpHdc,
-                                        0,
-                                        0,
-                                        Win32API.SRCCOPY);
-                                    Win32API.SelectObject(bmpHdc, oldBmp);
-                                    Win32API.DeleteObject(hBmp);
-                                    Win32API.DeleteDC(bmpHdc);
-                                }
-                                finally
-                                {
-                                    cvDesk.ReleaseHdc(hdcRestore);
-                                }
+                                RestoreDesktopBackup(cvDesk);
                             }
 
                             // 新しい矩形を設定
@@ -774,23 +804,7 @@ namespace StretchViewCS.Forms
                                 bmpBackUp.Dispose();
                             }
                             bmpBackUp = new Bitmap(capSizeW + 4, capSizeH + 4);
-
-                            IntPtr hdcBackup = cvDesk.GetHdc();
-                            try
-                            {
-                                IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdcBackup);
-                                IntPtr hBmp = bmpBackUp.GetHbitmap();
-                                IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
-                                Win32API.BitBlt(bmpHdc, 0, 0, capSizeW + 4, capSizeH + 4,
-                                    hdcBackup, rcLastDraw.Left, rcLastDraw.Top, Win32API.SRCCOPY);
-                                Win32API.SelectObject(bmpHdc, oldBmp);
-                                Win32API.DeleteObject(hBmp);
-                                Win32API.DeleteDC(bmpHdc);
-                            }
-                            finally
-                            {
-                                cvDesk.ReleaseHdc(hdcBackup);
-                            }
+                            CaptureDesktopBackup();
 
                             // 矩形を描画
                             using (Pen pen = new Pen(Color.Black, 1))
@@ -836,23 +850,10 @@ namespace StretchViewCS.Forms
                                 IntPtr desktopDC = Win32API.GetWindowDC(Win32API.GetDesktopWindow());
                                 try
                                 {
-                                    IntPtr hdcRestore = desktopDC;
-                                    IntPtr bmpHdc = Win32API.CreateCompatibleDC(hdcRestore);
-                                    IntPtr hBmp = bmpBackUp.GetHbitmap();
-                                    IntPtr oldBmp = Win32API.SelectObject(bmpHdc, hBmp);
-                                    Win32API.BitBlt(
-                                        hdcRestore,
-                                        rcLastDraw.Left,
-                                        rcLastDraw.Top,
-                                        rcLastDraw.Width + 4,
-                                        rcLastDraw.Height + 4,
-                                        bmpHdc,
-                                        0,
-                                        0,
-                                        Win32API.SRCCOPY);
-                                    Win32API.SelectObject(bmpHdc, oldBmp);
-                                    Win32API.DeleteObject(hBmp);
-                                    Win32API.DeleteDC(bmpHdc);
+                                    using (Graphics desktopGraphics = Graphics.FromHdc(desktopDC))
+                                    {
+                                        RestoreDesktopBackup(desktopGraphics);
+                                    }
                                 }
                                 finally
                                 {
@@ -1211,8 +1212,19 @@ namespace StretchViewCS.Forms
             if (baseY + capSizeH > desktopRect.Bottom)
                 baseY = desktopRect.Bottom - capSizeH;
 
-            clientBaseX = baseX - rW.Left;
-            clientBaseY = baseY - rW.Top;
+            if (bFixed)
+            {
+                clientBaseX = baseX - rW.Left;
+                clientBaseY = baseY - rW.Top;
+            }
+
+            if (bFixedView)
+            {
+                IniManager.Instance.FixViewX = baseX + capSizeW / 2;
+                IniManager.Instance.FixViewY = baseY + capSizeH / 2;
+            }
+
+            this.Invalidate();
         }
 
         // ============================================================
@@ -1314,7 +1326,7 @@ namespace StretchViewCS.Forms
             int menuHeight = mMainMenu?.Height ?? 24;
             int controlBarHeight = controlBar1 != null ? controlBar1.Height : 48;
             int statusBarHeight = sbMain?.Height ?? 22;
-            int infoBarHeight = InfoBar1 != null ? InfoBar1.Height : 0;
+            int infoBarHeight = sbMain != null ? sbMain.Height : 0;
 
             transX = 0;
             transY = controlBarHeight + menuHeight;
@@ -1349,7 +1361,7 @@ namespace StretchViewCS.Forms
                     transY = controlBarHeight + menuHeight; // ControlBar1.Height + Menu.Height
                     transW = iSizeW;
                     int statusBarHeight = sbMain.Height;
-                    int infoBarHeight = InfoBar1 != null ? InfoBar1.Height : 0;
+            int infoBarHeight = sbMain != null ? sbMain.Height : 0;
                     transH = iSizeH - (statusBarHeight + infoBarHeight + transY);
 
                     // 最小サイズチェック
@@ -1430,6 +1442,21 @@ namespace StretchViewCS.Forms
             }
         }
 
+        public void SetHotkeysEnabled(bool enabled)
+        {
+            hotkeysEnabled = enabled;
+            IniManager.Instance.HotkeysEnabled = enabled;
+
+            if (hotkeysEnabled)
+            {
+                RegisterMyHotkeys();
+            }
+            else
+            {
+                UnregisterMyHotkeys();
+            }
+        }
+
         // ============================================================
         // 固定表示モード
         // ============================================================
@@ -1463,6 +1490,18 @@ namespace StretchViewCS.Forms
 
             IniManager.Instance.FixView = bFixedView;
             return bFixedView;
+        }
+
+        private void ApplyFixViewState(bool enabled, int x, int y)
+        {
+            FixView(enabled, x, y);
+            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
+            if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
+            if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
+            if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
+            if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
+            UpdateCaption();
+            this.Invalidate();
         }
 
         // ============================================================
@@ -1701,22 +1740,22 @@ namespace StretchViewCS.Forms
 
         private void MmLeftClick(object? sender, EventArgs e)
         {
-            if (bFixed) MoveRange("left");
+            if (bFixed || bFixedView) MoveRange("left");
         }
 
         private void MmRightClick(object? sender, EventArgs e)
         {
-            if (bFixed) MoveRange("right");
+            if (bFixed || bFixedView) MoveRange("right");
         }
 
         private void MmUpperClick(object? sender, EventArgs e)
         {
-            if (bFixed) MoveRange("up");
+            if (bFixed || bFixedView) MoveRange("up");
         }
 
         private void MmDownerClick(object? sender, EventArgs e)
         {
-            if (bFixed) MoveRange("down");
+            if (bFixed || bFixedView) MoveRange("down");
         }
 
         private void MmFixClick(object? sender, EventArgs e)
@@ -2264,10 +2303,7 @@ namespace StretchViewCS.Forms
 
                         if (selectedCenter != Point.Empty)
                         {
-                            // 選択された中心座標を用いて固定表示を有効化
-                            FixView(true, selectedCenter.X, selectedCenter.Y);
-                            bFixedView = true;
-                            if (mmFixViewSw != null) mmFixViewSw.Checked = true;
+                            ApplyFixViewState(true, selectedCenter.X, selectedCenter.Y);
                         }
                     }
                 }
@@ -2279,9 +2315,7 @@ namespace StretchViewCS.Forms
             else
             {
                 // すでに固定中なら固定表示を解除
-                FixView(false, 0, 0);
-                bFixedView = false;
-                if (mmFixViewSw != null) mmFixViewSw.Checked = false;
+                ApplyFixViewState(false, 0, 0);
             }
         }
 
@@ -2350,10 +2384,10 @@ namespace StretchViewCS.Forms
 
         private void MmRangeClick(object? sender, EventArgs e)
         {
-            if (mmLeft != null) mmLeft.Enabled = bFixed;
-            if (mmRight != null) mmRight.Enabled = bFixed;
-            if (mmUpper != null) mmUpper.Enabled = bFixed;
-            if (mmDowner != null) mmDowner.Enabled = bFixed;
+            if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
+            if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
+            if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
+            if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
 
             if (mmGraph != null) mmGraph.Checked = bGraph;
             if (mmGraph30 != null) mmGraph30.Checked = false;
@@ -2394,19 +2428,102 @@ namespace StretchViewCS.Forms
             SwitchTopMost(false);
             if (mmTopMost != null) mmTopMost.Checked = false;
 
-            // ヘルプファイルを開く（実装が必要）
             try
             {
-                string helpFile = Path.Combine(Application.StartupPath, "StretchView.hlp");
-                if (System.IO.File.Exists(helpFile))
+                string helpFile = Path.Combine(Application.StartupPath, "help", "index.html");
+                if (!System.IO.File.Exists(helpFile))
                 {
-                    Process.Start(helpFile);
+                    throw new FileNotFoundException("ヘルプファイルが見つかりません。", helpFile);
+                }
+
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = helpFile;
+                startInfo.UseShellExecute = true;
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    this,
+                    "ヘルプを開けませんでした。\r\n" + ex.Message,
+                    "StretchViewCS",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateDisplayBitmap(Bitmap sourceBitmap)
+        {
+            lock (_bmpDisplayLock)
+            {
+                if (bmpDisplay == null ||
+                    bmpDisplay.Width != sourceBitmap.Width ||
+                    bmpDisplay.Height != sourceBitmap.Height ||
+                    bmpDisplay.PixelFormat != sourceBitmap.PixelFormat)
+                {
+                    bmpDisplay?.Dispose();
+                    bmpDisplay = new Bitmap(sourceBitmap);
+                    return;
+                }
+
+                using (Graphics g = Graphics.FromImage(bmpDisplay))
+                {
+                    g.DrawImageUnscaled(sourceBitmap, 0, 0);
                 }
             }
-            catch
+        }
+
+        private PixelFormat GetDesktopPixelFormat(IntPtr desktopDC)
+        {
+            int bpp = Win32API.GetDeviceCaps(desktopDC, Win32API.BITSPIXEL);
+            if (bpp == 32) return PixelFormat.Format32bppRgb;
+            if (bpp == 24) return PixelFormat.Format24bppRgb;
+            if (bpp == 16) return PixelFormat.Format16bppRgb565;
+            if (bpp == 15) return PixelFormat.Format16bppRgb555;
+            if (bpp == 8) return PixelFormat.Format8bppIndexed;
+            return PixelFormat.Format24bppRgb;
+        }
+
+        private Bitmap GetOrCreateWorkBitmap(ref Bitmap? targetBitmap, int width, int height, PixelFormat pixelFormat)
+        {
+            if (targetBitmap == null ||
+                targetBitmap.Width != width ||
+                targetBitmap.Height != height ||
+                targetBitmap.PixelFormat != pixelFormat)
             {
-                // エラー処理
+                targetBitmap?.Dispose();
+                targetBitmap = new Bitmap(width, height, pixelFormat);
             }
+
+            return targetBitmap;
+        }
+
+        private void CaptureDesktopBackup()
+        {
+            if (bmpBackUp == null)
+            {
+                throw new InvalidOperationException("バックアップ用ビットマップが初期化されていません。");
+            }
+
+            using (Graphics backupGraphics = Graphics.FromImage(bmpBackUp))
+            {
+                backupGraphics.CopyFromScreen(
+                    rcLastDraw.Left,
+                    rcLastDraw.Top,
+                    0,
+                    0,
+                    new Size(rcLastDraw.Width + 4, rcLastDraw.Height + 4));
+            }
+        }
+
+        private void RestoreDesktopBackup(Graphics desktopGraphics)
+        {
+            if (bmpBackUp == null)
+            {
+                throw new InvalidOperationException("復元対象のバックアップがありません。");
+            }
+
+            desktopGraphics.DrawImageUnscaled(bmpBackUp, rcLastDraw.Left, rcLastDraw.Top);
         }
     }
 }

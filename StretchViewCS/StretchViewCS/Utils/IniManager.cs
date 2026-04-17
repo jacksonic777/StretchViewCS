@@ -33,6 +33,7 @@ namespace StretchViewCS.Utils
         public bool FixView { get; set; }
         public int FixViewX { get; set; }
         public int FixViewY { get; set; }
+        public bool HotkeysEnabled { get; set; }
 
         // イベント
         public event EventHandler? OnChange;
@@ -212,6 +213,7 @@ namespace StretchViewCS.Utils
             FixView = ReadBool("Lenz", "FixView", false);
             FixViewX = ReadInteger("Lenz", "FixViewX", 200);
             FixViewY = ReadInteger("Lenz", "FixViewY", 200);
+            HotkeysEnabled = ReadBool("Lenz", "HotkeysEnabled", false);
 
             // Setting
             FirstRun = ReadBool("Setting", "FirstRun", true);
@@ -241,6 +243,7 @@ namespace StretchViewCS.Utils
             WriteBool("Lenz", "FixView", FixView);
             WriteInteger("Lenz", "FixViewX", FixViewX);
             WriteInteger("Lenz", "FixViewY", FixViewY);
+            WriteBool("Lenz", "HotkeysEnabled", HotkeysEnabled);
 
             // Setting
             WriteBool("Setting", "FirstRun", false);
@@ -348,6 +351,16 @@ namespace StretchViewCS.Utils
             if (InfoIsHex != value)
             {
                 InfoIsHex = value;
+                Write();
+                CallChangeHandler();
+            }
+        }
+
+        public void SetHotkeysEnabled(bool value)
+        {
+            if (HotkeysEnabled != value)
+            {
+                HotkeysEnabled = value;
                 Write();
                 CallChangeHandler();
             }
