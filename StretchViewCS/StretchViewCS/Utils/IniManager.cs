@@ -33,6 +33,7 @@ namespace StretchViewCS.Utils
         public bool FixView { get; set; }
         public int FixViewX { get; set; }
         public int FixViewY { get; set; }
+        public Rectangle FixViewRect { get; set; }
         public bool HotkeysEnabled { get; set; }
 
         // イベント
@@ -213,6 +214,11 @@ namespace StretchViewCS.Utils
             FixView = ReadBool("Lenz", "FixView", false);
             FixViewX = ReadInteger("Lenz", "FixViewX", 200);
             FixViewY = ReadInteger("Lenz", "FixViewY", 200);
+            FixViewRect = new Rectangle(
+                ReadInteger("Lenz", "FixViewRectLeft", 0),
+                ReadInteger("Lenz", "FixViewRectTop", 0),
+                ReadInteger("Lenz", "FixViewRectWidth", 0),
+                ReadInteger("Lenz", "FixViewRectHeight", 0));
             HotkeysEnabled = ReadBool("Lenz", "HotkeysEnabled", false);
 
             // Setting
@@ -243,6 +249,10 @@ namespace StretchViewCS.Utils
             WriteBool("Lenz", "FixView", FixView);
             WriteInteger("Lenz", "FixViewX", FixViewX);
             WriteInteger("Lenz", "FixViewY", FixViewY);
+            WriteInteger("Lenz", "FixViewRectLeft", FixViewRect.Left);
+            WriteInteger("Lenz", "FixViewRectTop", FixViewRect.Top);
+            WriteInteger("Lenz", "FixViewRectWidth", FixViewRect.Width);
+            WriteInteger("Lenz", "FixViewRectHeight", FixViewRect.Height);
             WriteBool("Lenz", "HotkeysEnabled", HotkeysEnabled);
 
             // Setting

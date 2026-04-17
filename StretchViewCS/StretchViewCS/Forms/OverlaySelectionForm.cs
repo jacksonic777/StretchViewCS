@@ -7,7 +7,7 @@ namespace StretchViewCS.Forms
     /// <summary>
     /// デスクトップ全面に被せるオーバーレイウィンドウ。
     /// 半透明の暗い背景の上に、マウスドラッグで矩形選択を行う。
-    /// 選択完了後、選択矩形の中心座標をコールバックで返す。
+    /// 選択完了後、選択矩形の中心座標と矩形そのものをコールバックで返す。
     /// </summary>
     public class OverlaySelectionForm : Form
     {
@@ -16,9 +16,9 @@ namespace StretchViewCS.Forms
         private Rectangle selectionRect = Rectangle.Empty;
 
         /// <summary>
-        /// 選択が完了したときに呼び出される。引数は画面座標での矩形中心。
+        /// 選択が完了したときに呼び出される。引数は画面座標での矩形中心と選択矩形。
         /// </summary>
-        public event Action<Point>? SelectionCompleted;
+        public event Action<Point, Rectangle>? SelectionCompleted;
 
         public OverlaySelectionForm()
         {
@@ -96,7 +96,7 @@ namespace StretchViewCS.Forms
                     selectionRect.Left + selectionRect.Width / 2,
                     selectionRect.Top + selectionRect.Height / 2);
 
-                SelectionCompleted?.Invoke(center);
+                SelectionCompleted?.Invoke(center, selectionRect);
                 DialogResult = DialogResult.OK;
             }
             else

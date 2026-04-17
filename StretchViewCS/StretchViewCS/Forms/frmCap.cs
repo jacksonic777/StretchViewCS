@@ -95,6 +95,10 @@ namespace StretchViewCS.Forms
         private int repeatMode = 0;
         private bool FFormShowing = false;
         private bool hotkeysEnabled = false;
+        private bool isUpdatingFixViewUi = false;
+        private bool isUpdatingTopMostUi = false;
+        private Rectangle fixedViewOverlayRect = Rectangle.Empty;
+        private DesktopSelectionOverlayForm? desktopSelectionOverlay;
         private readonly object _bmpDisplayLock = new object();
         /// <summary>直前のキャプチャ領域の左上（画面座標）。選択枠を自フォーム座標に変換するために使用</summary>
         private int lastCaptureLeft, lastCaptureTop;
@@ -148,14 +152,20 @@ namespace StretchViewCS.Forms
             if (IniManager.Instance.FixView)
             {
                 // 前回終了時の「範囲の指定」位置を復元
-                FixView(true, IniManager.Instance.FixViewX, IniManager.Instance.FixViewY);
+                Rectangle selectionRect = IniManager.Instance.FixViewRect;
+                Rectangle? restoredRect = null;
+                if (selectionRect.Width > 0 && selectionRect.Height > 0)
+                {
+                    restoredRect = selectionRect;
+                }
+                ApplyFixViewState(true, IniManager.Instance.FixViewX, IniManager.Instance.FixViewY, restoredRect);
             }
 
             // ホットキー登録
             RegisterMyHotkeys();
 
             // 最前面表示
-            SwitchTopMost(true);
+            ApplyTopMostSetting(true);
             UpdateCaption();
 
             // タイマー開始
@@ -168,7 +178,7 @@ namespace StretchViewCS.Forms
             if (tbAtariMode != null) tbAtariMode.Checked = bAtariMode;
             if (tbAtariVisible != null) tbAtariVisible.Checked = bBltAtari;
             if (tbFixSimu != null) tbFixSimu.Checked = bFixed;
-            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
+            SyncFixViewUi();
         }
 
         private void frmCap_FormClosing(object? sender, FormClosingEventArgs e)
@@ -182,6 +192,12 @@ namespace StretchViewCS.Forms
             bmpDisplay?.Dispose();
             bmpCaptureWork?.Dispose();
             bmpScaleWork?.Dispose();
+            if (desktopSelectionOverlay != null)
+            {
+                desktopSelectionOverlay.Close();
+                desktopSelectionOverlay.Dispose();
+                desktopSelectionOverlay = null;
+            }
 
             // 設定をメモリに反映してから INI に保存
             IniManager.Instance.CapRate = capRate;
@@ -196,6 +212,11 @@ namespace StretchViewCS.Forms
                 int centerY = baseY + capSizeH / 2;
                 IniManager.Instance.FixViewX = centerX;
                 IniManager.Instance.FixViewY = centerY;
+                IniManager.Instance.FixViewRect = fixedViewOverlayRect;
+            }
+            else
+            {
+                IniManager.Instance.FixViewRect = Rectangle.Empty;
             }
             IniManager.Instance.Write();
         }
@@ -427,7 +448,7 @@ namespace StretchViewCS.Forms
                     UpdateDisplayBitmap(displayBmp);
 
                     // 再描画を要求
-                    this.Invalidate(new Rectangle(transX, transY, transW, transH));
+                    InvalidateMainView(new Rectangle(0, 0, transW, transH));
                 }
                 finally
                 {
@@ -726,7 +747,7 @@ namespace StretchViewCS.Forms
                         }
                     }
                     pCStart = new Point(x, y);
-                    this.Invalidate();
+                    InvalidateMainView();
                 }
             }
             else if (bMouseCap)
@@ -759,7 +780,7 @@ namespace StretchViewCS.Forms
                     // 自フォームの Paint で選択枠を描画する（デスクトップの描画乱れを防ぐ）
                     IntPtr hTmp = GetTargetWindow(Cursor.Position);
                     hLastTargetWindow = hTmp != IntPtr.Zero ? hTmp : IntPtr.Zero;
-                    this.Invalidate();
+                    InvalidateMainView();
                     return;
                 }
 
@@ -1195,6 +1216,8 @@ namespace StretchViewCS.Forms
 
         private void MoveRange(string direction)
         {
+            int oldBaseX = baseX;
+            int oldBaseY = baseY;
             if (direction == "left")
                 baseX -= 10;
             else if (direction == "right")
@@ -1222,9 +1245,15 @@ namespace StretchViewCS.Forms
             {
                 IniManager.Instance.FixViewX = baseX + capSizeW / 2;
                 IniManager.Instance.FixViewY = baseY + capSizeH / 2;
+                if (!fixedViewOverlayRect.IsEmpty)
+                {
+                    fixedViewOverlayRect.Offset(baseX - oldBaseX, baseY - oldBaseY);
+                }
+                IniManager.Instance.FixViewRect = fixedViewOverlayRect;
+                UpdateDesktopSelectionOverlay();
             }
 
-            this.Invalidate();
+            InvalidateMainView();
         }
 
         // ============================================================
@@ -1324,7 +1353,7 @@ namespace StretchViewCS.Forms
             int cw = this.ClientSize.Width;
             int ch = this.ClientSize.Height;
             int menuHeight = mMainMenu?.Height ?? 24;
-            int controlBarHeight = controlBar1 != null ? controlBar1.Height : 48;
+            int controlBarHeight = panelBarBase != null ? panelBarBase.Height : 48;
             int statusBarHeight = sbMain?.Height ?? 22;
             int infoBarHeight = sbMain != null ? sbMain.Height : 0;
 
@@ -1357,7 +1386,7 @@ namespace StretchViewCS.Forms
                     this.ClientSize = new Size(iSizeW, iSizeH);
                     transX = 0;
                     int menuHeight = mMainMenu.Height;
-                    int controlBarHeight = controlBar1 != null ? controlBar1.Height : 48;
+                    int controlBarHeight = panelBarBase != null ? panelBarBase.Height : 48;
                     transY = controlBarHeight + menuHeight; // ControlBar1.Height + Menu.Height
                     transW = iSizeW;
                     int statusBarHeight = sbMain.Height;
@@ -1432,14 +1461,47 @@ namespace StretchViewCS.Forms
             {
                 Win32API.SetWindowPos(this.Handle, (IntPtr)Win32API.HWND_TOPMOST,
                     0, 0, 0, 0, Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE);
-                if (mmTopMost != null) mmTopMost.Checked = true;
             }
             else
             {
                 Win32API.SetWindowPos(this.Handle, (IntPtr)Win32API.HWND_NOTOPMOST,
                     0, 0, 0, 0, Win32API.SWP_NOMOVE | Win32API.SWP_NOSIZE);
-                if (mmTopMost != null) mmTopMost.Checked = false;
             }
+        }
+
+        private bool IsTopMostRequested()
+        {
+            if (chkDisplayTopMost == null)
+            {
+                return false;
+            }
+
+            return chkDisplayTopMost.Checked;
+        }
+
+        private void SyncTopMostUi(bool onoff)
+        {
+            isUpdatingTopMostUi = true;
+            try
+            {
+                if (mmTopMost != null) mmTopMost.Checked = onoff;
+                if (chkDisplayTopMost != null) chkDisplayTopMost.Checked = onoff;
+            }
+            finally
+            {
+                isUpdatingTopMostUi = false;
+            }
+        }
+
+        public void ApplyTopMostSetting(bool onoff)
+        {
+            SyncTopMostUi(onoff);
+            SwitchTopMost(onoff);
+        }
+
+        private void RestoreTopMostFromUi()
+        {
+            SwitchTopMost(IsTopMostRequested());
         }
 
         public void SetHotkeysEnabled(bool enabled)
@@ -1492,16 +1554,104 @@ namespace StretchViewCS.Forms
             return bFixedView;
         }
 
-        private void ApplyFixViewState(bool enabled, int x, int y)
+        private void ApplyFixViewState(bool enabled, int x, int y, Rectangle? selectionRect)
         {
             FixView(enabled, x, y);
-            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
-            if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
-            if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
-            if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
-            if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
+            if (enabled)
+            {
+                fixedViewOverlayRect = selectionRect ?? Rectangle.Empty;
+            }
+            else
+            {
+                fixedViewOverlayRect = Rectangle.Empty;
+            }
+            IniManager.Instance.FixViewRect = fixedViewOverlayRect;
+            UpdateDesktopSelectionOverlay();
+            SyncFixViewUi();
             UpdateCaption();
-            this.Invalidate();
+            InvalidateMainView();
+        }
+
+        private DesktopSelectionOverlayForm EnsureDesktopSelectionOverlay()
+        {
+            if (desktopSelectionOverlay == null || desktopSelectionOverlay.IsDisposed)
+            {
+                desktopSelectionOverlay = new DesktopSelectionOverlayForm();
+            }
+
+            return desktopSelectionOverlay;
+        }
+
+        private void UpdateDesktopSelectionOverlay()
+        {
+            if (!bFixedView || fixedViewOverlayRect.IsEmpty)
+            {
+                if (desktopSelectionOverlay != null && !desktopSelectionOverlay.IsDisposed)
+                {
+                    desktopSelectionOverlay.HideSelection();
+                }
+
+                return;
+            }
+
+            DesktopSelectionOverlayForm overlay = EnsureDesktopSelectionOverlay();
+            overlay.ShowSelection(fixedViewOverlayRect);
+        }
+
+        private void SyncFixViewUi()
+        {
+            isUpdatingFixViewUi = true;
+            try
+            {
+                if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
+                if (chkFixSubjectRange != null) chkFixSubjectRange.Checked = bFixedView;
+                if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
+                if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
+                if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
+                if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
+            }
+            finally
+            {
+                isUpdatingFixViewUi = false;
+            }
+        }
+
+        private void ToggleFixView()
+        {
+            if (!bFixedView)
+            {
+                try
+                {
+                    using (var overlay = new OverlaySelectionForm())
+                    {
+                        Point selectedCenter = Point.Empty;
+                        Rectangle selectedRect = Rectangle.Empty;
+                        overlay.SelectionCompleted += (p, rect) =>
+                        {
+                            selectedCenter = p;
+                            selectedRect = rect;
+                        };
+                        overlay.ShowDialog(this);
+
+                        if (selectedCenter != Point.Empty)
+                        {
+                            ApplyFixViewState(true, selectedCenter.X, selectedCenter.Y, selectedRect);
+                        }
+                        else
+                        {
+                            SyncFixViewUi();
+                        }
+                    }
+                }
+                catch
+                {
+                    SyncFixViewUi();
+                }
+            }
+            else
+            {
+                ApplyFixViewState(false, 0, 0, null);
+            }
         }
 
         // ============================================================
@@ -1720,7 +1870,7 @@ namespace StretchViewCS.Forms
                 }
             }
 
-            SwitchTopMost(true);
+            RestoreTopMostFromUi();
             bShowDlgBox = false;
             tim_Tick(this, EventArgs.Empty);
         }
@@ -1830,7 +1980,6 @@ namespace StretchViewCS.Forms
         private void Help1Click(object? sender, EventArgs e)
         {
             SwitchTopMost(false);
-            if (mmTopMost != null) mmTopMost.Checked = false;
 
             Win32API.ShellExecute(IntPtr.Zero, null,
                 "http://f29.aaa.livedoor.jp/~morg/wiki/index.php?StretchView%2FHelp",
@@ -1867,7 +2016,7 @@ namespace StretchViewCS.Forms
             {
                 FFormShowing = false;
             }
-            SwitchTopMost(true);
+            RestoreTopMostFromUi();
             bShowDlgBox = false;
         }
 
@@ -1970,7 +2119,7 @@ namespace StretchViewCS.Forms
                 // エラー処理
             }
             bShowDlgBox = false;
-            SwitchTopMost(true);
+            RestoreTopMostFromUi();
         }
 
         private void MmAtariModeClick(object? sender, EventArgs e)
@@ -2005,11 +2154,12 @@ namespace StretchViewCS.Forms
 
         private void MmTopMostClick(object? sender, EventArgs e)
         {
+            bool nextState = true;
             if (mmTopMost != null)
             {
-                mmTopMost.Checked = !mmTopMost.Checked;
-                SwitchTopMost(mmTopMost.Checked);
+                nextState = !mmTopMost.Checked;
             }
+            ApplyTopMostSetting(nextState);
         }
 
         private void About1Click(object? sender, EventArgs e)
@@ -2026,7 +2176,18 @@ namespace StretchViewCS.Forms
             SwitchTopMost(false);
             frmSetting frm = new frmSetting();
             frm.ShowDialog();
+            RestoreTopMostFromUi();
             bShowDlgBox = false;
+        }
+
+        private void ChkDisplayTopMost_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (isUpdatingTopMostUi)
+            {
+                return;
+            }
+
+            ApplyTopMostSetting(IsTopMostRequested());
         }
 
         private void MmColorPickerClick(object? sender, EventArgs e)
@@ -2158,6 +2319,7 @@ namespace StretchViewCS.Forms
         private void FormActivate(object? sender, EventArgs e)
         {
             RegisterMyHotkeys();
+            RestoreTopMostFromUi();
         }
 
         private void MyOnMinimize(object? sender, EventArgs e)
@@ -2261,6 +2423,19 @@ namespace StretchViewCS.Forms
             MmFixClick(this, EventArgs.Empty);
         }
 
+        private void ChkFixSubjectRange_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (isUpdatingFixViewUi)
+            {
+                return;
+            }
+
+            if (chkFixSubjectRange.Checked != bFixedView)
+            {
+                ToggleFixView();
+            }
+        }
+
         private void TbAtariModeClick(object? sender, EventArgs e)
         {
             MmAtariModeClick(this, EventArgs.Empty);
@@ -2288,45 +2463,13 @@ namespace StretchViewCS.Forms
 
         private void MmFixViewSwClick(object? sender, EventArgs e)
         {
-            // オーバーレイウィンドウ方式で範囲指定を行う
-            if (!bFixedView)
-            {
-                try
-                {
-                    using (var overlay = new OverlaySelectionForm())
-                    {
-                        Point selectedCenter = Point.Empty;
-                        overlay.SelectionCompleted += p => selectedCenter = p;
-
-                        // メインウィンドウはそのまま（最前面指定は維持）
-                        overlay.ShowDialog(this);
-
-                        if (selectedCenter != Point.Empty)
-                        {
-                            ApplyFixViewState(true, selectedCenter.X, selectedCenter.Y);
-                        }
-                    }
-                }
-                catch
-                {
-                    // 失敗した場合は従来通りの状態に戻すだけ
-                }
-            }
-            else
-            {
-                // すでに固定中なら固定表示を解除
-                ApplyFixViewState(false, 0, 0);
-            }
+            ToggleFixView();
         }
 
         private void MmFixViewClick(object? sender, EventArgs e)
         {
             // 親メニューを開いたときに各項目の状態を更新するだけ
-            if (mmFixViewSw != null) mmFixViewSw.Checked = bFixedView;
-            if (mmLeft != null) mmLeft.Enabled = bFixed || bFixedView;
-            if (mmRight != null) mmRight.Enabled = bFixed || bFixedView;
-            if (mmUpper != null) mmUpper.Enabled = bFixed || bFixedView;
-            if (mmDowner != null) mmDowner.Enabled = bFixed || bFixedView;
+            SyncFixViewUi();
         }
 
         private void ChangeUIMode(int iMode)
@@ -2340,29 +2483,38 @@ namespace StretchViewCS.Forms
 
         private void frmCap_Paint(object? sender, PaintEventArgs e)
         {
-            // 背景をクリア
             e.Graphics.Clear(this.BackColor);
+        }
+
+        private void PbMainView_Paint(object? sender, PaintEventArgs e)
+        {
+            DrawMainView(e.Graphics);
+        }
+
+        private void DrawMainView(Graphics graphics)
+        {
+            graphics.Clear(pbMainView.BackColor);
 
             if (bmpDisplay != null)
             {
                 lock (_bmpDisplayLock)
                 {
-                    e.Graphics.DrawImage(bmpDisplay, transX, transY);
+                    graphics.DrawImageUnscaled(bmpDisplay, 0, 0);
                 }
             }
 
             // カーソル位置表示（固定表示モードでない場合）
             if (!bFixed && !bAtariMode && !bMouseCap)
             {
-                Point mousePos = this.PointToClient(Cursor.Position);
-                if (mousePos.X >= transX && mousePos.X < transX + transW &&
-                    mousePos.Y >= transY && mousePos.Y < transY + transH)
+                Point mousePos = pbMainView.PointToClient(Cursor.Position);
+                if (mousePos.X >= 0 && mousePos.X < transW &&
+                    mousePos.Y >= 0 && mousePos.Y < transH)
                 {
                     using (Pen pen = new Pen(Color.White, 1))
                     {
                         pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         int size = (int)(5 * capRate);
-                        e.Graphics.DrawRectangle(pen, mousePos.X - size / 2, mousePos.Y - size / 2, size, size);
+                        graphics.DrawRectangle(pen, mousePos.X - size / 2, mousePos.Y - size / 2, size, size);
                     }
                 }
             }
@@ -2371,15 +2523,38 @@ namespace StretchViewCS.Forms
             if (bMouseCap && !bForFixViewCap && hLastTargetWindow != IntPtr.Zero && Win32API.IsWindow(hLastTargetWindow))
             {
                 Win32API.GetWindowRect(hLastTargetWindow, out Win32API.RECT rSel);
-                int x1 = transX + (int)((rSel.Left - lastCaptureLeft) * capRate);
-                int y1 = transY + (int)((rSel.Top - lastCaptureTop) * capRate);
+                int x1 = (int)((rSel.Left - lastCaptureLeft) * capRate);
+                int y1 = (int)((rSel.Top - lastCaptureTop) * capRate);
                 int w = (int)((rSel.Right - rSel.Left) * capRate);
                 int h = (int)((rSel.Bottom - rSel.Top) * capRate);
                 using (Pen pen = new Pen(Color.Red, 2))
                 {
-                    e.Graphics.DrawRectangle(pen, x1, y1, w, h);
+                    graphics.DrawRectangle(pen, x1, y1, w, h);
                 }
             }
+
+        }
+
+        private void InvalidateMainView()
+        {
+            if (pbMainView != null && !pbMainView.IsDisposed)
+            {
+                pbMainView.Invalidate();
+                return;
+            }
+
+            InvalidateMainView();
+        }
+
+        private void InvalidateMainView(Rectangle invalidRect)
+        {
+            if (pbMainView != null && !pbMainView.IsDisposed)
+            {
+                pbMainView.Invalidate(invalidRect);
+                return;
+            }
+
+            this.Invalidate(invalidRect);
         }
 
         private void MmRangeClick(object? sender, EventArgs e)
@@ -2426,7 +2601,6 @@ namespace StretchViewCS.Forms
         private void Help2Click(object? sender, EventArgs e)
         {
             SwitchTopMost(false);
-            if (mmTopMost != null) mmTopMost.Checked = false;
 
             try
             {
