@@ -51,9 +51,10 @@ namespace StretchViewCS.Utils
 
             using (Graphics g = Graphics.FromImage(result))
             {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                // 拡大鏡用途では輪郭の正確さを優先し、高品質補間より高速な設定を使う
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.SmoothingMode = SmoothingMode.None;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
 
                 // 回転の中心を設定
                 g.TranslateTransform(newWidth / 2.0f, newHeight / 2.0f);

@@ -68,6 +68,9 @@ namespace StretchViewCS.Forms
         private Bitmap? bmpDisplay; // 表示用ビットマップ
         private Bitmap? bmpCaptureWork;
         private Bitmap? bmpScaleWork;
+        private Graphics? bmpDisplayGraphics;
+        private Graphics? bmpCaptureGraphics;
+        private Graphics? bmpScaleGraphics;
         private bool bDrawedRect = false;
         private bool bGraph = false;
         private int iCutPixel = 60;
@@ -97,6 +100,7 @@ namespace StretchViewCS.Forms
         private bool hotkeysEnabled = false;
         private bool isUpdatingFixViewUi = false;
         private bool isUpdatingTopMostUi = false;
+        private bool isUpdatingHotkeysUi = false;
         private Rectangle fixedViewOverlayRect = Rectangle.Empty;
         private DesktopSelectionOverlayForm? desktopSelectionOverlay;
         private readonly object _bmpDisplayLock = new object();
@@ -147,6 +151,7 @@ namespace StretchViewCS.Forms
             // 拡大率などその他の設定
             capRate = IniManager.Instance.CapRate;
             hotkeysEnabled = IniManager.Instance.HotkeysEnabled;
+            SyncHotkeysUi(hotkeysEnabled);
 
             // 固定表示モード
             if (IniManager.Instance.FixView)
@@ -192,6 +197,9 @@ namespace StretchViewCS.Forms
             bmpDisplay?.Dispose();
             bmpCaptureWork?.Dispose();
             bmpScaleWork?.Dispose();
+            bmpDisplayGraphics?.Dispose();
+            bmpCaptureGraphics?.Dispose();
+            bmpScaleGraphics?.Dispose();
             if (desktopSelectionOverlay != null)
             {
                 desktopSelectionOverlay.Close();
@@ -376,41 +384,54 @@ namespace StretchViewCS.Forms
                 {
                     // デバイスのビット深度を取得
                     PixelFormat pixelFormat = GetDesktopPixelFormat(desktopDC);
-                    Bitmap captureBmp = GetOrCreateWorkBitmap(ref bmpCaptureWork, capSizeW, capSizeH, pixelFormat);
-                    Bitmap scaledBmp = GetOrCreateWorkBitmap(ref bmpScaleWork, transW, transH, PixelFormat.Format32bppArgb);
+                    Bitmap captureBmp;
+                    Graphics captureGraphics;
+                    GetOrCreateWorkSurface(
+                        ref bmpCaptureWork,
+                        ref bmpCaptureGraphics,
+                        capSizeW,
+                        capSizeH,
+                        pixelFormat,
+                        out captureBmp,
+                        out captureGraphics);
+
+                    Bitmap scaledBmp;
+                    Graphics scaledGraphics;
+                    GetOrCreateWorkSurface(
+                        ref bmpScaleWork,
+                        ref bmpScaleGraphics,
+                        transW,
+                        transH,
+                        PixelFormat.Format32bppArgb,
+                        out scaledBmp,
+                        out scaledGraphics);
+
                     Bitmap sourceBmp = captureBmp;
 
                     // デスクトップからキャプチャ
-                    using (Graphics g = Graphics.FromImage(captureBmp))
+                    IntPtr hdc = captureGraphics.GetHdc();
+                    try
                     {
-                        IntPtr hdc = g.GetHdc();
-                        try
-                        {
-                            uint rop = bSrcNot ? Win32API.NOTSRCCOPY : Win32API.SRCCOPY;
-                            Win32API.BitBlt(hdc, 0, 0, capSizeW, capSizeH,
-                                desktopDC, rLeft, rTop, rop);
-                        }
-                        finally
-                        {
-                            g.ReleaseHdc(hdc);
-                        }
+                        uint rop = bSrcNot ? Win32API.NOTSRCCOPY : Win32API.SRCCOPY;
+                        Win32API.BitBlt(hdc, 0, 0, capSizeW, capSizeH,
+                            desktopDC, rLeft, rTop, rop);
+                    }
+                    finally
+                    {
+                        captureGraphics.ReleaseHdc(hdc);
                     }
 
                     // 当たり判定レイヤーの合成
                     if (bBltAtari && bmpAtari != null)
                     {
-                        using (Graphics g = Graphics.FromImage(captureBmp))
-                        {
-                            g.DrawImage(bmpAtari, 0, 0, capSizeW, capSizeH);
-                        }
+                        captureGraphics.DrawImage(bmpAtari, 0, 0, capSizeW, capSizeH);
                     }
 
                     // 拡大
-                    using (Graphics g = Graphics.FromImage(scaledBmp))
-                    {
-                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                        g.DrawImage(captureBmp, 0, 0, transW, transH);
-                    }
+                    scaledGraphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    scaledGraphics.Clear(Color.Transparent);
+                    scaledGraphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    scaledGraphics.DrawImage(captureBmp, 0, 0, transW, transH);
                     sourceBmp = scaledBmp;
 
                     // 回転・反転処理
@@ -1508,6 +1529,7 @@ namespace StretchViewCS.Forms
         {
             hotkeysEnabled = enabled;
             IniManager.Instance.HotkeysEnabled = enabled;
+            SyncHotkeysUi(enabled);
 
             if (hotkeysEnabled)
             {
@@ -1517,6 +1539,34 @@ namespace StretchViewCS.Forms
             {
                 UnregisterMyHotkeys();
             }
+        }
+
+        private void SyncHotkeysUi(bool enabled)
+        {
+            isUpdatingHotkeysUi = true;
+            try
+            {
+                if (chkHotkeysEnabled != null) chkHotkeysEnabled.Checked = enabled;
+            }
+            finally
+            {
+                isUpdatingHotkeysUi = false;
+            }
+        }
+
+        private void ChkHotkeysEnabled_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (isUpdatingHotkeysUi)
+            {
+                return;
+            }
+
+            if (chkHotkeysEnabled == null)
+            {
+                return;
+            }
+
+            SetHotkeysEnabled(chkHotkeysEnabled.Checked);
         }
 
         // ============================================================
@@ -1708,7 +1758,18 @@ namespace StretchViewCS.Forms
                 if (sbMain.Items.Count > 3)
                     sbMain.Items[3].Text = state2;
 
-                this.Text = $"拡大鏡 StretchViewCS [倍率:{capRate:F1}倍 角度:{gAngle}度 状態:{state2}]{state}";
+                string stateText = $"倍率:{capRate:F1}倍 角度:{gAngle}度 状態:{state2}";
+                if (!string.IsNullOrEmpty(state))
+                {
+                    stateText += " " + state;
+                }
+
+                if (txtState != null)
+                {
+                    txtState.Text = stateText;
+                }
+
+                this.Text = AppTitle;
             }
             catch
             {
@@ -2543,7 +2604,7 @@ namespace StretchViewCS.Forms
                 return;
             }
 
-            InvalidateMainView();
+            this.Invalidate();
         }
 
         private void InvalidateMainView(Rectangle invalidRect)
@@ -2630,20 +2691,20 @@ namespace StretchViewCS.Forms
         {
             lock (_bmpDisplayLock)
             {
-                if (bmpDisplay == null ||
-                    bmpDisplay.Width != sourceBitmap.Width ||
-                    bmpDisplay.Height != sourceBitmap.Height ||
-                    bmpDisplay.PixelFormat != sourceBitmap.PixelFormat)
-                {
-                    bmpDisplay?.Dispose();
-                    bmpDisplay = new Bitmap(sourceBitmap);
-                    return;
-                }
+                Bitmap displayBitmap;
+                Graphics displayGraphics;
 
-                using (Graphics g = Graphics.FromImage(bmpDisplay))
-                {
-                    g.DrawImageUnscaled(sourceBitmap, 0, 0);
-                }
+                GetOrCreateWorkSurface(
+                    ref bmpDisplay,
+                    ref bmpDisplayGraphics,
+                    sourceBitmap.Width,
+                    sourceBitmap.Height,
+                    sourceBitmap.PixelFormat,
+                    out displayBitmap,
+                    out displayGraphics);
+
+                displayGraphics.Clear(Color.Transparent);
+                displayGraphics.DrawImageUnscaled(sourceBitmap, 0, 0);
             }
         }
 
@@ -2658,18 +2719,33 @@ namespace StretchViewCS.Forms
             return PixelFormat.Format24bppRgb;
         }
 
-        private Bitmap GetOrCreateWorkBitmap(ref Bitmap? targetBitmap, int width, int height, PixelFormat pixelFormat)
+        private void GetOrCreateWorkSurface(
+            ref Bitmap? targetBitmap,
+            ref Graphics? targetGraphics,
+            int width,
+            int height,
+            PixelFormat pixelFormat,
+            out Bitmap bitmap,
+            out Graphics graphics)
         {
             if (targetBitmap == null ||
                 targetBitmap.Width != width ||
                 targetBitmap.Height != height ||
                 targetBitmap.PixelFormat != pixelFormat)
             {
+                targetGraphics?.Dispose();
                 targetBitmap?.Dispose();
                 targetBitmap = new Bitmap(width, height, pixelFormat);
+                targetGraphics = Graphics.FromImage(targetBitmap);
             }
 
-            return targetBitmap;
+            if (targetGraphics == null)
+            {
+                targetGraphics = Graphics.FromImage(targetBitmap);
+            }
+
+            bitmap = targetBitmap;
+            graphics = targetGraphics;
         }
 
         private void CaptureDesktopBackup()

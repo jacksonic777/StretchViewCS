@@ -109,25 +109,18 @@ namespace StretchViewCS.Forms
             this.About1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelBarBase = new System.Windows.Forms.Panel();
             this.toolbarMain = new System.Windows.Forms.ToolStrip();
-            this.tbZoomUp = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbZoomOut = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbFlipH = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbFlipV = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbLRotate = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbReset = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbRRotate = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.tbRuler = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.panelHeader = new System.Windows.Forms.Panel();
+            this.chkHotkeysEnabled = new System.Windows.Forms.CheckBox();
             this.chkFixSubjectRange = new System.Windows.Forms.CheckBox();
             this.chkDisplayTopMost = new System.Windows.Forms.CheckBox();
             this.toolbarAdvanced = new System.Windows.Forms.ToolStrip();
@@ -141,7 +134,16 @@ namespace StretchViewCS.Forms
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.txtState = new System.Windows.Forms.TextBox();
+            this.tbRRotate = new System.Windows.Forms.ToolStripButton();
             this.pbMainView = new System.Windows.Forms.PictureBox();
+            this.tbZoomUp = new System.Windows.Forms.ToolStripButton();
+            this.tbZoomOut = new System.Windows.Forms.ToolStripButton();
+            this.tbFlipH = new System.Windows.Forms.ToolStripButton();
+            this.tbFlipV = new System.Windows.Forms.ToolStripButton();
+            this.tbLRotate = new System.Windows.Forms.ToolStripButton();
+            this.tbResetRotation = new System.Windows.Forms.ToolStripButton();
+            this.tbColorPicker = new System.Windows.Forms.ToolStripButton();
             this.mMainMenu.SuspendLayout();
             this.panelBarBase.SuspendLayout();
             this.toolbarMain.SuspendLayout();
@@ -772,10 +774,10 @@ namespace StretchViewCS.Forms
             this.tbFlipV,
             this.toolStripSeparator10,
             this.tbLRotate,
-            this.toolStripSeparator11,
-            this.tbReset,
             this.toolStripSeparator12,
             this.tbRRotate,
+            this.toolStripSeparator11,
+            this.tbResetRotation,
             this.toolStripSeparator13,
             this.tbColorPicker,
             this.toolStripSeparator15,
@@ -788,161 +790,40 @@ namespace StretchViewCS.Forms
             this.toolbarMain.TabIndex = 0;
             this.toolbarMain.Text = "toolbarMain";
             // 
-            // tbZoomUp
-            // 
-            this.tbZoomUp.AutoSize = false;
-            this.tbZoomUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.tbZoomUp.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbZoomUp.ForeColor = System.Drawing.Color.Blue;
-            this.tbZoomUp.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomUp.Image")));
-            this.tbZoomUp.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbZoomUp.Name = "tbZoomUp";
-            this.tbZoomUp.Size = new System.Drawing.Size(60, 45);
-            this.tbZoomUp.Text = "拡大";
-            this.tbZoomUp.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbZoomUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbZoomUp.ToolTipText = "拡大します。押しっぱなしでもっと拡大し続けます。";
-            this.tbZoomUp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbZoomUpMouseDown);
-            this.tbZoomUp.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbZoomUpMouseUp);
-            // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 56);
-            // 
-            // tbZoomOut
-            // 
-            this.tbZoomOut.AutoSize = false;
-            this.tbZoomOut.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbZoomOut.ForeColor = System.Drawing.Color.Blue;
-            this.tbZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomOut.Image")));
-            this.tbZoomOut.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbZoomOut.Name = "tbZoomOut";
-            this.tbZoomOut.Size = new System.Drawing.Size(60, 45);
-            this.tbZoomOut.Text = "戻す";
-            this.tbZoomOut.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbZoomOut.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbZoomOut.ToolTipText = "縮小します。押しっぱなしで縮小し続けます。(1倍まで)";
-            this.tbZoomOut.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbZoomOutMouseDown);
-            this.tbZoomOut.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbZoomOutMouseUp);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(6, 56);
             // 
-            // tbFlipH
-            // 
-            this.tbFlipH.AutoSize = false;
-            this.tbFlipH.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbFlipH.ForeColor = System.Drawing.Color.Blue;
-            this.tbFlipH.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipH.Image")));
-            this.tbFlipH.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbFlipH.Name = "tbFlipH";
-            this.tbFlipH.Size = new System.Drawing.Size(60, 45);
-            this.tbFlipH.Text = "左右反転";
-            this.tbFlipH.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbFlipH.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbFlipH.Click += new System.EventHandler(this.TbFlipHClick);
-            // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
             this.toolStripSeparator9.Size = new System.Drawing.Size(6, 56);
-            // 
-            // tbFlipV
-            // 
-            this.tbFlipV.AutoSize = false;
-            this.tbFlipV.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbFlipV.ForeColor = System.Drawing.Color.Blue;
-            this.tbFlipV.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipV.Image")));
-            this.tbFlipV.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbFlipV.Name = "tbFlipV";
-            this.tbFlipV.Size = new System.Drawing.Size(60, 45);
-            this.tbFlipV.Text = "上下反転";
-            this.tbFlipV.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbFlipV.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbFlipV.Click += new System.EventHandler(this.TbFlipVClick);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
             this.toolStripSeparator10.Size = new System.Drawing.Size(6, 56);
             // 
-            // tbLRotate
-            // 
-            this.tbLRotate.AutoSize = false;
-            this.tbLRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbLRotate.ForeColor = System.Drawing.Color.Blue;
-            this.tbLRotate.Image = ((System.Drawing.Image)(resources.GetObject("tbLRotate.Image")));
-            this.tbLRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbLRotate.Name = "tbLRotate";
-            this.tbLRotate.Size = new System.Drawing.Size(60, 45);
-            this.tbLRotate.Text = "右に回転";
-            this.tbLRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbLRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbLRotate.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
-            this.tbLRotate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbLRotateMouseDown);
-            this.tbLRotate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbLRotateMouseUp);
-            // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
             this.toolStripSeparator11.Size = new System.Drawing.Size(6, 56);
-            // 
-            // tbReset
-            // 
-            this.tbReset.AutoSize = false;
-            this.tbReset.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbReset.ForeColor = System.Drawing.Color.Blue;
-            this.tbReset.Image = ((System.Drawing.Image)(resources.GetObject("tbReset.Image")));
-            this.tbReset.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbReset.Name = "tbReset";
-            this.tbReset.Size = new System.Drawing.Size(60, 45);
-            this.tbReset.Text = "回転戻す";
-            this.tbReset.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbReset.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbReset.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
-            this.tbReset.Click += new System.EventHandler(this.TbResetClick);
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
             this.toolStripSeparator12.Size = new System.Drawing.Size(6, 56);
             // 
-            // tbRRotate
-            // 
-            this.tbRRotate.AutoSize = false;
-            this.tbRRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbRRotate.ForeColor = System.Drawing.Color.Blue;
-            this.tbRRotate.Image = ((System.Drawing.Image)(resources.GetObject("tbRRotate.Image")));
-            this.tbRRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.tbRRotate.Name = "tbRRotate";
-            this.tbRRotate.Size = new System.Drawing.Size(60, 45);
-            this.tbRRotate.Text = "左回転";
-            this.tbRRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbRRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbRRotate.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
-            this.tbRRotate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbRRotateMouseDown);
-            this.tbRRotate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbRRotateMouseUp);
-            // 
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
             this.toolStripSeparator13.Size = new System.Drawing.Size(6, 56);
-            // 
-            // tbColorPicker
-            // 
-            this.tbColorPicker.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbColorPicker.ForeColor = System.Drawing.Color.Blue;
-            this.tbColorPicker.Image = ((System.Drawing.Image)(resources.GetObject("tbColorPicker.Image")));
-            this.tbColorPicker.Name = "tbColorPicker";
-            this.tbColorPicker.Size = new System.Drawing.Size(93, 53);
-            this.tbColorPicker.Text = "カラーピッカー";
-            this.tbColorPicker.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.tbColorPicker.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.tbColorPicker.ToolTipText = "デスクトップから色を取得します。クリックで色をコピー。";
-            this.tbColorPicker.Click += new System.EventHandler(this.TbColorPickerClick);
             // 
             // toolStripSeparator15
             // 
@@ -971,6 +852,8 @@ namespace StretchViewCS.Forms
             // 
             this.panelHeader.BackColor = System.Drawing.SystemColors.MenuBar;
             this.panelHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelHeader.Controls.Add(this.txtState);
+            this.panelHeader.Controls.Add(this.chkHotkeysEnabled);
             this.panelHeader.Controls.Add(this.chkFixSubjectRange);
             this.panelHeader.Controls.Add(this.chkDisplayTopMost);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -979,25 +862,36 @@ namespace StretchViewCS.Forms
             this.panelHeader.Size = new System.Drawing.Size(722, 26);
             this.panelHeader.TabIndex = 2;
             // 
+            // chkHotkeysEnabled
+            // 
+            this.chkHotkeysEnabled.AutoSize = true;
+            this.chkHotkeysEnabled.Location = new System.Drawing.Point(432, 4);
+            this.chkHotkeysEnabled.Name = "chkHotkeysEnabled";
+            this.chkHotkeysEnabled.Size = new System.Drawing.Size(108, 16);
+            this.chkHotkeysEnabled.TabIndex = 2;
+            this.chkHotkeysEnabled.Text = "ホットキー有効";
+            this.chkHotkeysEnabled.UseVisualStyleBackColor = true;
+            this.chkHotkeysEnabled.CheckedChanged += new System.EventHandler(this.ChkHotkeysEnabled_CheckedChanged);
+            // 
             // chkFixSubjectRange
             // 
             this.chkFixSubjectRange.AutoSize = true;
-            this.chkFixSubjectRange.Location = new System.Drawing.Point(131, 3);
+            this.chkFixSubjectRange.Location = new System.Drawing.Point(318, 4);
             this.chkFixSubjectRange.Name = "chkFixSubjectRange";
             this.chkFixSubjectRange.Size = new System.Drawing.Size(108, 16);
             this.chkFixSubjectRange.TabIndex = 1;
-            this.chkFixSubjectRange.Text = "対象範囲を固定";
+            this.chkFixSubjectRange.Text = "対象範囲の指定";
             this.chkFixSubjectRange.UseVisualStyleBackColor = true;
             this.chkFixSubjectRange.CheckedChanged += new System.EventHandler(this.ChkFixSubjectRange_CheckedChanged);
             // 
             // chkDisplayTopMost
             // 
             this.chkDisplayTopMost.AutoSize = true;
-            this.chkDisplayTopMost.Location = new System.Drawing.Point(18, 5);
+            this.chkDisplayTopMost.Location = new System.Drawing.Point(228, 4);
             this.chkDisplayTopMost.Name = "chkDisplayTopMost";
-            this.chkDisplayTopMost.Size = new System.Drawing.Size(96, 16);
+            this.chkDisplayTopMost.Size = new System.Drawing.Size(84, 16);
             this.chkDisplayTopMost.TabIndex = 0;
-            this.chkDisplayTopMost.Text = "最前面に表示";
+            this.chkDisplayTopMost.Text = "最前面表示";
             this.chkDisplayTopMost.UseVisualStyleBackColor = true;
             this.chkDisplayTopMost.CheckedChanged += new System.EventHandler(this.ChkDisplayTopMost_CheckedChanged);
             // 
@@ -1122,6 +1016,30 @@ namespace StretchViewCS.Forms
             this.toolStripStatusLabel4.Spring = true;
             this.toolStripStatusLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // txtState
+            // 
+            this.txtState.BackColor = System.Drawing.SystemColors.Menu;
+            this.txtState.Location = new System.Drawing.Point(4, 3);
+            this.txtState.Name = "txtState";
+            this.txtState.Size = new System.Drawing.Size(218, 19);
+            this.txtState.TabIndex = 3;
+            // 
+            // tbRRotate
+            // 
+            this.tbRRotate.AutoSize = false;
+            this.tbRRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbRRotate.ForeColor = System.Drawing.Color.Blue;
+            this.tbRRotate.Image = global::StretchViewCS.Properties.Resources.右回転;
+            this.tbRRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbRRotate.Name = "tbRRotate";
+            this.tbRRotate.Size = new System.Drawing.Size(60, 45);
+            this.tbRRotate.Text = "右回転";
+            this.tbRRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbRRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbRRotate.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
+            this.tbRRotate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbRRotateMouseDown);
+            this.tbRRotate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbRRotateMouseUp);
+            // 
             // pbMainView
             // 
             this.pbMainView.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -1133,6 +1051,111 @@ namespace StretchViewCS.Forms
             this.pbMainView.TabIndex = 4;
             this.pbMainView.TabStop = false;
             this.pbMainView.Paint += new System.Windows.Forms.PaintEventHandler(this.PbMainView_Paint);
+            // 
+            // tbZoomUp
+            // 
+            this.tbZoomUp.AutoSize = false;
+            this.tbZoomUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.tbZoomUp.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbZoomUp.ForeColor = System.Drawing.Color.Blue;
+            this.tbZoomUp.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomUp.Image")));
+            this.tbZoomUp.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbZoomUp.Name = "tbZoomUp";
+            this.tbZoomUp.Size = new System.Drawing.Size(60, 45);
+            this.tbZoomUp.Text = "拡大";
+            this.tbZoomUp.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbZoomUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbZoomUp.ToolTipText = "拡大します。押しっぱなしでもっと拡大し続けます。";
+            this.tbZoomUp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbZoomUpMouseDown);
+            this.tbZoomUp.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbZoomUpMouseUp);
+            // 
+            // tbZoomOut
+            // 
+            this.tbZoomOut.AutoSize = false;
+            this.tbZoomOut.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbZoomOut.ForeColor = System.Drawing.Color.Blue;
+            this.tbZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomOut.Image")));
+            this.tbZoomOut.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbZoomOut.Name = "tbZoomOut";
+            this.tbZoomOut.Size = new System.Drawing.Size(60, 45);
+            this.tbZoomOut.Text = "戻す";
+            this.tbZoomOut.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbZoomOut.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbZoomOut.ToolTipText = "縮小します。押しっぱなしで縮小し続けます。(1倍まで)";
+            this.tbZoomOut.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbZoomOutMouseDown);
+            this.tbZoomOut.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbZoomOutMouseUp);
+            // 
+            // tbFlipH
+            // 
+            this.tbFlipH.AutoSize = false;
+            this.tbFlipH.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbFlipH.ForeColor = System.Drawing.Color.Blue;
+            this.tbFlipH.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipH.Image")));
+            this.tbFlipH.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbFlipH.Name = "tbFlipH";
+            this.tbFlipH.Size = new System.Drawing.Size(60, 45);
+            this.tbFlipH.Text = "左右反転";
+            this.tbFlipH.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbFlipH.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbFlipH.Click += new System.EventHandler(this.TbFlipHClick);
+            // 
+            // tbFlipV
+            // 
+            this.tbFlipV.AutoSize = false;
+            this.tbFlipV.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbFlipV.ForeColor = System.Drawing.Color.Blue;
+            this.tbFlipV.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipV.Image")));
+            this.tbFlipV.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbFlipV.Name = "tbFlipV";
+            this.tbFlipV.Size = new System.Drawing.Size(60, 45);
+            this.tbFlipV.Text = "上下反転";
+            this.tbFlipV.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbFlipV.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbFlipV.Click += new System.EventHandler(this.TbFlipVClick);
+            // 
+            // tbLRotate
+            // 
+            this.tbLRotate.AutoSize = false;
+            this.tbLRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbLRotate.ForeColor = System.Drawing.Color.Blue;
+            this.tbLRotate.Image = global::StretchViewCS.Properties.Resources.左回転;
+            this.tbLRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbLRotate.Name = "tbLRotate";
+            this.tbLRotate.Size = new System.Drawing.Size(60, 45);
+            this.tbLRotate.Text = "左回転";
+            this.tbLRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbLRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbLRotate.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
+            this.tbLRotate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbLRotateMouseDown);
+            this.tbLRotate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TbLRotateMouseUp);
+            // 
+            // tbResetRotation
+            // 
+            this.tbResetRotation.AutoSize = false;
+            this.tbResetRotation.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbResetRotation.ForeColor = System.Drawing.Color.Blue;
+            this.tbResetRotation.Image = ((System.Drawing.Image)(resources.GetObject("tbResetRotation.Image")));
+            this.tbResetRotation.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.tbResetRotation.Name = "tbResetRotation";
+            this.tbResetRotation.Size = new System.Drawing.Size(60, 45);
+            this.tbResetRotation.Text = "回転戻す";
+            this.tbResetRotation.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbResetRotation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbResetRotation.ToolTipText = "回転します。押しっぱなしで回転し続けます。";
+            this.tbResetRotation.Click += new System.EventHandler(this.TbResetClick);
+            // 
+            // tbColorPicker
+            // 
+            this.tbColorPicker.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbColorPicker.ForeColor = System.Drawing.Color.Blue;
+            this.tbColorPicker.Image = ((System.Drawing.Image)(resources.GetObject("tbColorPicker.Image")));
+            this.tbColorPicker.Name = "tbColorPicker";
+            this.tbColorPicker.Size = new System.Drawing.Size(93, 53);
+            this.tbColorPicker.Text = "カラーピッカー";
+            this.tbColorPicker.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.tbColorPicker.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.tbColorPicker.ToolTipText = "デスクトップから色を取得します。クリックで色をコピー。";
+            this.tbColorPicker.Click += new System.EventHandler(this.TbColorPickerClick);
             // 
             // frmCap
             // 
@@ -1226,7 +1249,7 @@ namespace StretchViewCS.Forms
         internal System.Windows.Forms.ToolStripButton tbFlipH;
         internal System.Windows.Forms.ToolStripButton tbFlipV;
         internal System.Windows.Forms.ToolStripButton tbLRotate;
-        internal System.Windows.Forms.ToolStripButton tbReset;
+        internal System.Windows.Forms.ToolStripButton tbResetRotation;
         internal System.Windows.Forms.ToolStripButton tbRRotate;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         internal System.Windows.Forms.ToolStripButton tbColorPicker;
@@ -1293,5 +1316,7 @@ namespace StretchViewCS.Forms
         private System.Windows.Forms.CheckBox chkFixSubjectRange;
         private System.Windows.Forms.CheckBox chkDisplayTopMost;
         private System.Windows.Forms.PictureBox pbMainView;
+        private System.Windows.Forms.CheckBox chkHotkeysEnabled;
+        private System.Windows.Forms.TextBox txtState;
     }
 }

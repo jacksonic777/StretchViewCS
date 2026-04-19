@@ -160,27 +160,11 @@
         bI0wMGoABQYga0THRAN0jSRphgGKNMMARZqJAwAzY063tS18BAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="tbLRotate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABLSURBVDhPzY5BCgAgCAR9fP+um6i4mxiEA16aSRQZxtp+
-        WjwtuF2A3hUbZCFdQKUBdlAEYAdFAHZQBGhHZcFrkEXMOWyYTZn2x88cisBUqTp74gwAAAAASUVORK5C
-        YII=
-</value>
-  </data>
-  <data name="tbReset.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="tbResetRotation.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAbSURBVDhPY2AYBcMLTPlPGsYA6AoI4VEwjAAAm/glycyr
         czAAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="tbRRotate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABKSURBVDhP1Y5BCgAgCMB8fP8uCAoVJ9YhaODFTVDkE1q3
-        c0z5mKLyBxSsHflJKhXYoXBgh8KBHQpH2qWy4HcQRZkz6DCaMteHjxlcWVSp/HKBVQAAAABJRU5ErkJg
-        gg==
 </value>
   </data>
   <data name="tbColorPicker.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
