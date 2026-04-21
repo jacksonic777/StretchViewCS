@@ -25,54 +25,67 @@ namespace StretchViewCS.Utils
             if (bitmap == null || bitmap.Width == 0 || bitmap.Height == 0)
                 throw new ArgumentException("Bitmap Size Error");
 
-            // 角度を度に変換（10倍の値から）
-            float angle = angleDeg / 10.0f;
-
-            // 回転後のサイズを計算
-            int newWidth, newHeight;
-            if (flgCircum)
-            {
-                // 外接矩形でサイズを決定
-                double rad = angle * Math.PI / 180.0;
-                double cos = Math.Abs(Math.Cos(rad));
-                double sin = Math.Abs(Math.Sin(rad));
-                newWidth = (int)(bitmap.Width * cos + bitmap.Height * sin);
-                newHeight = (int)(bitmap.Width * sin + bitmap.Height * cos);
-            }
-            else
-            {
-                // 元のサイズを維持
-                newWidth = bitmap.Width;
-                newHeight = bitmap.Height;
-            }
+            GetResultSize(bitmap, angleDeg, flgCircum, out int newWidth, out int newHeight);
 
             Bitmap result = new Bitmap(newWidth, newHeight, bitmap.PixelFormat);
             result.SetResolution(bitmap.HorizontalResolution, bitmap.VerticalResolution);
 
             using (Graphics g = Graphics.FromImage(result))
             {
-                // 拡大鏡用途では輪郭の正確さを優先し、高品質補間より高速な設定を使う
-                g.InterpolationMode = InterpolationMode.NearestNeighbor;
-                g.SmoothingMode = SmoothingMode.None;
-                g.PixelOffsetMode = PixelOffsetMode.Half;
-
-                // 回転の中心を設定
-                g.TranslateTransform(newWidth / 2.0f, newHeight / 2.0f);
-
-                // ミラー反転
-                if (flgMirror)
-                {
-                    g.ScaleTransform(-1, 1);
-                }
-
-                // 回転
-                g.RotateTransform(angle);
-
-                // 元の画像を描画（中心を基準に）
-                g.DrawImage(bitmap, -bitmap.Width / 2.0f, -bitmap.Height / 2.0f);
+                RotateBitmapX(bitmap, result, g, angleDeg, flgMirror, flgCircum);
             }
 
             return result;
+        }
+
+        public static void RotateBitmapX(Bitmap sourceBitmap, Bitmap destinationBitmap, Graphics destinationGraphics, int angleDeg, bool flgMirror, bool flgCircum)
+        {
+            if (sourceBitmap == null || sourceBitmap.Width == 0 || sourceBitmap.Height == 0)
+                throw new ArgumentException("Bitmap Size Error");
+
+            if (destinationBitmap == null)
+                throw new ArgumentNullException(nameof(destinationBitmap));
+
+            if (destinationGraphics == null)
+                throw new ArgumentNullException(nameof(destinationGraphics));
+
+            GetResultSize(sourceBitmap, angleDeg, flgCircum, out int newWidth, out int newHeight);
+
+            if (destinationBitmap.Width != newWidth || destinationBitmap.Height != newHeight)
+                throw new ArgumentException("Destination bitmap size error");
+
+            destinationGraphics.ResetTransform();
+            destinationGraphics.Clear(Color.Transparent);
+            destinationGraphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            destinationGraphics.SmoothingMode = SmoothingMode.None;
+            destinationGraphics.PixelOffsetMode = PixelOffsetMode.Half;
+            destinationGraphics.TranslateTransform(newWidth / 2.0f, newHeight / 2.0f);
+
+            if (flgMirror)
+            {
+                destinationGraphics.ScaleTransform(-1, 1);
+            }
+
+            destinationGraphics.RotateTransform(angleDeg / 10.0f);
+            destinationGraphics.DrawImage(sourceBitmap, -sourceBitmap.Width / 2.0f, -sourceBitmap.Height / 2.0f);
+            destinationGraphics.ResetTransform();
+        }
+
+        private static void GetResultSize(Bitmap bitmap, int angleDeg, bool flgCircum, out int newWidth, out int newHeight)
+        {
+            float angle = angleDeg / 10.0f;
+            if (flgCircum)
+            {
+                double rad = angle * Math.PI / 180.0;
+                double cos = Math.Abs(Math.Cos(rad));
+                double sin = Math.Abs(Math.Sin(rad));
+                newWidth = (int)(bitmap.Width * cos + bitmap.Height * sin);
+                newHeight = (int)(bitmap.Width * sin + bitmap.Height * cos);
+                return;
+            }
+
+            newWidth = bitmap.Width;
+            newHeight = bitmap.Height;
         }
 
         /// <summary>

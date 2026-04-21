@@ -129,6 +129,9 @@
   <metadata name="toolbarMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>317, 17</value>
   </metadata>
+  <metadata name="toolbarAdvanced.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>436, 17</value>
+  </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="tbZoomUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -144,6 +147,13 @@
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABpSURBVDhP3ZHBCQAhDATT0vVrTbbksYFIbjVR7uHDhX0o
         mVFUZEyjbkcBzq6oA6V+S6IwHQbja6JMEMK+T4klKsDQ5AG15wRZMwESvgH2HZwLMMjfiL3V6RYdMoDA
         5Q18GDCI179yoURetwkvb/Tbq8EAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="tbResetStretch.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAbSURBVDhPY2AYBcMLTPlPGsYA6AoI4VEwjAAAm/glycyr
+        czAAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="tbFlipH.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -200,9 +210,6 @@
         ////////////////////////////////////////////////////////////////////////
 </value>
   </data>
-  <metadata name="toolbarAdvanced.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>436, 17</value>
-  </metadata>
   <metadata name="sbMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>581, 17</value>
   </metadata>

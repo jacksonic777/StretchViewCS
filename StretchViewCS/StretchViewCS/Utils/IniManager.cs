@@ -209,7 +209,7 @@ namespace StretchViewCS.Utils
 
             CrossVisible = ReadBool("Lenz", "CrossVisible", true);
             InfoIsHex = ReadBool("Lenz", "InfoIsHex", true);
-            SamplingRate = ReadInteger("Lenz", "SamplingRate", 100);
+            SamplingRate = ReadInteger("Lenz", "SamplingRate", 400);
 
             FixView = ReadBool("Lenz", "FixView", false);
             FixViewX = ReadInteger("Lenz", "FixViewX", 200);

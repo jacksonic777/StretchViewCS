@@ -12,9 +12,9 @@ namespace StretchViewCS.Forms
         private Button okButton;
         private Panel panel1;
         private Label version;
-        private TextBox memo1;
         private TextBox edit1;
         private Label label1;
+        private TextBox memo1;
         private TextBox memo2;
 
         public frmVersion()
@@ -25,76 +25,85 @@ namespace StretchViewCS.Forms
 
         private void InitializeComponent()
         {
-            this.okButton = new Button();
-            this.panel1 = new Panel();
-            this.version = new Label();
-            this.memo1 = new TextBox();
-            this.edit1 = new TextBox();
-            this.label1 = new Label();
-            this.memo2 = new TextBox();
+            this.okButton = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.version = new System.Windows.Forms.Label();
+            this.edit1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.memo2 = new System.Windows.Forms.TextBox();
+            this.memo1 = new System.Windows.Forms.TextBox();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-
+            // 
             // okButton
+            // 
             this.okButton.Location = new System.Drawing.Point(297, 250);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += OkButton_Click;
-
+            // 
             // panel1
-            this.panel1.BorderStyle = BorderStyle.FixedSingle;
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.version);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(360, 50);
             this.panel1.TabIndex = 1;
-
+            // 
             // version
+            // 
             this.version.AutoSize = true;
             this.version.Location = new System.Drawing.Point(20, 20);
             this.version.Name = "version";
-            this.version.Size = new System.Drawing.Size(50, 12);
+            this.version.Size = new System.Drawing.Size(52, 12);
             this.version.TabIndex = 0;
             this.version.Text = "バージョン:";
-
-            // memo1
-            this.memo1.BorderStyle = BorderStyle.FixedSingle;
-            this.memo1.Location = new System.Drawing.Point(12, 80);
-            this.memo1.Multiline = true;
-            this.memo1.Name = "memo1";
-            this.memo1.ReadOnly = true;
-            this.memo1.Size = new System.Drawing.Size(360, 60);
-            this.memo1.TabIndex = 2;
-
+            // 
             // edit1
-            this.edit1.BorderStyle = BorderStyle.FixedSingle;
+            // 
+            this.edit1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.edit1.Location = new System.Drawing.Point(12, 160);
             this.edit1.Name = "edit1";
             this.edit1.ReadOnly = true;
             this.edit1.Size = new System.Drawing.Size(360, 19);
             this.edit1.TabIndex = 3;
-
+            // 
             // label1
+            // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 145);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(50, 12);
+            this.label1.Size = new System.Drawing.Size(31, 12);
             this.label1.TabIndex = 4;
             this.label1.Text = "説明:";
-
+            // 
             // memo2
-            this.memo2.BorderStyle = BorderStyle.FixedSingle;
+            // 
+            this.memo2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.memo2.Location = new System.Drawing.Point(12, 190);
             this.memo2.Multiline = true;
             this.memo2.Name = "memo2";
             this.memo2.ReadOnly = true;
             this.memo2.Size = new System.Drawing.Size(360, 50);
             this.memo2.TabIndex = 5;
-
+            // 
+            // memo1
+            // 
+            this.memo1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.memo1.Location = new System.Drawing.Point(12, 80);
+            this.memo1.Multiline = true;
+            this.memo1.Name = "memo1";
+            this.memo1.ReadOnly = true;
+            this.memo1.Size = new System.Drawing.Size(360, 60);
+            this.memo1.TabIndex = 2;
+            // 
             // frmVersion
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 285);
             this.Controls.Add(this.memo2);
             this.Controls.Add(this.label1);
@@ -102,15 +111,17 @@ namespace StretchViewCS.Forms
             this.Controls.Add(this.memo1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.okButton);
-            this.panel1.Controls.Add(this.version);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmVersion";
-            this.StartPosition = FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "バージョン情報";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private void LoadVersionInfo()
