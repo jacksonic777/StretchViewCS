@@ -43,6 +43,7 @@ namespace StretchViewCS.Forms
             this.okButton.TabIndex = 0;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // panel1
             // 
@@ -117,6 +118,7 @@ namespace StretchViewCS.Forms
             this.Name = "frmVersion";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "バージョン情報";
+            this.Shown += new System.EventHandler(this.FrmVersion_Shown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -148,6 +150,16 @@ namespace StretchViewCS.Forms
         private void OkButton_Click(object? sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void FrmVersion_Shown(object? sender, EventArgs e)
+        {
+            if (Owner != null)
+            {
+                TopMost = Owner.TopMost;
+            }
+
+            Activate();
         }
     }
 }

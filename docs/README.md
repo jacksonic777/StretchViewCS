@@ -90,6 +90,7 @@ StretchViewCS/
 - [Delphi版移植の未完了項目](./Delphi版移植の未完了項目.md)
 - [設定の保存と復元](./設定の保存と復元.md)
 - [MSIインストーラー作成計画](./MSIインストーラー作成計画.md)
+- [リリース手順](./リリース手順.md)
 - [Windows版VisualStudio確認チェックリスト](./Windows版VisualStudio確認チェックリスト.md)
 - [Windows版回帰確認表](./Windows版回帰確認表.md)
 - [不具合報告テンプレート](./不具合報告テンプレート.md)

@@ -171,6 +171,7 @@ namespace StretchViewCS.Forms
         private Rectangle _fixedRect;
         private RulerInfoForm _infoForm;
         private RulerDrawForm _drawForm;
+        private bool _cursorRestored;
 
         public RulerForm()
         {
@@ -213,10 +214,17 @@ namespace StretchViewCS.Forms
 
         private void RulerForm_FormClosing(object? sender, FormClosingEventArgs e)
         {
+            RestoreCursor();
             _drawForm?.Close();
             _drawForm = null!;
             _infoForm?.Close();
             _infoForm = null!;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            RestoreCursor();
+            base.Dispose(disposing);
         }
 
         private void RulerForm_MouseDown(object? sender, MouseEventArgs e)
@@ -339,6 +347,17 @@ namespace StretchViewCS.Forms
             if (y < Bounds.Top)
                 y = Bounds.Top + margin;
             _infoForm.Location = new Point(x, y);
+        }
+
+        private void RestoreCursor()
+        {
+            if (_cursorRestored)
+                return;
+
+            _cursorRestored = true;
+            Capture = false;
+            Cursor = Cursors.Default;
+            Cursor.Current = Cursors.Default;
         }
     }
 }

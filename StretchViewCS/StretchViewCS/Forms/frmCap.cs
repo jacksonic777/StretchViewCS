@@ -2388,9 +2388,17 @@ namespace StretchViewCS.Forms
         private void About1Click(object? sender, EventArgs e)
         {
             bShowDlgBox = true;
-            frmVersion frm = new frmVersion();
-            frm.ShowDialog();
-            bShowDlgBox = false;
+            try
+            {
+                using (frmVersion frm = new frmVersion())
+                {
+                    frm.ShowDialog(this);
+                }
+            }
+            finally
+            {
+                bShowDlgBox = false;
+            }
         }
 
         private void MmOptionClick(object? sender, EventArgs e)
