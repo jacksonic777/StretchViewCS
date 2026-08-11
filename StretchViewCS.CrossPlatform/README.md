@@ -1,10 +1,10 @@
-# StretchView.CrossPlatform
+# StretchViewCS.CrossPlatform
 
-`StretchView.CrossPlatform` は、既存の Windows Forms 版とは別系統で進める macOS 対応版の土台です。
+`StretchViewCS.CrossPlatform` は、既存の Windows Forms 版とは別系統で進める macOS 対応版の土台です。
 
 ## 構成
 
-- `StretchView.CrossPlatform.sln`
+- `StretchViewCS.CrossPlatform.sln`
 - `StretchView.Core`
   - OS に依存しない状態管理や設定モデルを置く
 - `StretchView.App.Desktop`
@@ -29,5 +29,5 @@
 ## ビルド
 
 ```powershell
-dotnet build .\StretchView.CrossPlatform.sln
+dotnet build .\StretchViewCS.CrossPlatform.sln
 ```
