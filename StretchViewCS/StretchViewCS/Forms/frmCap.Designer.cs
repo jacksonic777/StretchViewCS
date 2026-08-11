@@ -188,6 +188,7 @@ namespace StretchViewCS.Forms
             this.mmFixView.Name = "mmFixView";
             this.mmFixView.Size = new System.Drawing.Size(101, 20);
             this.mmFixView.Text = "対象範囲の選択";
+            this.mmFixView.DropDownOpening += new System.EventHandler(this.MmFixViewClick);
             // 
             // mmFixViewSw
             // 
@@ -267,6 +268,7 @@ namespace StretchViewCS.Forms
             this.mmRate.Size = new System.Drawing.Size(117, 20);
             this.mmRate.Text = "拡大・反転・回転(&E)";
             this.mmRate.Click += new System.EventHandler(this.MmRateClick);
+            this.mmRate.DropDownOpening += new System.EventHandler(this.MmRateClick);
             // 
             // mmUP
             // 
@@ -540,8 +542,9 @@ namespace StretchViewCS.Forms
             // 拡張機能XToolStripMenuItem
             // 
             this.拡張機能XToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mAtari,
-            this.mmAtaris});
+            this.mAtari
+            // this.mmAtaris
+            });
             this.拡張機能XToolStripMenuItem.Name = "拡張機能XToolStripMenuItem";
             this.拡張機能XToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
             this.拡張機能XToolStripMenuItem.Text = "拡張機能(&X)";
@@ -556,11 +559,11 @@ namespace StretchViewCS.Forms
             this.mAtari.Name = "mAtari";
             this.mAtari.Size = new System.Drawing.Size(126, 22);
             this.mAtari.Text = "表面レイヤ";
+            this.mAtari.DropDownOpening += new System.EventHandler(this.MAtariClick);
             // 
             // mmAtariMode
             // 
             this.mmAtariMode.Name = "mmAtariMode";
-            this.mmAtariMode.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
             this.mmAtariMode.Size = new System.Drawing.Size(307, 22);
             this.mmAtariMode.Text = "表面レイヤへの描き込みモード ON/OFF";
             this.mmAtariMode.Click += new System.EventHandler(this.MmAtariModeClick);
@@ -573,7 +576,6 @@ namespace StretchViewCS.Forms
             // mmBltAtari
             // 
             this.mmBltAtari.Name = "mmBltAtari";
-            this.mmBltAtari.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
             this.mmBltAtari.Size = new System.Drawing.Size(307, 22);
             this.mmBltAtari.Text = "表面レイヤの表示/非表示";
             this.mmBltAtari.Click += new System.EventHandler(this.MmBltAtariClick);
@@ -581,7 +583,6 @@ namespace StretchViewCS.Forms
             // mmClearAtari
             // 
             this.mmClearAtari.Name = "mmClearAtari";
-            this.mmClearAtari.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.mmClearAtari.Size = new System.Drawing.Size(307, 22);
             this.mmClearAtari.Text = "表面レイヤのクリア";
             this.mmClearAtari.Click += new System.EventHandler(this.MmClearAtariClick);
@@ -595,6 +596,7 @@ namespace StretchViewCS.Forms
             this.mmAtaris.Size = new System.Drawing.Size(126, 22);
             this.mmAtaris.Text = "操作投影";
             this.mmAtaris.Click += new System.EventHandler(this.MmAtarisClick);
+            this.mmAtaris.DropDownOpening += new System.EventHandler(this.MmAtarisClick);
             // 
             // mmFix
             // 
@@ -1093,36 +1095,42 @@ namespace StretchViewCS.Forms
             this.mmGraph30.Name = "mmGraph30";
             this.mmGraph30.Size = new System.Drawing.Size(180, 22);
             this.mmGraph30.Text = "30ピクセル線";
+            this.mmGraph30.Click += new System.EventHandler(this.MmGraph30Click);
             // 
             // mmGraph40
             // 
             this.mmGraph40.Name = "mmGraph40";
             this.mmGraph40.Size = new System.Drawing.Size(180, 22);
             this.mmGraph40.Text = "40ピクセル線";
+            this.mmGraph40.Click += new System.EventHandler(this.MmGraph40Click);
             // 
             // mmGraph50
             // 
             this.mmGraph50.Name = "mmGraph50";
             this.mmGraph50.Size = new System.Drawing.Size(180, 22);
             this.mmGraph50.Text = "50ピクセル線";
+            this.mmGraph50.Click += new System.EventHandler(this.MmGraph50Click);
             // 
             // mmGraph60
             // 
             this.mmGraph60.Name = "mmGraph60";
             this.mmGraph60.Size = new System.Drawing.Size(180, 22);
             this.mmGraph60.Text = "60ピクセル線";
+            this.mmGraph60.Click += new System.EventHandler(this.MmGraph60Click);
             // 
             // mmGraphFlex
             // 
             this.mmGraphFlex.Name = "mmGraphFlex";
             this.mmGraphFlex.Size = new System.Drawing.Size(180, 22);
             this.mmGraphFlex.Text = "任意";
+            this.mmGraphFlex.Click += new System.EventHandler(this.MmGraphFlexClick);
             // 
             // mmGrid
             // 
             this.mmGrid.Name = "mmGrid";
             this.mmGrid.Size = new System.Drawing.Size(180, 22);
             this.mmGrid.Text = "中心線表示";
+            this.mmGrid.Click += new System.EventHandler(this.MmGridClick);
             // 
             // mmWndSize
             // 
@@ -1141,30 +1149,35 @@ namespace StretchViewCS.Forms
             this.mm200x200.Name = "mm200x200";
             this.mm200x200.Size = new System.Drawing.Size(215, 22);
             this.mm200x200.Text = "200 x 200 サイズ (小 正方形)";
+            this.mm200x200.Click += new System.EventHandler(this.Mm200x200Click);
             // 
             // mm300x300
             // 
             this.mm300x300.Name = "mm300x300";
             this.mm300x300.Size = new System.Drawing.Size(215, 22);
             this.mm300x300.Text = "300 x 300 サイズ (正方形)";
+            this.mm300x300.Click += new System.EventHandler(this.Mm300x300Click);
             // 
             // N400x3001
             // 
             this.N400x3001.Name = "N400x3001";
             this.N400x3001.Size = new System.Drawing.Size(215, 22);
             this.N400x3001.Text = "400 x 300 サイズ (横長)";
+            this.N400x3001.Click += new System.EventHandler(this.N400x3001Click);
             // 
             // N400x4001
             // 
             this.N400x4001.Name = "N400x4001";
             this.N400x4001.Size = new System.Drawing.Size(215, 22);
             this.N400x4001.Text = "400 x 400 サイズ (中 正方形)";
+            this.N400x4001.Click += new System.EventHandler(this.N400x4001Click);
             // 
             // mm300x400
             // 
             this.mm300x400.Name = "mm300x400";
             this.mm300x400.Size = new System.Drawing.Size(215, 22);
             this.mm300x400.Text = "300 x 400 サイズ (縦長)";
+            this.mm300x400.Click += new System.EventHandler(this.Mm300x400Click);
             // 
             // frmCap
             // 

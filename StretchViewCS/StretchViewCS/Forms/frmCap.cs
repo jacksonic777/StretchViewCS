@@ -588,15 +588,15 @@ namespace StretchViewCS.Forms
                 case HotKeyID.MHK_FLIPV:
                     FlipHV(2);
                     break;
-                case HotKeyID.MHK_AtariBlt:
-                    MmBltAtariClick(this, EventArgs.Empty);
-                    break;
-                case HotKeyID.MHK_AtariMode:
-                    MmAtariModeClick(this, EventArgs.Empty);
-                    break;
-                case HotKeyID.MHK_FixMode:
-                    FixModeByKey();
-                    break;
+                // case HotKeyID.MHK_AtariBlt:
+                //     MmBltAtariClick(this, EventArgs.Empty);
+                //     break;
+                // case HotKeyID.MHK_AtariMode:
+                //     MmAtariModeClick(this, EventArgs.Empty);
+                //     break;
+                // case HotKeyID.MHK_FixMode:
+                //     FixModeByKey();
+                //     break;
                 case HotKeyID.MHK_FreeRotate:
                     MFlexFlipClick(this, EventArgs.Empty);
                     break;
@@ -678,9 +678,9 @@ namespace StretchViewCS.Forms
                 RegisterHotKeyOne((int)HotKeyID.MHK_ZOOMDOWN, Win32API.MOD_CONTROL, 0x53);    // Ctrl+S
                 RegisterHotKeyOne((int)HotKeyID.MHK_FLIPH, Win32API.MOD_CONTROL, 0x44);       // Ctrl+D
                 RegisterHotKeyOne((int)HotKeyID.MHK_FLIPV, Win32API.MOD_CONTROL, 0x46);       // Ctrl+F
-                RegisterHotKeyOne((int)HotKeyID.MHK_AtariMode, Win32API.MOD_CONTROL, Win32API.VK_F2);
-                RegisterHotKeyOne((int)HotKeyID.MHK_AtariBlt, Win32API.MOD_CONTROL, Win32API.VK_F3);
-                RegisterHotKeyOne((int)HotKeyID.MHK_FixMode, Win32API.MOD_CONTROL, 0x45);     // Ctrl+E
+                // RegisterHotKeyOne((int)HotKeyID.MHK_AtariMode, Win32API.MOD_CONTROL, Win32API.VK_F2);
+                // RegisterHotKeyOne((int)HotKeyID.MHK_AtariBlt, Win32API.MOD_CONTROL, Win32API.VK_F3);
+                // RegisterHotKeyOne((int)HotKeyID.MHK_FixMode, Win32API.MOD_CONTROL, 0x45);     // Ctrl+E
                 RegisterHotKeyOne((int)HotKeyID.MHK_MLeft, Win32API.MOD_CONTROL, Win32API.VK_LEFT);
                 RegisterHotKeyOne((int)HotKeyID.MHK_MRight, Win32API.MOD_CONTROL, Win32API.VK_RIGHT);
                 RegisterHotKeyOne((int)HotKeyID.MHK_MUp, Win32API.MOD_CONTROL, Win32API.VK_UP);
@@ -723,9 +723,9 @@ namespace StretchViewCS.Forms
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_ZOOMDOWN);
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FLIPH);
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FLIPV);
-                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariMode);
-                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariBlt);
-                Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FixMode);
+                // Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariMode);
+                // Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_AtariBlt);
+                // Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_FixMode);
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MLeft);
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MRight);
                 Win32API.UnregisterHotKey(this.Handle, (int)HotKeyID.MHK_MUp);
@@ -825,24 +825,9 @@ namespace StretchViewCS.Forms
 
                 if (bmpAtari != null)
                 {
-                    using (Graphics g = Graphics.FromImage(bmpAtari))
-                    {
-                        if (e.Button == MouseButtons.Left && (Control.ModifierKeys & Keys.Control) == 0)
-                        {
-                            using (Pen pen = new Pen(MyAtariColor, iAtariLineWidth))
-                            {
-                                g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
-                            }
-                        }
-                        else if ((e.Button == MouseButtons.Left && (Control.ModifierKeys & Keys.Control) != 0) ||
-                                 e.Button == MouseButtons.Right)
-                        {
-                            using (Pen pen = new Pen(Color.White, Math.Max(5, iAtariLineWidth * 4)))
-                            {
-                                g.DrawLine(pen, pCStart.X, pCStart.Y, x, y);
-                            }
-                        }
-                    }
+                    bool erase = (e.Button == MouseButtons.Left && (Control.ModifierKeys & Keys.Control) != 0) ||
+                                 e.Button == MouseButtons.Right;
+                    DrawAtariLine(pCStart, new Point(x, y), erase);
                     pCStart = new Point(x, y);
                     InvalidateMainView();
                 }
@@ -1526,13 +1511,7 @@ namespace StretchViewCS.Forms
 
                     if (bAtariBmpCreate)
                     {
-                        if (bmpAtari != null)
-                        {
-                            bmpAtari.Dispose();
-                        }
-                        bmpAtari = new Bitmap(transW, transH);
-                        bmpAtari.MakeTransparent();
-                        bAtariBmpCreate = true;
+                        EnsureAtariBitmap();
                     }
 
                     // バックアップビットマップも更新
@@ -1932,9 +1911,40 @@ namespace StretchViewCS.Forms
                 bmpAtari.Dispose();
             }
 
-            bmpAtari = new Bitmap(transW, transH);
-            bmpAtari.MakeTransparent();
+            bmpAtari = new Bitmap(transW, transH, PixelFormat.Format32bppArgb);
+            using (Graphics graphics = Graphics.FromImage(bmpAtari))
+            {
+                graphics.Clear(Color.Transparent);
+            }
             bAtariBmpCreate = true;
+        }
+
+        private void DrawAtariLine(Point startPoint, Point endPoint, bool erase)
+        {
+            if (bmpAtari == null)
+            {
+                throw new InvalidOperationException("表面レイヤ画像が初期化されていません。");
+            }
+
+            using (Graphics graphics = Graphics.FromImage(bmpAtari))
+            {
+                if (erase)
+                {
+                    graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    using (Pen pen = new Pen(Color.Transparent, Math.Max(5, iAtariLineWidth * 4)))
+                    {
+                        graphics.DrawLine(pen, startPoint, endPoint);
+                    }
+                    graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                }
+                else
+                {
+                    using (Pen pen = new Pen(MyAtariColor, iAtariLineWidth))
+                    {
+                        graphics.DrawLine(pen, startPoint, endPoint);
+                    }
+                }
+            }
         }
 
         private void SetAtariOverlayVisible(bool visible)
