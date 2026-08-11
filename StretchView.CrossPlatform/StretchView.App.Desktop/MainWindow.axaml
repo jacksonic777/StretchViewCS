@@ -1,0 +1,41 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="StretchView.App.Desktop.MainWindow"
+    Title="StretchView CrossPlatform"
+    Width="920"
+    Height="620"
+    MinWidth="720"
+    MinHeight="480">
+  <Border Padding="28" Background="#F4F1EA">
+    <StackPanel Spacing="18">
+      <TextBlock
+          Text="StretchView CrossPlatform"
+          FontSize="28"
+          FontWeight="Bold"
+          Foreground="#26322F" />
+      <TextBlock
+          Text="Windows 依存機能を切り離した、macOS 対応版の新しい土台です。"
+          FontSize="15"
+          Foreground="#4A5652" />
+      <Border
+          Padding="20"
+          Background="#FFFDF7"
+          BorderBrush="#D6CBB8"
+          BorderThickness="1"
+          CornerRadius="14">
+        <StackPanel Spacing="10">
+          <TextBlock
+              Text="MVP で最初に載せる候補"
+              FontSize="18"
+              FontWeight="SemiBold"
+              Foreground="#26322F" />
+          <TextBlock Text="画像/画面キャプチャの表示" Foreground="#4A5652" />
+          <TextBlock Text="拡大縮小、回転、反転" Foreground="#4A5652" />
+          <TextBlock Text="グリッド表示、画像保存、設定保存" Foreground="#4A5652" />
+          <TextBlock Text="アプリ内注釈レイヤ" Foreground="#4A5652" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </Border>
+</Window>
