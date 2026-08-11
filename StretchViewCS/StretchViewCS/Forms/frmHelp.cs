@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using StretchViewCS.Utils;
 
 namespace StretchViewCS.Forms
 {
@@ -23,6 +24,7 @@ namespace StretchViewCS.Forms
         public frmHelp()
         {
             InitializeComponent();
+            ApplyLocalization();
         }
 
         private void InitializeComponent()
@@ -151,6 +153,22 @@ namespace StretchViewCS.Forms
         private void BtnOK_Click(object? sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void ApplyLocalization()
+        {
+            this.Text = LocalizationManager.Text("Help.Title");
+            groupBox1.Text = LocalizationManager.Text("Help.Basic");
+            label2.Text = LocalizationManager.Text("Help.Mouse");
+            label3.Text = LocalizationManager.Text("Help.Menu");
+            groupBox2.Text = LocalizationManager.Text("Help.Shortcuts");
+            label4.Text = LocalizationManager.Text("Help.ZoomUp");
+            label5.Text = LocalizationManager.Text("Help.ZoomDown");
+            label6.Text = LocalizationManager.Text("Help.FlipH");
+            label7.Text = LocalizationManager.Text("Help.FlipV");
+            groupBox3.Text = LocalizationManager.Text("Help.FixedMode");
+            lblFix.Text = LocalizationManager.Text("Help.FixedText");
+            btnOK.Text = "OK";
         }
     }
 }

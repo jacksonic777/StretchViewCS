@@ -31,6 +31,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayIcon={app}\StretchViewCS.exe
 
 [Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 
 [Tasks]
@@ -42,6 +43,9 @@ Source: "{#PackageDir}\StretchViewCS.exe.config"; DestDir: "{app}"; Flags: ignor
 Source: "{#PackageDir}\System.Configuration.ConfigurationManager.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\help\*"; DestDir: "{app}\help"; Flags: ignoreversion recursesubdirs createallsubdirs
 
+[INI]
+Filename: "{app}\StretchViewCS.install.ini"; Section: "Setting"; Key: "Language"; String: "{code:GetAppLanguageCode}"
+
 [Icons]
 Name: "{group}\{#AppName}"; Filename: "{app}\StretchViewCS.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall {#AppName}"; Filename: "{uninstallexe}"
@@ -49,3 +53,16 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\StretchViewCS.exe"; WorkingDi
 
 [Run]
 Filename: "{app}\StretchViewCS.exe"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+function GetAppLanguageCode(Param: String): String;
+begin
+  if ActiveLanguage = 'japanese' then
+  begin
+    Result := 'ja';
+  end
+    else
+  begin
+    Result := 'en';
+  end;
+end;

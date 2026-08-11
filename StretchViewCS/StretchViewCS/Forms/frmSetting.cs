@@ -14,7 +14,9 @@ namespace StretchViewCS.Forms
         private CheckBox chkResistProgram;
         private CheckBox chkHotkeysEnabled;
         private Label lblSamplingRate;
+        private Label lblLanguage;
         private NumericUpDown nudSamplingRate;
+        private ComboBox cmbLanguage;
         private Button btnOK;
         private Button btnCancel;
         private GroupBox groupBox1;
@@ -22,6 +24,7 @@ namespace StretchViewCS.Forms
         public frmSetting()
         {
             InitializeComponent();
+            ApplyLocalization();
         }
 
         private void InitializeComponent()
@@ -30,7 +33,9 @@ namespace StretchViewCS.Forms
             this.chkResistProgram = new System.Windows.Forms.CheckBox();
             this.chkHotkeysEnabled = new System.Windows.Forms.CheckBox();
             this.lblSamplingRate = new System.Windows.Forms.Label();
+            this.lblLanguage = new System.Windows.Forms.Label();
             this.nudSamplingRate = new System.Windows.Forms.NumericUpDown();
+            this.cmbLanguage = new System.Windows.Forms.ComboBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudSamplingRate)).BeginInit();
@@ -40,12 +45,14 @@ namespace StretchViewCS.Forms
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.nudSamplingRate);
+            this.groupBox1.Controls.Add(this.cmbLanguage);
+            this.groupBox1.Controls.Add(this.lblLanguage);
             this.groupBox1.Controls.Add(this.lblSamplingRate);
             this.groupBox1.Controls.Add(this.chkHotkeysEnabled);
             this.groupBox1.Controls.Add(this.chkResistProgram);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 140);
+            this.groupBox1.Size = new System.Drawing.Size(360, 170);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "設定";
@@ -77,6 +84,15 @@ namespace StretchViewCS.Forms
             this.lblSamplingRate.TabIndex = 2;
             this.lblSamplingRate.Text = "サンプリングレート(ms)";
             // 
+            // lblLanguage
+            // 
+            this.lblLanguage.AutoSize = true;
+            this.lblLanguage.Location = new System.Drawing.Point(20, 118);
+            this.lblLanguage.Name = "lblLanguage";
+            this.lblLanguage.Size = new System.Drawing.Size(53, 12);
+            this.lblLanguage.TabIndex = 4;
+            this.lblLanguage.Text = "表示言語";
+            // 
             // nudSamplingRate
             // 
             this.nudSamplingRate.Location = new System.Drawing.Point(160, 84);
@@ -99,22 +115,31 @@ namespace StretchViewCS.Forms
             0,
             0});
             // 
+            // cmbLanguage
+            // 
+            this.cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLanguage.FormattingEnabled = true;
+            this.cmbLanguage.Location = new System.Drawing.Point(160, 114);
+            this.cmbLanguage.Name = "cmbLanguage";
+            this.cmbLanguage.Size = new System.Drawing.Size(150, 20);
+            this.cmbLanguage.TabIndex = 5;
+            // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(216, 160);
+            this.btnOK.Location = new System.Drawing.Point(216, 190);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(297, 160);
+            this.btnCancel.Location = new System.Drawing.Point(297, 190);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 5;
+            this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "キャンセル";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
@@ -123,7 +148,7 @@ namespace StretchViewCS.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 195);
+            this.ClientSize = new System.Drawing.Size(384, 225);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
@@ -167,12 +192,14 @@ namespace StretchViewCS.Forms
 
             IniManager.Instance.HotkeysEnabled = chkHotkeysEnabled.Checked;
             IniManager.Instance.SamplingRate = Decimal.ToInt32(nudSamplingRate.Value);
+            IniManager.Instance.SetLanguage(GetSelectedLanguage());
             ResisterStartMenu(false, chkResistProgram.Checked, "StretchViewCS");
 
             if (mainForm != null)
             {
                 mainForm.SetHotkeysEnabled(chkHotkeysEnabled.Checked);
                 mainForm.SetSamplingRate(Decimal.ToInt32(nudSamplingRate.Value));
+                mainForm.ApplyLocalization();
             }
 
             this.Close();
@@ -183,6 +210,7 @@ namespace StretchViewCS.Forms
             chkResistProgram.Checked = ResisterStartMenu(true, false, "StretchViewCS");
             chkHotkeysEnabled.Checked = IniManager.Instance.HotkeysEnabled;
             nudSamplingRate.Value = IniManager.Instance.SamplingRate;
+            SetSelectedLanguage(IniManager.Instance.Language);
         }
 
         private frmCap? FindMainForm()
@@ -196,6 +224,59 @@ namespace StretchViewCS.Forms
             }
 
             return null;
+        }
+
+        private void ApplyLocalization()
+        {
+            this.Text = LocalizationManager.Text("Settings.Title");
+            groupBox1.Text = LocalizationManager.Text("Settings.Title");
+            chkResistProgram.Text = LocalizationManager.Text("Settings.StartMenu");
+            chkHotkeysEnabled.Text = LocalizationManager.Text("Settings.HotkeysEnabled");
+            lblSamplingRate.Text = LocalizationManager.Text("Settings.SamplingRate");
+            lblLanguage.Text = LocalizationManager.Text("Settings.Language");
+            btnOK.Text = "OK";
+            btnCancel.Text = LocalizationManager.Text("Settings.Cancel");
+            FillLanguageItems();
+        }
+
+        private void FillLanguageItems()
+        {
+            cmbLanguage.Items.Clear();
+            cmbLanguage.Items.Add(LocalizationManager.Text("Settings.LanguageJapanese"));
+            cmbLanguage.Items.Add(LocalizationManager.Text("Settings.LanguageEnglish"));
+        }
+
+        private string GetSelectedLanguage()
+        {
+            if (cmbLanguage.SelectedIndex == 0)
+            {
+                return LocalizationManager.Japanese;
+            }
+
+            if (cmbLanguage.SelectedIndex == 1)
+            {
+                return LocalizationManager.English;
+            }
+
+            throw new InvalidOperationException("Language is not selected.");
+        }
+
+        private void SetSelectedLanguage(string language)
+        {
+            string normalizedLanguage = LocalizationManager.NormalizeLanguage(language);
+            if (normalizedLanguage == LocalizationManager.Japanese)
+            {
+                cmbLanguage.SelectedIndex = 0;
+                return;
+            }
+
+            if (normalizedLanguage == LocalizationManager.English)
+            {
+                cmbLanguage.SelectedIndex = 1;
+                return;
+            }
+
+            throw new InvalidOperationException("Unsupported language: " + language);
         }
 
         /// <summary>

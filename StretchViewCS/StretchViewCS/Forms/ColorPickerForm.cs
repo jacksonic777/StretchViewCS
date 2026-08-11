@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using StretchViewCS.Native;
+using StretchViewCS.Utils;
 
 namespace StretchViewCS.Forms
 {
@@ -90,8 +91,8 @@ namespace StretchViewCS.Forms
                 // クリップボードにアクセスできない場合
             }
             MessageBox.Show(
-                $"色をコピーしました: {hex}\r\nR={c.R} G={c.G} B={c.B}",
-                "カラーピッカー",
+                LocalizationManager.Text("ColorPicker.CopiedBody") + $"\r\n{hex}\r\nR={c.R} G={c.G} B={c.B}",
+                LocalizationManager.Text("ColorPicker.CopiedTitle"),
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             Close();

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using StretchViewCS.Utils;
 
 namespace StretchViewCS.Forms
 {
@@ -20,6 +21,7 @@ namespace StretchViewCS.Forms
         public frmVersion()
         {
             InitializeComponent();
+            ApplyLocalization();
             LoadVersionInfo();
         }
 
@@ -135,7 +137,7 @@ namespace StretchViewCS.Forms
 
                 if (versionInfo.FileVersion != null)
                 {
-                    version.Text = "バージョン: " + versionInfo.FileVersion;
+                    version.Text = LocalizationManager.Text("Version.Label") + " " + versionInfo.FileVersion;
                     memo1.Text = versionInfo.FileVersion;
                     edit1.Text = versionInfo.FileDescription ?? "";
                     memo2.Text = versionInfo.Comments ?? "";
@@ -143,8 +145,16 @@ namespace StretchViewCS.Forms
             }
             catch
             {
-                version.Text = "バージョン: 不明";
+                version.Text = LocalizationManager.Text("Version.Unknown");
             }
+        }
+
+        private void ApplyLocalization()
+        {
+            this.Text = LocalizationManager.Text("Version.Title");
+            version.Text = LocalizationManager.Text("Version.Label");
+            label1.Text = LocalizationManager.Text("Version.Description");
+            okButton.Text = "OK";
         }
 
         private void OkButton_Click(object? sender, EventArgs e)

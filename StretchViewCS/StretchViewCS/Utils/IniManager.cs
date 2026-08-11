@@ -14,6 +14,7 @@ namespace StretchViewCS.Utils
     {
         private static IniManager? _instance;
         private readonly string _iniPath;
+        private readonly string _installedSettingsPath;
 
         // プロパティ
         public bool VFlip { get; set; }
@@ -35,6 +36,7 @@ namespace StretchViewCS.Utils
         public int FixViewY { get; set; }
         public Rectangle FixViewRect { get; set; }
         public bool HotkeysEnabled { get; set; }
+        public string Language { get; set; } = LocalizationManager.Japanese;
 
         // イベント
         public event EventHandler? OnChange;
@@ -52,6 +54,7 @@ namespace StretchViewCS.Utils
             if (!Directory.Exists(appFolder))
                 Directory.CreateDirectory(appFolder);
             _iniPath = Path.Combine(appFolder, "StretchViewCS.ini");
+            _installedSettingsPath = Path.Combine(Application.StartupPath, "StretchViewCS.install.ini");
             Read();
         }
 
@@ -114,6 +117,42 @@ namespace StretchViewCS.Utils
             if (bool.TryParse(value, out bool result))
                 return result;
             return defaultValue;
+        }
+
+        private string ReadStringFromFile(string path, string section, string key, string defaultValue)
+        {
+            if (!System.IO.File.Exists(path))
+                return defaultValue;
+
+            string[] lines = System.IO.File.ReadAllLines(path, Encoding.Default);
+            bool inSection = false;
+
+            foreach (string line in lines)
+            {
+                string trimmed = line.Trim();
+                if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
+                {
+                    inSection = trimmed == "[" + section + "]";
+                    continue;
+                }
+
+                if (inSection && trimmed.StartsWith(key + "="))
+                {
+                    return trimmed.Substring(key.Length + 1);
+                }
+            }
+
+            return defaultValue;
+        }
+
+        private string ReadInitialLanguage()
+        {
+            string installedLanguage = ReadStringFromFile(
+                _installedSettingsPath,
+                "Setting",
+                "Language",
+                LocalizationManager.DetectDefaultLanguage());
+            return ReadString("Setting", "Language", installedLanguage);
         }
 
         private void WriteString(string section, string key, string value)
@@ -225,6 +264,8 @@ namespace StretchViewCS.Utils
             FirstRun = ReadBool("Setting", "FirstRun", true);
             LicenseKey = ReadString("Setting", "LicenseKey", "");
             RunCount = ReadInteger("Setting", "RunCount", 1);
+            Language = LocalizationManager.NormalizeLanguage(ReadInitialLanguage());
+            LocalizationManager.SetLanguage(Language);
         }
 
         public void Write()
@@ -258,6 +299,7 @@ namespace StretchViewCS.Utils
             // Setting
             WriteBool("Setting", "FirstRun", false);
             WriteString("Setting", "LicenseKey", LicenseKey);
+            WriteString("Setting", "Language", Language);
             RunCount++;
             WriteInteger("Setting", "RunCount", RunCount);
         }
@@ -371,6 +413,18 @@ namespace StretchViewCS.Utils
             if (HotkeysEnabled != value)
             {
                 HotkeysEnabled = value;
+                Write();
+                CallChangeHandler();
+            }
+        }
+
+        public void SetLanguage(string value)
+        {
+            string normalizedValue = LocalizationManager.NormalizeLanguage(value);
+            if (Language != normalizedValue)
+            {
+                Language = normalizedValue;
+                LocalizationManager.SetLanguage(Language);
                 Write();
                 CallChangeHandler();
             }

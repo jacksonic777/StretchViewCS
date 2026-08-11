@@ -130,6 +130,8 @@ namespace StretchViewCS.Forms
         public frmCap()
         {
             InitializeComponent();
+            LocalizationManager.SetLanguage(IniManager.Instance.Language);
+            ApplyLocalization();
 
             // ダブルバッファリングを有効化（パフォーマンス向上）
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
@@ -142,6 +144,66 @@ namespace StretchViewCS.Forms
             transY = 0;
             transW = 300;
             transH = 300;
+        }
+
+        public void ApplyLocalization()
+        {
+            mmFixView.Text = LocalizationManager.Text("Main.FixView");
+            mmFixViewSw.Text = LocalizationManager.Text("Main.FixViewToggle");
+            mmLeft.Text = LocalizationManager.Text("Main.MoveLeft");
+            mmRight.Text = LocalizationManager.Text("Main.MoveRight");
+            mmUpper.Text = LocalizationManager.Text("Main.MoveUp");
+            mmDowner.Text = LocalizationManager.Text("Main.MoveDown");
+            mmRate.Text = LocalizationManager.Text("Main.Transform");
+            mmUP.Text = LocalizationManager.Text("Main.ZoomUp");
+            mmDown.Text = LocalizationManager.Text("Main.ZoomDown");
+            mmFlipH.Text = LocalizationManager.Text("Main.FlipH");
+            mmFlipV.Text = LocalizationManager.Text("Main.FlipV");
+            mmFlexRotate.Text = LocalizationManager.Text("Main.RotateCustom");
+            mmSrcNot.Text = LocalizationManager.Text("Main.InvertColor");
+            mmRedrawDesk.Text = LocalizationManager.Text("Main.RedrawDesktop");
+            Exit2.Text = LocalizationManager.Text("Main.Exit");
+            mmView.Text = LocalizationManager.Text("Main.View");
+            mmTopMost.Text = LocalizationManager.Text("Main.TopMost");
+            ttsMmTool.Text = LocalizationManager.Text("Main.Tools");
+            mmColorPicker.Text = LocalizationManager.Text("Main.ColorPicker");
+            mmRuler.Text = LocalizationManager.Text("Main.Ruler");
+            mmSaveAsImageFile.Text = LocalizationManager.Text("Main.SaveImage");
+            mmSaveViewFile.Text = LocalizationManager.Text("Main.SaveBitmap");
+            mmCopyToClipBoard.Text = LocalizationManager.Text("Main.CopyClipboard");
+            mmPrint.Text = LocalizationManager.Text("Main.Print");
+            拡張機能XToolStripMenuItem.Text = LocalizationManager.Text("Main.Extensions");
+            mAtari.Text = LocalizationManager.Text("Main.SurfaceLayer");
+            mmAtariMode.Text = LocalizationManager.Text("Main.SurfaceDrawMode");
+            mmBltAtari.Text = LocalizationManager.Text("Main.SurfaceVisible");
+            mmClearAtari.Text = LocalizationManager.Text("Main.SurfaceClear");
+            mmHelp.Text = LocalizationManager.Text("Main.Help");
+            About1.Text = LocalizationManager.Text("Main.About");
+            tbZoomUp.Text = LocalizationManager.Text("Main.ZoomInButton");
+            tbZoomOut.Text = LocalizationManager.Text("Main.ZoomOutButton");
+            tbResetStretch.Text = LocalizationManager.Text("Main.ResetZoom");
+            tbFlipH.Text = LocalizationManager.Text("Main.FlipHButton");
+            tbFlipV.Text = LocalizationManager.Text("Main.FlipVButton");
+            tbLRotate.Text = LocalizationManager.Text("Main.RotateLeft");
+            tbRRotate.Text = LocalizationManager.Text("Main.RotateRight");
+            tbResetRotation.Text = LocalizationManager.Text("Main.ResetRotation");
+            tbColorPicker.Text = LocalizationManager.Text("Main.ColorPicker");
+            tbRuler.Text = LocalizationManager.Text("Main.RulerButton");
+            btnOpenSettings.Text = LocalizationManager.Text("Main.SettingsButton");
+            chkHotkeysEnabled.Text = LocalizationManager.Text("Main.Hotkeys");
+            chkFixSubjectRange.Text = LocalizationManager.Text("Main.FixView");
+            chkDisplayTopMost.Text = LocalizationManager.Text("Main.TopMost");
+            tbGrid.Text = LocalizationManager.Text("Main.GridButton");
+            tbClear.Text = LocalizationManager.Text("Main.Clear");
+            mmGraph.Text = LocalizationManager.Text("Main.Graph");
+            mmGraph30.Text = LocalizationManager.Text("Main.Graph30");
+            mmGraph40.Text = LocalizationManager.Text("Main.Graph40");
+            mmGraph50.Text = LocalizationManager.Text("Main.Graph50");
+            mmGraph60.Text = LocalizationManager.Text("Main.Graph60");
+            mmGraphFlex.Text = LocalizationManager.Text("Main.Custom");
+            mmGrid.Text = LocalizationManager.Text("Main.CenterLine");
+            mmWndSize.Text = LocalizationManager.Text("Main.WindowPreset");
+            toolStripStatusLabel1.Text = LocalizationManager.Text("Main.LayerStatusOff");
         }
 
         private void frmCap_Load(object? sender, EventArgs e)
@@ -1207,7 +1269,7 @@ namespace StretchViewCS.Forms
                         bFixed = false;
                         SyncFixModeUi();
                         bShowDlgBox = true;
-                        MessageBox.Show("対象が取得できません " + hTarget, "対象取得");
+                        MessageBox.Show(LocalizationManager.Text("Message.TargetNotFound") + " " + hTarget, LocalizationManager.Text("Message.TargetTitle"));
                         bShowDlgBox = false;
                         return false;
                     }
@@ -1230,7 +1292,7 @@ namespace StretchViewCS.Forms
                         bFixed = false;
                         SyncFixModeUi();
                         bShowDlgBox = true;
-                        MessageBox.Show("自分自身を選択しています", "対象取得");
+                        MessageBox.Show(LocalizationManager.Text("Message.TargetSelf"), LocalizationManager.Text("Message.TargetTitle"));
                         bShowDlgBox = false;
                         return false;
                     }
@@ -1523,12 +1585,12 @@ namespace StretchViewCS.Forms
                 }
                 else
                 {
-                    MessageBox.Show("値が大きすぎるか小さすぎます", "メッセージ");
+                    MessageBox.Show(LocalizationManager.Text("Message.ValueOutOfRange"), LocalizationManager.Text("Message.Title"));
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("値が大きすぎるか小さすぎます: " + ex.Message, "メッセージ");
+                MessageBox.Show(LocalizationManager.Text("Message.ValueOutOfRange") + ": " + ex.Message, LocalizationManager.Text("Message.Title"));
             }
             bStateUpdate = true;
         }
@@ -2081,7 +2143,7 @@ namespace StretchViewCS.Forms
                     try
                     {
                         string? instr = Microsoft.VisualBasic.Interaction.InputBox(
-                            "任意角度回転", "角度を入力してください(1~359)", "");
+                            LocalizationManager.Text("Input.RotateTitle"), LocalizationManager.Text("Input.RotatePrompt"), "");
                         if (!string.IsNullOrEmpty(instr))
                         {
                             int iAngle = int.Parse(instr);
@@ -2101,7 +2163,7 @@ namespace StretchViewCS.Forms
                     }
                     catch
                     {
-                        MessageBox.Show("不正な数値です", "");
+                        MessageBox.Show(LocalizationManager.Text("Message.InvalidNumber"), "");
                     }
                 }
             }
@@ -2197,9 +2259,9 @@ namespace StretchViewCS.Forms
             try
             {
                 string? widthStr = Microsoft.VisualBasic.Interaction.InputBox(
-                    "", "幅サイズを入力してください(50~400)", "0");
+                    "", LocalizationManager.Text("Input.WidthPrompt"), "0");
                 string? heightStr = Microsoft.VisualBasic.Interaction.InputBox(
-                    "", "高さサイズを入力してください(50~400)", "0");
+                    "", LocalizationManager.Text("Input.HeightPrompt"), "0");
 
                 if (!string.IsNullOrEmpty(widthStr) && !string.IsNullOrEmpty(heightStr))
                 {
@@ -2210,7 +2272,7 @@ namespace StretchViewCS.Forms
             }
             catch
             {
-                MessageBox.Show("不正な数値です", "");
+                MessageBox.Show(LocalizationManager.Text("Message.InvalidNumber"), "");
             }
         }
 
@@ -2232,8 +2294,7 @@ namespace StretchViewCS.Forms
             try
             {
                 string? tmpStr = Microsoft.VisualBasic.Interaction.InputBox(
-                    "サンプリングレート", "サンプリングレートを指定してください" + Environment.NewLine +
-                    "(単位:ms デフォルト 400  範囲 10~400)", IniManager.Instance.SamplingRate.ToString());
+                    LocalizationManager.Text("Input.SamplingTitle"), LocalizationManager.Text("Input.SamplingPrompt"), IniManager.Instance.SamplingRate.ToString());
 
                 if (!string.IsNullOrEmpty(tmpStr))
                 {
@@ -2245,7 +2306,7 @@ namespace StretchViewCS.Forms
                     }
                     else
                     {
-                        MessageBox.Show("範囲外の数値が入力されました", "");
+                        MessageBox.Show(LocalizationManager.Text("Message.OutOfRangeNumber"), "");
                     }
                 }
             }
@@ -2344,7 +2405,7 @@ namespace StretchViewCS.Forms
             try
             {
                 string? tmpStr = Microsoft.VisualBasic.Interaction.InputBox(
-                    "グリッド間隔", "間隔を入力してください(ピクセル)", "");
+                    LocalizationManager.Text("Input.GridTitle"), LocalizationManager.Text("Input.GridPrompt"), "");
                 if (!string.IsNullOrEmpty(tmpStr))
                 {
                     int tmpInt = int.Parse(tmpStr);
@@ -2502,7 +2563,7 @@ namespace StretchViewCS.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("画像保存に失敗しました: " + ex.Message, AppTitle);
+                MessageBox.Show(LocalizationManager.Text("Message.SaveImageFailed") + " " + ex.Message, AppTitle);
             }
         }
 
@@ -2517,7 +2578,7 @@ namespace StretchViewCS.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("クリップボードへのコピーに失敗しました: " + ex.Message, AppTitle);
+                MessageBox.Show(LocalizationManager.Text("Message.CopyClipboardFailed") + " " + ex.Message, AppTitle);
             }
         }
 
@@ -2547,7 +2608,7 @@ namespace StretchViewCS.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("印刷に失敗しました: " + ex.Message, AppTitle);
+                MessageBox.Show(LocalizationManager.Text("Message.PrintFailed") + " " + ex.Message, AppTitle);
             }
         }
 
@@ -2889,7 +2950,7 @@ namespace StretchViewCS.Forms
                 string helpFile = Path.Combine(Application.StartupPath, "help", "index.html");
                 if (!System.IO.File.Exists(helpFile))
                 {
-                    throw new FileNotFoundException("ヘルプファイルが見つかりません。", helpFile);
+                    throw new FileNotFoundException(LocalizationManager.Text("Message.HelpFileNotFound"), helpFile);
                 }
 
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -2901,7 +2962,7 @@ namespace StretchViewCS.Forms
             {
                 MessageBox.Show(
                     this,
-                    "ヘルプを開けませんでした。\r\n" + ex.Message,
+                    LocalizationManager.Text("Message.OpenHelpFailed") + "\r\n" + ex.Message,
                     "StretchViewCS",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

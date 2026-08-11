@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using StretchViewCS.Native;
+using StretchViewCS.Utils;
 
 namespace StretchViewCS.Forms
 {
@@ -118,7 +119,7 @@ namespace StretchViewCS.Forms
             Size = new Size(340, 110);
             BackColor = Color.FromArgb(255, 255, 240);
             ShowInTaskbar = false;
-            Text = "画面定規 - 寸法";
+            Text = LocalizationManager.Text("Ruler.Title");
             Padding = new Padding(10);
 
             _lblMain = new Label
@@ -129,7 +130,7 @@ namespace StretchViewCS.Forms
                 Font = new Font("Meiryo UI", 16f, FontStyle.Bold),
                 ForeColor = Color.DarkBlue,
                 TextAlign = ContentAlignment.MiddleLeft,
-                Text = "幅 --- px  ×  高さ --- px"
+                Text = LocalizationManager.Text("Ruler.EmptySize")
             };
             _lblSub = new Label
             {
@@ -139,7 +140,7 @@ namespace StretchViewCS.Forms
                 Font = new Font("Meiryo UI", 10f),
                 ForeColor = Color.Gray,
                 TextAlign = ContentAlignment.MiddleLeft,
-                Text = "左ドラッグで範囲を指定　Esc/右クリックで終了"
+                Text = LocalizationManager.Text("Ruler.Instruction")
             };
             // DockStyle.Top は後から追加した方が上に来る
             Controls.Add(_lblSub);
@@ -148,14 +149,14 @@ namespace StretchViewCS.Forms
 
         public void SetSize(int widthPx, int heightPx, string mmText)
         {
-            _lblMain.Text = $"幅 {widthPx} px  ×  高さ {heightPx} px";
-            _lblSub.Text = string.IsNullOrEmpty(mmText) ? "左ドラッグで範囲を指定　Esc/右クリックで終了" : mmText;
+            _lblMain.Text = LocalizationManager.Text("Ruler.WidthLabel") + $" {widthPx} px  x  " + LocalizationManager.Text("Ruler.HeightLabel") + $" {heightPx} px";
+            _lblSub.Text = string.IsNullOrEmpty(mmText) ? LocalizationManager.Text("Ruler.Instruction") : mmText;
         }
 
         public void SetInstruction(string text)
         {
             _lblMain.Text = text;
-            _lblSub.Text = "Esc または 右クリック で終了";
+            _lblSub.Text = LocalizationManager.Text("Ruler.ExitInstruction");
         }
     }
 
@@ -189,7 +190,7 @@ namespace StretchViewCS.Forms
             DoubleBuffered = true;
 
             _infoForm = new RulerInfoForm();
-            _infoForm.SetInstruction("左ドラッグで計測したい範囲を指定");
+            _infoForm.SetInstruction(LocalizationManager.Text("Ruler.StartInstruction"));
             _drawForm = new RulerDrawForm();
 
             KeyDown += (s, e) =>
@@ -278,7 +279,7 @@ namespace StretchViewCS.Forms
             else
             {
                 _fixedRect = Rectangle.Empty;
-                _infoForm?.SetInstruction("左ドラッグで計測したい範囲を指定");
+                _infoForm?.SetInstruction(LocalizationManager.Text("Ruler.StartInstruction"));
                 _drawForm?.Clear();
             }
             Invalidate();
