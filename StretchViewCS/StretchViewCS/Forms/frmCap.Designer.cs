@@ -89,6 +89,7 @@ namespace StretchViewCS.Forms
             this.mmClassName = new System.Windows.Forms.ToolStripMenuItem();
             this.mmWindowText = new System.Windows.Forms.ToolStripMenuItem();
             this.mmHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.Help2 = new System.Windows.Forms.ToolStripMenuItem();
             this.About1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelBarBase = new System.Windows.Forms.Panel();
             this.toolbarMain = new System.Windows.Forms.ToolStrip();
@@ -630,10 +631,18 @@ namespace StretchViewCS.Forms
             // mmHelp
             // 
             this.mmHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Help2,
             this.About1});
             this.mmHelp.Name = "mmHelp";
             this.mmHelp.Size = new System.Drawing.Size(65, 20);
             this.mmHelp.Text = "ヘルプ(&H)";
+            // 
+            // Help2
+            // 
+            this.Help2.Name = "Help2";
+            this.Help2.Size = new System.Drawing.Size(180, 22);
+            this.Help2.Text = "ヘルプを開く";
+            this.Help2.Click += new System.EventHandler(this.Help2Click);
             // 
             // About1
             // 
@@ -1259,6 +1268,7 @@ namespace StretchViewCS.Forms
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem Exit2;
         private System.Windows.Forms.ToolStripMenuItem mmHelp;
+        private System.Windows.Forms.ToolStripMenuItem Help2;
         private System.Windows.Forms.ToolStripMenuItem About1;
         private System.Windows.Forms.StatusStrip sbMain;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;

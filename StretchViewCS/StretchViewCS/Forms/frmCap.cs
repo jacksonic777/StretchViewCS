@@ -178,6 +178,7 @@ namespace StretchViewCS.Forms
             mmBltAtari.Text = LocalizationManager.Text("Main.SurfaceVisible");
             mmClearAtari.Text = LocalizationManager.Text("Main.SurfaceClear");
             mmHelp.Text = LocalizationManager.Text("Main.Help");
+            Help2.Text = LocalizationManager.Text("Main.OpenHelp");
             About1.Text = LocalizationManager.Text("Main.About");
             tbZoomUp.Text = LocalizationManager.Text("Main.ZoomInButton");
             tbZoomOut.Text = LocalizationManager.Text("Main.ZoomOutButton");
@@ -2947,7 +2948,7 @@ namespace StretchViewCS.Forms
 
             try
             {
-                string helpFile = Path.Combine(Application.StartupPath, "help", "index.html");
+                string helpFile = GetLocalizedHelpFilePath();
                 if (!System.IO.File.Exists(helpFile))
                 {
                     throw new FileNotFoundException(LocalizationManager.Text("Message.HelpFileNotFound"), helpFile);
@@ -2967,6 +2968,15 @@ namespace StretchViewCS.Forms
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+
+        private string GetLocalizedHelpFilePath()
+        {
+            return Path.Combine(
+                Application.StartupPath,
+                "help",
+                LocalizationManager.CurrentLanguage,
+                "index.html");
         }
 
         private void UpdateDisplayBitmap(Bitmap sourceBitmap)

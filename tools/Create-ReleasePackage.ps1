@@ -91,6 +91,8 @@ function New-ReleasePackage {
     Ensure-FileExists -Path (Join-Path $outputRoot "StretchViewCS.exe.config")
     Ensure-FileExists -Path (Join-Path $outputRoot "System.Configuration.ConfigurationManager.dll")
     Ensure-DirectoryExists -Path (Join-Path $outputRoot "help")
+    Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.ja.txt")
+    Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.en.txt")
 
     if (Test-Path -LiteralPath $packageDirectory) {
         Remove-Item -LiteralPath $packageDirectory -Recurse -Force
@@ -106,6 +108,8 @@ function New-ReleasePackage {
     Copy-Item -LiteralPath (Join-Path $outputRoot "StretchViewCS.exe.config") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "System.Configuration.ConfigurationManager.dll") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "help") -Destination $packageDirectory -Recurse
+    Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.ja.txt") -Destination $packageDirectory
+    Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.en.txt") -Destination $packageDirectory
 
     Compress-Archive -Path (Join-Path $packageDirectory "*") -DestinationPath $zipPath -CompressionLevel Optimal
 

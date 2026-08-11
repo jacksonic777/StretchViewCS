@@ -42,6 +42,8 @@ Source: "{#PackageDir}\StretchViewCS.exe"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#PackageDir}\StretchViewCS.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\System.Configuration.ConfigurationManager.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\help\*"; DestDir: "{app}\help"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#PackageDir}\ReadMe.ja.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PackageDir}\ReadMe.en.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [INI]
 Filename: "{app}\StretchViewCS.install.ini"; Section: "Setting"; Key: "Language"; String: "{code:GetAppLanguageCode}"

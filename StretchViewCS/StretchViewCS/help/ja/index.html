@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StretchViewCS ヘルプ</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">StretchViewCS Help</p>
+    <h1>StretchViewCS ヘルプ</h1>
+    <p class="lead">
+      StretchViewCS は、画面の一部を拡大、縮小、回転、反転しながら確認するための Windows アプリケーションです。
+      このヘルプでは、基本操作と主要機能をまとめています。
+    </p>
+  </header>
+
+  <main class="layout">
+    <nav class="toc" aria-label="目次">
+      <h2>目次</h2>
+      <ul>
+        <li><a href="#overview">概要</a></li>
+        <li><a href="#range">対象範囲</a></li>
+        <li><a href="#view">表示操作</a></li>
+        <li><a href="#tools">ツール</a></li>
+        <li><a href="#settings">設定</a></li>
+        <li><a href="#files">保存と出力</a></li>
+        <li><a href="#trouble">困ったとき</a></li>
+      </ul>
+    </nav>
+
+    <div class="content">
+      <section id="overview" class="card">
+        <h2>概要</h2>
+        <p>
+          StretchViewCS は、デスクトップ上の選択範囲をメインウィンドウに表示し、見やすい倍率や角度に調整するための補助ツールです。
+          細かな表示確認、画面の一部の追跡、画像としての保存に利用できます。
+        </p>
+      </section>
+
+      <section id="range" class="card">
+        <h2>対象範囲</h2>
+        <ul class="feature-list">
+          <li>「対象範囲の選択」からミラーリング対象の画面範囲を指定できます。</li>
+          <li>対象範囲の赤い枠線は、ドラッグで位置や大きさを調整できます。</li>
+          <li>対象範囲の固定化は、メニューまたはチェックボックスから切り替えます。</li>
+          <li>Ctrl + 方向キーで、選択済みの対象範囲を移動できます。</li>
+        </ul>
+      </section>
+
+      <section id="view" class="card">
+        <h2>表示操作</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>機能</th>
+              <th>説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>拡大 / 縮小</td>
+              <td>表示倍率を変更します。原寸以下の縮小表示にも対応しています。</td>
+            </tr>
+            <tr>
+              <td>拡縮リセット</td>
+              <td>表示倍率をリセットします。</td>
+            </tr>
+            <tr>
+              <td>左右反転 / 上下反転</td>
+              <td>表示内容を水平または垂直方向に反転します。</td>
+            </tr>
+            <tr>
+              <td>回転</td>
+              <td>左右回転、指定角度回転、回転リセットを行います。</td>
+            </tr>
+            <tr>
+              <td>方眼 / 中心線</td>
+              <td>表示確認用の目盛や中心線を重ねて表示します。</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="tools" class="card">
+        <h2>ツール</h2>
+        <ul class="feature-list">
+          <li>カラーピッカーで、デスクトップ上の色を取得してクリップボードへコピーできます。</li>
+          <li>画面定規で、デスクトップ上の幅と高さをピクセル単位で測定できます。</li>
+          <li>表面レイヤで、メインビュー上に一時的な書き込みを行えます。</li>
+        </ul>
+      </section>
+
+      <section id="settings" class="card">
+        <h2>設定</h2>
+        <ul class="feature-list">
+          <li>設定画面から表示言語を日本語または英語に切り替えられます。</li>
+          <li>ホットキーは初期状態では無効です。必要な場合だけ設定画面で有効にしてください。</li>
+          <li>サンプリングレートの初期値は 400 ms です。設定画面から変更できます。</li>
+          <li>設定は `%AppData%\StretchViewCS\StretchViewCS.ini` に保存されます。</li>
+        </ul>
+      </section>
+
+      <section id="files" class="card">
+        <h2>保存と出力</h2>
+        <ul class="feature-list">
+          <li>現在の表示画像をファイルに保存できます。</li>
+          <li>現在の表示画像をクリップボードへコピーできます。</li>
+          <li>簡易印刷機能から印刷ダイアログを開けます。</li>
+        </ul>
+      </section>
+
+      <section id="trouble" class="card">
+        <h2>困ったとき</h2>
+        <ul class="feature-list">
+          <li>ヘルプが開かない場合は、アプリと同じ場所に `help` フォルダがあるか確認してください。</li>
+          <li>ホットキーが効かない場合は、設定画面でホットキーが有効か確認してください。</li>
+          <li>対象範囲が追従しない場合は、対象範囲の選択状態と固定化状態を確認してください。</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

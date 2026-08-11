@@ -34,10 +34,10 @@
   <ItemGroup>
     <None Include="app.manifest" />
     <None Include="appIcon.ico" />
-    <Content Include="help\index.html">
+    <Content Include="help\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="help\style.css">
+    <Content Include="ReadMe.*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

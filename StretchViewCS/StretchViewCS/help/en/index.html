@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StretchViewCS Help</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">StretchViewCS Help</p>
+    <h1>StretchViewCS Help</h1>
+    <p class="lead">
+      StretchViewCS is a Windows application for viewing part of the screen with zoom, shrink, rotation, and flip controls.
+      This help file explains the basic workflow and the main features.
+    </p>
+  </header>
+
+  <main class="layout">
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#range">Target Range</a></li>
+        <li><a href="#view">View Controls</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#settings">Settings</a></li>
+        <li><a href="#files">Save and Output</a></li>
+        <li><a href="#trouble">Troubleshooting</a></li>
+      </ul>
+    </nav>
+
+    <div class="content">
+      <section id="overview" class="card">
+        <h2>Overview</h2>
+        <p>
+          StretchViewCS mirrors a selected desktop area into the main window and lets you adjust the view with zoom, rotation, and flip operations.
+          It is useful for checking small details, tracking part of the screen, and saving the current view as an image.
+        </p>
+      </section>
+
+      <section id="range" class="card">
+        <h2>Target Range</h2>
+        <ul class="feature-list">
+          <li>Use Selection Range to choose the screen area to mirror.</li>
+          <li>The red target-range frame can be dragged to adjust its position and size.</li>
+          <li>Use the menu item or checkbox to enable or disable fixed target range mode.</li>
+          <li>Use Ctrl + arrow keys to move the selected target range.</li>
+        </ul>
+      </section>
+
+      <section id="view" class="card">
+        <h2>View Controls</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Zoom in / Zoom out</td>
+              <td>Changes the display scale. Shrinking below the original size is supported.</td>
+            </tr>
+            <tr>
+              <td>Reset zoom</td>
+              <td>Resets the display scale.</td>
+            </tr>
+            <tr>
+              <td>Flip horizontally / vertically</td>
+              <td>Flips the current view horizontally or vertically.</td>
+            </tr>
+            <tr>
+              <td>Rotation</td>
+              <td>Rotates left or right, rotates by a custom angle, or resets rotation.</td>
+            </tr>
+            <tr>
+              <td>Grid / center lines</td>
+              <td>Overlays grid lines or center lines for visual checking.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="tools" class="card">
+        <h2>Tools</h2>
+        <ul class="feature-list">
+          <li>The color picker samples a desktop color and copies the color code to the clipboard.</li>
+          <li>The screen ruler measures width and height on the desktop in pixels.</li>
+          <li>The surface layer lets you draw temporary notes over the main view.</li>
+        </ul>
+      </section>
+
+      <section id="settings" class="card">
+        <h2>Settings</h2>
+        <ul class="feature-list">
+          <li>You can switch the display language between Japanese and English in Settings.</li>
+          <li>Hotkeys are disabled by default. Enable them in Settings only when needed.</li>
+          <li>The default sampling rate is 400 ms. It can be changed in Settings.</li>
+          <li>Settings are saved to `%AppData%\StretchViewCS\StretchViewCS.ini`.</li>
+        </ul>
+      </section>
+
+      <section id="files" class="card">
+        <h2>Save and Output</h2>
+        <ul class="feature-list">
+          <li>You can save the current view as an image file.</li>
+          <li>You can copy the current view to the clipboard.</li>
+          <li>You can open the print dialog from the quick print feature.</li>
+        </ul>
+      </section>
+
+      <section id="trouble" class="card">
+        <h2>Troubleshooting</h2>
+        <ul class="feature-list">
+          <li>If help does not open, check that the `help` folder exists next to the application.</li>
+          <li>If hotkeys do not work, confirm that hotkeys are enabled in Settings.</li>
+          <li>If the target range does not follow changes, check the range selection and fixed range state.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

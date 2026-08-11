@@ -74,6 +74,10 @@ h2 {
   padding: 0 24px 48px;
 }
 
+.layout.single {
+  grid-template-columns: 1fr;
+}
+
 .toc,
 .card {
   background: var(--paper);
