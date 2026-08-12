@@ -151,7 +151,7 @@ StretchViewCS の Windows 版を `Visual Studio` で安定してビルドし、�
 - [IniManager.cs](/C:/repos/StretchViewCS/StretchViewCS/StretchViewCS/Utils/IniManager.cs:1)
 - [frmSetting.cs](/C:/repos/StretchViewCS/StretchViewCS/StretchViewCS/Forms/frmSetting.cs:1)
 - [ColorPickerForm.cs](/C:/repos/StretchViewCS/StretchViewCS/StretchViewCS/Forms/ColorPickerForm.cs:1)
-- [RulerForm.cs](/C:/repos/StretchViewCS/StretchViewCS/StretchViewCS/Forms/RulerForm.cs:1)
+- `RulerForm.cs` は画面定規機能の廃止によりビルド対象外
 
 ## 確認結果の残し方
 

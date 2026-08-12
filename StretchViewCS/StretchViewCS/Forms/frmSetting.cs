@@ -13,6 +13,7 @@ namespace StretchViewCS.Forms
     {
         private CheckBox chkResistProgram;
         private CheckBox chkHotkeysEnabled;
+        private CheckBox chkRestoreFixViewOnStartup = null!;
         private Label lblSamplingRate;
         private Label lblLanguage;
         private NumericUpDown nudSamplingRate;
@@ -32,6 +33,7 @@ namespace StretchViewCS.Forms
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkResistProgram = new System.Windows.Forms.CheckBox();
             this.chkHotkeysEnabled = new System.Windows.Forms.CheckBox();
+            this.chkRestoreFixViewOnStartup = new System.Windows.Forms.CheckBox();
             this.lblSamplingRate = new System.Windows.Forms.Label();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.nudSamplingRate = new System.Windows.Forms.NumericUpDown();
@@ -48,11 +50,12 @@ namespace StretchViewCS.Forms
             this.groupBox1.Controls.Add(this.cmbLanguage);
             this.groupBox1.Controls.Add(this.lblLanguage);
             this.groupBox1.Controls.Add(this.lblSamplingRate);
+            this.groupBox1.Controls.Add(this.chkRestoreFixViewOnStartup);
             this.groupBox1.Controls.Add(this.chkHotkeysEnabled);
             this.groupBox1.Controls.Add(this.chkResistProgram);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 170);
+            this.groupBox1.Size = new System.Drawing.Size(360, 200);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "設定";
@@ -75,27 +78,36 @@ namespace StretchViewCS.Forms
             this.chkHotkeysEnabled.TabIndex = 1;
             this.chkHotkeysEnabled.Text = "ホットキー有効";
             // 
+            // chkRestoreFixViewOnStartup
+            // 
+            this.chkRestoreFixViewOnStartup.AutoSize = true;
+            this.chkRestoreFixViewOnStartup.Location = new System.Drawing.Point(20, 85);
+            this.chkRestoreFixViewOnStartup.Name = "chkRestoreFixViewOnStartup";
+            this.chkRestoreFixViewOnStartup.Size = new System.Drawing.Size(190, 16);
+            this.chkRestoreFixViewOnStartup.TabIndex = 2;
+            this.chkRestoreFixViewOnStartup.Text = "対象範囲の選択を起動時に復元";
+            // 
             // lblSamplingRate
             // 
             this.lblSamplingRate.AutoSize = true;
-            this.lblSamplingRate.Location = new System.Drawing.Point(20, 88);
+            this.lblSamplingRate.Location = new System.Drawing.Point(20, 118);
             this.lblSamplingRate.Name = "lblSamplingRate";
             this.lblSamplingRate.Size = new System.Drawing.Size(114, 12);
-            this.lblSamplingRate.TabIndex = 2;
+            this.lblSamplingRate.TabIndex = 3;
             this.lblSamplingRate.Text = "サンプリングレート(ms)";
             // 
             // lblLanguage
             // 
             this.lblLanguage.AutoSize = true;
-            this.lblLanguage.Location = new System.Drawing.Point(20, 118);
+            this.lblLanguage.Location = new System.Drawing.Point(20, 148);
             this.lblLanguage.Name = "lblLanguage";
             this.lblLanguage.Size = new System.Drawing.Size(53, 12);
-            this.lblLanguage.TabIndex = 4;
+            this.lblLanguage.TabIndex = 5;
             this.lblLanguage.Text = "表示言語";
             // 
             // nudSamplingRate
             // 
-            this.nudSamplingRate.Location = new System.Drawing.Point(160, 84);
+            this.nudSamplingRate.Location = new System.Drawing.Point(160, 114);
             this.nudSamplingRate.Maximum = new decimal(new int[] {
             400,
             0,
@@ -108,7 +120,7 @@ namespace StretchViewCS.Forms
             0});
             this.nudSamplingRate.Name = "nudSamplingRate";
             this.nudSamplingRate.Size = new System.Drawing.Size(80, 19);
-            this.nudSamplingRate.TabIndex = 3;
+            this.nudSamplingRate.TabIndex = 4;
             this.nudSamplingRate.Value = new decimal(new int[] {
             400,
             0,
@@ -119,27 +131,27 @@ namespace StretchViewCS.Forms
             // 
             this.cmbLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLanguage.FormattingEnabled = true;
-            this.cmbLanguage.Location = new System.Drawing.Point(160, 114);
+            this.cmbLanguage.Location = new System.Drawing.Point(160, 144);
             this.cmbLanguage.Name = "cmbLanguage";
             this.cmbLanguage.Size = new System.Drawing.Size(150, 20);
-            this.cmbLanguage.TabIndex = 5;
+            this.cmbLanguage.TabIndex = 6;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(216, 190);
+            this.btnOK.Location = new System.Drawing.Point(216, 220);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 6;
+            this.btnOK.TabIndex = 7;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(297, 190);
+            this.btnCancel.Location = new System.Drawing.Point(297, 220);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 7;
+            this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "キャンセル";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
@@ -148,7 +160,7 @@ namespace StretchViewCS.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 225);
+            this.ClientSize = new System.Drawing.Size(384, 255);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
@@ -191,6 +203,7 @@ namespace StretchViewCS.Forms
             frmCap? mainForm = FindMainForm();
 
             IniManager.Instance.HotkeysEnabled = chkHotkeysEnabled.Checked;
+            IniManager.Instance.RestoreFixViewOnStartup = chkRestoreFixViewOnStartup.Checked;
             IniManager.Instance.SamplingRate = Decimal.ToInt32(nudSamplingRate.Value);
             IniManager.Instance.SetLanguage(GetSelectedLanguage());
             ResisterStartMenu(false, chkResistProgram.Checked, "StretchViewCS");
@@ -209,6 +222,7 @@ namespace StretchViewCS.Forms
         {
             chkResistProgram.Checked = ResisterStartMenu(true, false, "StretchViewCS");
             chkHotkeysEnabled.Checked = IniManager.Instance.HotkeysEnabled;
+            chkRestoreFixViewOnStartup.Checked = IniManager.Instance.RestoreFixViewOnStartup;
             nudSamplingRate.Value = IniManager.Instance.SamplingRate;
             SetSelectedLanguage(IniManager.Instance.Language);
         }
@@ -232,6 +246,7 @@ namespace StretchViewCS.Forms
             groupBox1.Text = LocalizationManager.Text("Settings.Title");
             chkResistProgram.Text = LocalizationManager.Text("Settings.StartMenu");
             chkHotkeysEnabled.Text = LocalizationManager.Text("Settings.HotkeysEnabled");
+            chkRestoreFixViewOnStartup.Text = LocalizationManager.Text("Settings.RestoreFixViewOnStartup");
             lblSamplingRate.Text = LocalizationManager.Text("Settings.SamplingRate");
             lblLanguage.Text = LocalizationManager.Text("Settings.Language");
             btnOK.Text = "OK";

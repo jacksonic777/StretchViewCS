@@ -90,6 +90,7 @@ function New-ReleasePackage {
     Ensure-FileExists -Path (Join-Path $outputRoot "StretchViewCS.exe")
     Ensure-FileExists -Path (Join-Path $outputRoot "StretchViewCS.exe.config")
     Ensure-FileExists -Path (Join-Path $outputRoot "System.Configuration.ConfigurationManager.dll")
+    Ensure-FileExists -Path (Join-Path $outputRoot "appIcon.png")
     Ensure-DirectoryExists -Path (Join-Path $outputRoot "help")
     Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.ja.txt")
     Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.en.txt")
@@ -107,6 +108,7 @@ function New-ReleasePackage {
     Copy-Item -LiteralPath (Join-Path $outputRoot "StretchViewCS.exe") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "StretchViewCS.exe.config") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "System.Configuration.ConfigurationManager.dll") -Destination $packageDirectory
+    Copy-Item -LiteralPath (Join-Path $outputRoot "appIcon.png") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "help") -Destination $packageDirectory -Recurse
     Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.ja.txt") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.en.txt") -Destination $packageDirectory

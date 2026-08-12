@@ -10,8 +10,7 @@ Main Features
 - Select and mirror a target area on the desktop
 - Change the display scale, including shrinking below the original size
 - Flip horizontally, flip vertically, and rotate
-- Grid lines, center lines, screen ruler, and color picker
-- Temporary drawing on the surface layer
+- Grid lines, center lines, and color picker with position, HEX, RGB, and color preview
 - Save the current view, copy it to the clipboard, and use quick print
 - Japanese / English display language switching
 

@@ -36,6 +36,7 @@ namespace StretchViewCS.Utils
         public int FixViewY { get; set; }
         public Rectangle FixViewRect { get; set; }
         public bool HotkeysEnabled { get; set; }
+        public bool RestoreFixViewOnStartup { get; set; }
         public string Language { get; set; } = LocalizationManager.Japanese;
 
         // イベント
@@ -259,6 +260,7 @@ namespace StretchViewCS.Utils
                 ReadInteger("Lenz", "FixViewRectWidth", 0),
                 ReadInteger("Lenz", "FixViewRectHeight", 0));
             HotkeysEnabled = ReadBool("Lenz", "HotkeysEnabled", false);
+            RestoreFixViewOnStartup = ReadBool("Setting", "RestoreFixViewOnStartup", false);
 
             // Setting
             FirstRun = ReadBool("Setting", "FirstRun", true);
@@ -300,6 +302,7 @@ namespace StretchViewCS.Utils
             WriteBool("Setting", "FirstRun", false);
             WriteString("Setting", "LicenseKey", LicenseKey);
             WriteString("Setting", "Language", Language);
+            WriteBool("Setting", "RestoreFixViewOnStartup", RestoreFixViewOnStartup);
             RunCount++;
             WriteInteger("Setting", "RunCount", RunCount);
         }

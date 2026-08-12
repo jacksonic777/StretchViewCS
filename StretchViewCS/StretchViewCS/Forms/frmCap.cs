@@ -130,6 +130,7 @@ namespace StretchViewCS.Forms
         public frmCap()
         {
             InitializeComponent();
+            ApplyApplicationIcon();
             LocalizationManager.SetLanguage(IniManager.Instance.Language);
             ApplyLocalization();
 
@@ -146,9 +147,20 @@ namespace StretchViewCS.Forms
             transH = 300;
         }
 
+        private void ApplyApplicationIcon()
+        {
+            Icon? appIcon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            if (appIcon == null)
+            {
+                throw new InvalidOperationException("Application icon was not found.");
+            }
+
+            this.Icon = appIcon;
+        }
+
         public void ApplyLocalization()
         {
-            mmFixView.Text = LocalizationManager.Text("Main.FixView");
+            mmFixView.Text = LocalizationManager.Text("Main.FixViewMenu");
             mmFixViewSw.Text = LocalizationManager.Text("Main.FixViewToggle");
             mmLeft.Text = LocalizationManager.Text("Main.MoveLeft");
             mmRight.Text = LocalizationManager.Text("Main.MoveRight");
@@ -167,16 +179,19 @@ namespace StretchViewCS.Forms
             mmTopMost.Text = LocalizationManager.Text("Main.TopMost");
             ttsMmTool.Text = LocalizationManager.Text("Main.Tools");
             mmColorPicker.Text = LocalizationManager.Text("Main.ColorPicker");
-            mmRuler.Text = LocalizationManager.Text("Main.Ruler");
+            mmSettings.Text = LocalizationManager.Text("Main.SettingsMenu");
+            // 画面定規機能は廃止済み。
+            // mmRuler.Text = LocalizationManager.Text("Main.Ruler");
             mmSaveAsImageFile.Text = LocalizationManager.Text("Main.SaveImage");
             mmSaveViewFile.Text = LocalizationManager.Text("Main.SaveBitmap");
             mmCopyToClipBoard.Text = LocalizationManager.Text("Main.CopyClipboard");
             mmPrint.Text = LocalizationManager.Text("Main.Print");
             拡張機能XToolStripMenuItem.Text = LocalizationManager.Text("Main.Extensions");
-            mAtari.Text = LocalizationManager.Text("Main.SurfaceLayer");
-            mmAtariMode.Text = LocalizationManager.Text("Main.SurfaceDrawMode");
-            mmBltAtari.Text = LocalizationManager.Text("Main.SurfaceVisible");
-            mmClearAtari.Text = LocalizationManager.Text("Main.SurfaceClear");
+            // 表面レイヤ機能は廃止済み。
+            // mAtari.Text = LocalizationManager.Text("Main.SurfaceLayer");
+            // mmAtariMode.Text = LocalizationManager.Text("Main.SurfaceDrawMode");
+            // mmBltAtari.Text = LocalizationManager.Text("Main.SurfaceVisible");
+            // mmClearAtari.Text = LocalizationManager.Text("Main.SurfaceClear");
             mmHelp.Text = LocalizationManager.Text("Main.Help");
             Help2.Text = LocalizationManager.Text("Main.OpenHelp");
             About1.Text = LocalizationManager.Text("Main.About");
@@ -189,7 +204,8 @@ namespace StretchViewCS.Forms
             tbRRotate.Text = LocalizationManager.Text("Main.RotateRight");
             tbResetRotation.Text = LocalizationManager.Text("Main.ResetRotation");
             tbColorPicker.Text = LocalizationManager.Text("Main.ColorPicker");
-            tbRuler.Text = LocalizationManager.Text("Main.RulerButton");
+            // 画面定規機能は廃止済み。
+            // tbRuler.Text = LocalizationManager.Text("Main.RulerButton");
             btnOpenSettings.Text = LocalizationManager.Text("Main.SettingsButton");
             chkHotkeysEnabled.Text = LocalizationManager.Text("Main.Hotkeys");
             chkFixSubjectRange.Text = LocalizationManager.Text("Main.FixView");
@@ -234,7 +250,7 @@ namespace StretchViewCS.Forms
             SyncHotkeysUi(hotkeysEnabled);
 
             // 固定表示モード
-            if (IniManager.Instance.FixView)
+            if (IniManager.Instance.RestoreFixViewOnStartup && IniManager.Instance.FixView)
             {
                 // 前回終了時の「範囲の指定」位置を復元
                 Rectangle selectionRect = IniManager.Instance.FixViewRect;
@@ -297,9 +313,9 @@ namespace StretchViewCS.Forms
             IniManager.Instance.BoundsRect = GetBoundsForPersistence();
             IniManager.Instance.ScaleWidth = transW > 0 ? transW : IniManager.Instance.ScaleWidth;
             IniManager.Instance.ScaleHeight = transH > 0 ? transH : IniManager.Instance.ScaleHeight;
-            IniManager.Instance.FixView = bFixedView;
+            IniManager.Instance.FixView = IniManager.Instance.RestoreFixViewOnStartup && bFixedView;
             IniManager.Instance.HotkeysEnabled = hotkeysEnabled;
-            if (bFixedView)
+            if (IniManager.Instance.RestoreFixViewOnStartup && bFixedView)
             {
                 int centerX = baseX + capSizeW / 2;
                 int centerY = baseY + capSizeH / 2;
@@ -2423,28 +2439,17 @@ namespace StretchViewCS.Forms
 
         private void MmAtariModeClick(object? sender, EventArgs e)
         {
-            AtariMode(!bAtariMode);
-            bStateUpdate = true;
-            UpdateCaption();
+            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
         }
 
         private void MmBltAtariClick(object? sender, EventArgs e)
         {
-            SetAtariOverlayVisible(!bBltAtari);
-            bStateUpdate = true;
-            UpdateCaption();
+            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
         }
 
         private void MmClearAtariClick(object? sender, EventArgs e)
         {
-            if (bmpAtari != null)
-            {
-                using (Graphics g = Graphics.FromImage(bmpAtari))
-                {
-                    g.Clear(Color.Transparent);
-                }
-            }
-            InvalidateMainView();
+            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
         }
 
         private void MmTopMostClick(object? sender, EventArgs e)
@@ -2531,10 +2536,7 @@ namespace StretchViewCS.Forms
 
         private void OpenRuler()
         {
-            using (var ruler = new RulerForm())
-            {
-                ruler.ShowDialog();
-            }
+            throw new NotSupportedException("画面定規機能は廃止されました。");
         }
 
         private Bitmap CreateMainViewBitmap()
@@ -2816,10 +2818,11 @@ namespace StretchViewCS.Forms
                 }
             }
 
-            if (bBltAtari && bmpAtari != null)
-            {
-                graphics.DrawImageUnscaled(bmpAtari, 0, 0);
-            }
+            // 表面レイヤ機能は廃止済み。
+            // if (bBltAtari && bmpAtari != null)
+            // {
+            //     graphics.DrawImageUnscaled(bmpAtari, 0, 0);
+            // }
 
             // カーソル位置表示（固定表示モードでない場合）
             if (!bFixed && !bAtariMode && !bMouseCap)

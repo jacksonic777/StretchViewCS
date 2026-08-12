@@ -32,8 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Forms\RulerForm.cs" />
     <None Include="app.manifest" />
     <None Include="appIcon.ico" />
+    <None Include="appIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="help\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

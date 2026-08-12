@@ -12,8 +12,13 @@ namespace StretchViewCS.Forms
     /// </summary>
     public class ColorPickerForm : Form
     {
-        private Label _lblColor;
-        private Panel _pnlPreview;
+        private const uint ColorReadFailed = 0xFFFFFFFF;
+
+        private ColorPickerInfoForm? _infoForm;
+        private Point _lastScreenPoint;
+        private Color _lastColor;
+        private bool _hasLastColor;
+
         public ColorPickerForm()
         {
             FormBorderStyle = FormBorderStyle.None;
@@ -29,50 +34,46 @@ namespace StretchViewCS.Forms
             Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             DoubleBuffered = true;
 
-            _pnlPreview = new Panel
-            {
-                Size = new Size(140, 60),
-                BackColor = Color.FromArgb(240, 240, 240),
-                BorderStyle = BorderStyle.FixedSingle
-            };
-            _lblColor = new Label
-            {
-                AutoSize = false,
-                Size = new Size(130, 40),
-                Location = new Point(5, 5),
-                Font = new Font("Consolas", 9f),
-                Text = "#000000\r\nR=0 G=0 B=0"
-            };
-            _pnlPreview.Controls.Add(_lblColor);
-            Controls.Add(_pnlPreview);
-
-            KeyDown += (s, e) =>
-            {
-                if (e.KeyCode == Keys.Escape)
-                    Close();
-            };
+            KeyDown += ColorPickerForm_KeyDown;
             MouseMove += ColorPickerForm_MouseMove;
             MouseClick += ColorPickerForm_MouseClick;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            _infoForm = new ColorPickerInfoForm();
+            _infoForm.Show(this);
+
+            Point screenPt = Cursor.Position;
+            UpdateColorInfo(screenPt, true);
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (_infoForm != null)
+            {
+                _infoForm.Close();
+                _infoForm.Dispose();
+                _infoForm = null;
+            }
+
+            base.OnFormClosed(e);
+        }
+
+        private void ColorPickerForm_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
         }
 
         private void ColorPickerForm_MouseMove(object? sender, MouseEventArgs e)
         {
             Point screenPt = PointToScreen(e.Location);
-            UpdateColorLabel(screenPt.X, screenPt.Y);
-
-            // ラベルをカーソル近くに表示（画面内に収める）
-            int margin = 12;
-            int x = screenPt.X + margin;
-            int y = screenPt.Y + margin;
-            if (x + _pnlPreview.Width > Bounds.Right)
-                x = screenPt.X - _pnlPreview.Width - margin;
-            if (y + _pnlPreview.Height > Bounds.Bottom)
-                y = screenPt.Y - _pnlPreview.Height - margin;
-            if (x < Bounds.Left)
-                x = Bounds.Left + margin;
-            if (y < Bounds.Top)
-                y = Bounds.Top + margin;
-            _pnlPreview.Location = new Point(x, y);
+            UpdateColorInfo(screenPt, false);
         }
 
         private void ColorPickerForm_MouseClick(object? sender, MouseEventArgs e)
@@ -98,18 +99,26 @@ namespace StretchViewCS.Forms
             Close();
         }
 
-        private void UpdateColorLabel(int screenX, int screenY)
+        private void UpdateColorInfo(Point screenPt, bool forceUpdate)
         {
-            Color c = GetColorAtScreen(screenX, screenY);
-            _lblColor.Text = $"#{c.R:X2}{c.G:X2}{c.B:X2}\r\nR={c.R} G={c.G} B={c.B}";
-            _pnlPreview.BackColor = c;
-            _lblColor.ForeColor = GetContrastColor(c);
-        }
+            Color color = GetColorAtScreen(screenPt.X, screenPt.Y);
+            bool pointChanged = !_hasLastColor || _lastScreenPoint != screenPt;
+            bool colorChanged = !_hasLastColor || _lastColor.ToArgb() != color.ToArgb();
+            if (!forceUpdate && !pointChanged && !colorChanged)
+            {
+                return;
+            }
 
-        private static Color GetContrastColor(Color c)
-        {
-            double luminance = (0.299 * c.R + 0.587 * c.G + 0.114 * c.B) / 255.0;
-            return luminance > 0.5 ? Color.Black : Color.White;
+            _lastScreenPoint = screenPt;
+            _lastColor = color;
+            _hasLastColor = true;
+
+            if (_infoForm == null)
+            {
+                throw new InvalidOperationException("Color picker information form has not been initialized.");
+            }
+
+            _infoForm.UpdateInfo(screenPt, color, Bounds);
         }
 
         /// <summary>
@@ -122,7 +131,7 @@ namespace StretchViewCS.Forms
             try
             {
                 uint cr = Win32API.GetPixel(hdc, screenX, screenY);
-                if (cr == 0xFFFFFFFF)
+                if (cr == ColorReadFailed)
                     return Color.Black;
                 int r = (int)(cr & 0xFF);
                 int g = (int)((cr >> 8) & 0xFF);

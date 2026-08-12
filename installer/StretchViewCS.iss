@@ -41,6 +41,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#PackageDir}\StretchViewCS.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\StretchViewCS.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\System.Configuration.ConfigurationManager.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PackageDir}\appIcon.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\help\*"; DestDir: "{app}\help"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#PackageDir}\ReadMe.ja.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PackageDir}\ReadMe.en.txt"; DestDir: "{app}"; Flags: ignoreversion

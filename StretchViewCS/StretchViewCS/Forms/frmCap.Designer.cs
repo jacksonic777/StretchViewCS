@@ -33,13 +33,21 @@ namespace StretchViewCS.Forms
             this.tim = new System.Windows.Forms.Timer(this.components);
             this.timRepeat = new System.Windows.Forms.Timer(this.components);
             this.mMainMenu = new System.Windows.Forms.MenuStrip();
-            this.mmFixView = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmFixViewSw = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mmLeft = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmRight = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmUpper = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmDowner = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmView = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmTopMost = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraph30 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraph40 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraph50 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraph60 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGraphFlex = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmGrid = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmWndSize = new System.Windows.Forms.ToolStripMenuItem();
+            this.mm200x200 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mm300x300 = new System.Windows.Forms.ToolStripMenuItem();
+            this.N400x3001 = new System.Windows.Forms.ToolStripMenuItem();
+            this.N400x4001 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mm300x400 = new System.Windows.Forms.ToolStripMenuItem();
             this.mmRate = new System.Windows.Forms.ToolStripMenuItem();
             this.mmUP = new System.Windows.Forms.ToolStripMenuItem();
             this.mmDown = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,15 +76,24 @@ namespace StretchViewCS.Forms
             this.mmRedrawDesk = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Exit2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmView = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmTopMost = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmFixView = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmFixViewSw = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mmLeft = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmRight = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmUpper = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmDowner = new System.Windows.Forms.ToolStripMenuItem();
             this.ttsMmTool = new System.Windows.Forms.ToolStripMenuItem();
             this.mmColorPicker = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmRuler = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mmSaveAsImageFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mmSaveViewFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mmCopyToClipBoard = new System.Windows.Forms.ToolStripMenuItem();
             this.mmPrint = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.Help2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.About1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmRuler = new System.Windows.Forms.ToolStripMenuItem();
             this.拡張機能XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mAtari = new System.Windows.Forms.ToolStripMenuItem();
             this.mmAtariMode = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,9 +105,6 @@ namespace StretchViewCS.Forms
             this.mmWndInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.mmClassName = new System.Windows.Forms.ToolStripMenuItem();
             this.mmWindowText = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmHelp = new System.Windows.Forms.ToolStripMenuItem();
-            this.Help2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.About1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelBarBase = new System.Windows.Forms.Panel();
             this.toolbarMain = new System.Windows.Forms.ToolStrip();
             this.tbZoomUp = new System.Windows.Forms.ToolStripButton();
@@ -111,7 +125,6 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.tbColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            this.tbRuler = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.btnOpenSettings = new System.Windows.Forms.Button();
@@ -122,6 +135,7 @@ namespace StretchViewCS.Forms
             this.toolbarAdvanced = new System.Windows.Forms.ToolStrip();
             this.tbFixSimu = new System.Windows.Forms.ToolStripButton();
             this.tbGrid = new System.Windows.Forms.ToolStripButton();
+            this.tbRuler = new System.Windows.Forms.ToolStripButton();
             this.tbAtariMode = new System.Windows.Forms.ToolStripButton();
             this.tbAtariVisible = new System.Windows.Forms.ToolStripButton();
             this.tbClear = new System.Windows.Forms.ToolStripButton();
@@ -131,19 +145,6 @@ namespace StretchViewCS.Forms
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbMainView = new System.Windows.Forms.PictureBox();
-            this.mmGraph = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGraph30 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGraph40 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGraph50 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGraph60 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGraphFlex = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmGrid = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmWndSize = new System.Windows.Forms.ToolStripMenuItem();
-            this.mm200x200 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mm300x300 = new System.Windows.Forms.ToolStripMenuItem();
-            this.N400x3001 = new System.Windows.Forms.ToolStripMenuItem();
-            this.N400x4001 = new System.Windows.Forms.ToolStripMenuItem();
-            this.mm300x400 = new System.Windows.Forms.ToolStripMenuItem();
             this.mMainMenu.SuspendLayout();
             this.panelBarBase.SuspendLayout();
             this.toolbarMain.SuspendLayout();
@@ -165,11 +166,10 @@ namespace StretchViewCS.Forms
             // mMainMenu
             // 
             this.mMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mmFixView,
-            this.mmRate,
             this.mmView,
+            this.mmRate,
+            this.mmFixView,
             this.ttsMmTool,
-            this.拡張機能XToolStripMenuItem,
             this.mmHelp});
             this.mMainMenu.Location = new System.Drawing.Point(0, 0);
             this.mMainMenu.Name = "mMainMenu";
@@ -177,63 +177,125 @@ namespace StretchViewCS.Forms
             this.mMainMenu.TabIndex = 0;
             this.mMainMenu.Text = "menuStrip1";
             // 
-            // mmFixView
+            // mmView
             // 
-            this.mmFixView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mmFixViewSw,
-            this.toolStripSeparator5,
-            this.mmLeft,
-            this.mmRight,
-            this.mmUpper,
-            this.mmDowner});
-            this.mmFixView.Name = "mmFixView";
-            this.mmFixView.Size = new System.Drawing.Size(101, 20);
-            this.mmFixView.Text = "対象範囲の選択";
-            this.mmFixView.DropDownOpening += new System.EventHandler(this.MmFixViewClick);
+            this.mmView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mmTopMost,
+            this.mmGraph,
+            this.mmGrid,
+            this.mmWndSize});
+            this.mmView.Name = "mmView";
+            this.mmView.Size = new System.Drawing.Size(58, 20);
+            this.mmView.Text = "表示(&V)";
             // 
-            // mmFixViewSw
+            // mmTopMost
             // 
-            this.mmFixViewSw.Name = "mmFixViewSw";
-            this.mmFixViewSw.Size = new System.Drawing.Size(236, 22);
-            this.mmFixViewSw.Text = "範囲の指定←→解除";
-            this.mmFixViewSw.Click += new System.EventHandler(this.MmFixViewSwClick);
+            this.mmTopMost.Name = "mmTopMost";
+            this.mmTopMost.Size = new System.Drawing.Size(168, 22);
+            this.mmTopMost.Text = "最前面表示";
+            this.mmTopMost.Click += new System.EventHandler(this.MmTopMostClick);
             // 
-            // toolStripSeparator5
+            // mmGraph
             // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(233, 6);
+            this.mmGraph.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mmGraph30,
+            this.mmGraph40,
+            this.mmGraph50,
+            this.mmGraph60,
+            this.mmGraphFlex});
+            this.mmGraph.Name = "mmGraph";
+            this.mmGraph.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.mmGraph.Size = new System.Drawing.Size(168, 22);
+            this.mmGraph.Text = "方眼表示";
             // 
-            // mmLeft
+            // mmGraph30
             // 
-            this.mmLeft.Name = "mmLeft";
-            this.mmLeft.ShortcutKeyDisplayString = "Ctrl+←";
-            this.mmLeft.Size = new System.Drawing.Size(236, 22);
-            this.mmLeft.Text = "← 表示範囲を左に移動";
-            this.mmLeft.Click += new System.EventHandler(this.MmLeftClick);
+            this.mmGraph30.Name = "mmGraph30";
+            this.mmGraph30.Size = new System.Drawing.Size(135, 22);
+            this.mmGraph30.Text = "30ピクセル線";
+            this.mmGraph30.Click += new System.EventHandler(this.MmGraph30Click);
             // 
-            // mmRight
+            // mmGraph40
             // 
-            this.mmRight.Name = "mmRight";
-            this.mmRight.ShortcutKeyDisplayString = "Ctrl+→";
-            this.mmRight.Size = new System.Drawing.Size(236, 22);
-            this.mmRight.Text = "→ 表示範囲を右に移動";
-            this.mmRight.Click += new System.EventHandler(this.MmRightClick);
+            this.mmGraph40.Name = "mmGraph40";
+            this.mmGraph40.Size = new System.Drawing.Size(135, 22);
+            this.mmGraph40.Text = "40ピクセル線";
+            this.mmGraph40.Click += new System.EventHandler(this.MmGraph40Click);
             // 
-            // mmUpper
+            // mmGraph50
             // 
-            this.mmUpper.Name = "mmUpper";
-            this.mmUpper.ShortcutKeyDisplayString = "Ctrl+↑";
-            this.mmUpper.Size = new System.Drawing.Size(236, 22);
-            this.mmUpper.Text = "↑表示範囲を上に移動";
-            this.mmUpper.Click += new System.EventHandler(this.MmUpperClick);
+            this.mmGraph50.Name = "mmGraph50";
+            this.mmGraph50.Size = new System.Drawing.Size(135, 22);
+            this.mmGraph50.Text = "50ピクセル線";
+            this.mmGraph50.Click += new System.EventHandler(this.MmGraph50Click);
             // 
-            // mmDowner
+            // mmGraph60
             // 
-            this.mmDowner.Name = "mmDowner";
-            this.mmDowner.ShortcutKeyDisplayString = "Ctrl+↓";
-            this.mmDowner.Size = new System.Drawing.Size(236, 22);
-            this.mmDowner.Text = "↓表示範囲を下に移動";
-            this.mmDowner.Click += new System.EventHandler(this.MmDownerClick);
+            this.mmGraph60.Name = "mmGraph60";
+            this.mmGraph60.Size = new System.Drawing.Size(135, 22);
+            this.mmGraph60.Text = "60ピクセル線";
+            this.mmGraph60.Click += new System.EventHandler(this.MmGraph60Click);
+            // 
+            // mmGraphFlex
+            // 
+            this.mmGraphFlex.Name = "mmGraphFlex";
+            this.mmGraphFlex.Size = new System.Drawing.Size(135, 22);
+            this.mmGraphFlex.Text = "任意";
+            this.mmGraphFlex.Click += new System.EventHandler(this.MmGraphFlexClick);
+            // 
+            // mmGrid
+            // 
+            this.mmGrid.Name = "mmGrid";
+            this.mmGrid.Size = new System.Drawing.Size(168, 22);
+            this.mmGrid.Text = "中心線表示";
+            this.mmGrid.Click += new System.EventHandler(this.MmGridClick);
+            // 
+            // mmWndSize
+            // 
+            this.mmWndSize.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mm200x200,
+            this.mm300x300,
+            this.N400x3001,
+            this.N400x4001,
+            this.mm300x400});
+            this.mmWndSize.Name = "mmWndSize";
+            this.mmWndSize.Size = new System.Drawing.Size(168, 22);
+            this.mmWndSize.Text = "ウィンドウ定型サイズ";
+            // 
+            // mm200x200
+            // 
+            this.mm200x200.Name = "mm200x200";
+            this.mm200x200.Size = new System.Drawing.Size(215, 22);
+            this.mm200x200.Text = "200 x 200 サイズ (小 正方形)";
+            this.mm200x200.Click += new System.EventHandler(this.Mm200x200Click);
+            // 
+            // mm300x300
+            // 
+            this.mm300x300.Name = "mm300x300";
+            this.mm300x300.Size = new System.Drawing.Size(215, 22);
+            this.mm300x300.Text = "300 x 300 サイズ (正方形)";
+            this.mm300x300.Click += new System.EventHandler(this.Mm300x300Click);
+            // 
+            // N400x3001
+            // 
+            this.N400x3001.Name = "N400x3001";
+            this.N400x3001.Size = new System.Drawing.Size(215, 22);
+            this.N400x3001.Text = "400 x 300 サイズ (横長)";
+            this.N400x3001.Click += new System.EventHandler(this.N400x3001Click);
+            // 
+            // N400x4001
+            // 
+            this.N400x4001.Name = "N400x4001";
+            this.N400x4001.Size = new System.Drawing.Size(215, 22);
+            this.N400x4001.Text = "400 x 400 サイズ (中 正方形)";
+            this.N400x4001.Click += new System.EventHandler(this.N400x4001Click);
+            // 
+            // mm300x400
+            // 
+            this.mm300x400.Name = "mm300x400";
+            this.mm300x400.Size = new System.Drawing.Size(215, 22);
+            this.mm300x400.Text = "300 x 400 サイズ (縦長)";
+            this.mm300x400.Click += new System.EventHandler(this.Mm300x400Click);
             // 
             // mmRate
             // 
@@ -268,8 +330,8 @@ namespace StretchViewCS.Forms
             this.mmRate.Name = "mmRate";
             this.mmRate.Size = new System.Drawing.Size(117, 20);
             this.mmRate.Text = "拡大・反転・回転(&E)";
-            this.mmRate.Click += new System.EventHandler(this.MmRateClick);
             this.mmRate.DropDownOpening += new System.EventHandler(this.MmRateClick);
+            this.mmRate.Click += new System.EventHandler(this.MmRateClick);
             // 
             // mmUP
             // 
@@ -467,30 +529,70 @@ namespace StretchViewCS.Forms
             this.Exit2.Text = "終了";
             this.Exit2.Click += new System.EventHandler(this.Exit1Click);
             // 
-            // mmView
+            // mmFixView
             // 
-            this.mmView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mmTopMost,
-            this.mmGraph,
-            this.mmGrid,
-            this.mmWndSize});
-            this.mmView.Name = "mmView";
-            this.mmView.Size = new System.Drawing.Size(58, 20);
-            this.mmView.Text = "表示(&V)";
+            this.mmFixView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mmFixViewSw,
+            this.toolStripSeparator5,
+            this.mmLeft,
+            this.mmRight,
+            this.mmUpper,
+            this.mmDowner});
+            this.mmFixView.Name = "mmFixView";
+            this.mmFixView.Size = new System.Drawing.Size(115, 20);
+            this.mmFixView.Text = "対象範囲の選択(&S)";
+            this.mmFixView.DropDownOpening += new System.EventHandler(this.MmFixViewClick);
             // 
-            // mmTopMost
+            // mmFixViewSw
             // 
-            this.mmTopMost.Name = "mmTopMost";
-            this.mmTopMost.Size = new System.Drawing.Size(180, 22);
-            this.mmTopMost.Text = "最前面表示";
-            this.mmTopMost.Click += new System.EventHandler(this.MmTopMostClick);
+            this.mmFixViewSw.Name = "mmFixViewSw";
+            this.mmFixViewSw.Size = new System.Drawing.Size(236, 22);
+            this.mmFixViewSw.Text = "範囲の指定←→解除";
+            this.mmFixViewSw.Click += new System.EventHandler(this.MmFixViewSwClick);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(233, 6);
+            // 
+            // mmLeft
+            // 
+            this.mmLeft.Name = "mmLeft";
+            this.mmLeft.ShortcutKeyDisplayString = "Ctrl+←";
+            this.mmLeft.Size = new System.Drawing.Size(236, 22);
+            this.mmLeft.Text = "← 表示範囲を左に移動";
+            this.mmLeft.Click += new System.EventHandler(this.MmLeftClick);
+            // 
+            // mmRight
+            // 
+            this.mmRight.Name = "mmRight";
+            this.mmRight.ShortcutKeyDisplayString = "Ctrl+→";
+            this.mmRight.Size = new System.Drawing.Size(236, 22);
+            this.mmRight.Text = "→ 表示範囲を右に移動";
+            this.mmRight.Click += new System.EventHandler(this.MmRightClick);
+            // 
+            // mmUpper
+            // 
+            this.mmUpper.Name = "mmUpper";
+            this.mmUpper.ShortcutKeyDisplayString = "Ctrl+↑";
+            this.mmUpper.Size = new System.Drawing.Size(236, 22);
+            this.mmUpper.Text = "↑表示範囲を上に移動";
+            this.mmUpper.Click += new System.EventHandler(this.MmUpperClick);
+            // 
+            // mmDowner
+            // 
+            this.mmDowner.Name = "mmDowner";
+            this.mmDowner.ShortcutKeyDisplayString = "Ctrl+↓";
+            this.mmDowner.Size = new System.Drawing.Size(236, 22);
+            this.mmDowner.Text = "↓表示範囲を下に移動";
+            this.mmDowner.Click += new System.EventHandler(this.MmDownerClick);
             // 
             // ttsMmTool
             // 
             this.ttsMmTool.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mmColorPicker,
-            this.mmRuler,
-            this.mmSaveAsImageFile});
+            this.mmSaveAsImageFile,
+            this.mmSettings});
             this.ttsMmTool.Name = "ttsMmTool";
             this.ttsMmTool.Size = new System.Drawing.Size(60, 20);
             this.ttsMmTool.Text = "ツール(&T)";
@@ -498,16 +600,16 @@ namespace StretchViewCS.Forms
             // mmColorPicker
             // 
             this.mmColorPicker.Name = "mmColorPicker";
-            this.mmColorPicker.Size = new System.Drawing.Size(209, 22);
-            this.mmColorPicker.Text = "カラーピッカー（デスクトップ）";
+            this.mmColorPicker.Size = new System.Drawing.Size(180, 22);
+            this.mmColorPicker.Text = "カラーピッカー";
             this.mmColorPicker.Click += new System.EventHandler(this.MmColorPickerClick);
             // 
-            // mmRuler
+            // mmSettings
             // 
-            this.mmRuler.Name = "mmRuler";
-            this.mmRuler.Size = new System.Drawing.Size(209, 22);
-            this.mmRuler.Text = "画面定規（幅・高さ計測）";
-            this.mmRuler.Click += new System.EventHandler(this.MmRulerClick);
+            this.mmSettings.Name = "mmSettings";
+            this.mmSettings.Size = new System.Drawing.Size(180, 22);
+            this.mmSettings.Text = "設定..";
+            this.mmSettings.Click += new System.EventHandler(this.MmOptionClick);
             // 
             // mmSaveAsImageFile
             // 
@@ -516,7 +618,7 @@ namespace StretchViewCS.Forms
             this.mmCopyToClipBoard,
             this.mmPrint});
             this.mmSaveAsImageFile.Name = "mmSaveAsImageFile";
-            this.mmSaveAsImageFile.Size = new System.Drawing.Size(209, 22);
+            this.mmSaveAsImageFile.Size = new System.Drawing.Size(180, 22);
             this.mmSaveAsImageFile.Text = "画像の保存";
             // 
             // mmSaveViewFile
@@ -540,12 +642,38 @@ namespace StretchViewCS.Forms
             this.mmPrint.Text = "簡易印刷...";
             this.mmPrint.Click += new System.EventHandler(this.MmPrintClick);
             // 
+            // mmHelp
+            // 
+            this.mmHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Help2,
+            this.About1});
+            this.mmHelp.Name = "mmHelp";
+            this.mmHelp.Size = new System.Drawing.Size(65, 20);
+            this.mmHelp.Text = "ヘルプ(&H)";
+            // 
+            // Help2
+            // 
+            this.Help2.Name = "Help2";
+            this.Help2.Size = new System.Drawing.Size(142, 22);
+            this.Help2.Text = "ヘルプを開く";
+            this.Help2.Click += new System.EventHandler(this.Help2Click);
+            // 
+            // About1
+            // 
+            this.About1.Name = "About1";
+            this.About1.Size = new System.Drawing.Size(142, 22);
+            this.About1.Text = "バージョン情報";
+            this.About1.Click += new System.EventHandler(this.About1Click);
+            // 
+            // mmRuler
+            // 
+            this.mmRuler.Name = "mmRuler";
+            this.mmRuler.Size = new System.Drawing.Size(208, 22);
+            this.mmRuler.Text = "画面定規（幅・高さ計測）";
+            this.mmRuler.Click += new System.EventHandler(this.MmRulerClick);
+            // 
             // 拡張機能XToolStripMenuItem
             // 
-            this.拡張機能XToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mAtari
-            // this.mmAtaris
-            });
             this.拡張機能XToolStripMenuItem.Name = "拡張機能XToolStripMenuItem";
             this.拡張機能XToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
             this.拡張機能XToolStripMenuItem.Text = "拡張機能(&X)";
@@ -565,26 +693,26 @@ namespace StretchViewCS.Forms
             // mmAtariMode
             // 
             this.mmAtariMode.Name = "mmAtariMode";
-            this.mmAtariMode.Size = new System.Drawing.Size(307, 22);
+            this.mmAtariMode.Size = new System.Drawing.Size(262, 22);
             this.mmAtariMode.Text = "表面レイヤへの描き込みモード ON/OFF";
             this.mmAtariMode.Click += new System.EventHandler(this.MmAtariModeClick);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(304, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(259, 6);
             // 
             // mmBltAtari
             // 
             this.mmBltAtari.Name = "mmBltAtari";
-            this.mmBltAtari.Size = new System.Drawing.Size(307, 22);
+            this.mmBltAtari.Size = new System.Drawing.Size(262, 22);
             this.mmBltAtari.Text = "表面レイヤの表示/非表示";
             this.mmBltAtari.Click += new System.EventHandler(this.MmBltAtariClick);
             // 
             // mmClearAtari
             // 
             this.mmClearAtari.Name = "mmClearAtari";
-            this.mmClearAtari.Size = new System.Drawing.Size(307, 22);
+            this.mmClearAtari.Size = new System.Drawing.Size(262, 22);
             this.mmClearAtari.Text = "表面レイヤのクリア";
             this.mmClearAtari.Click += new System.EventHandler(this.MmClearAtariClick);
             // 
@@ -596,8 +724,8 @@ namespace StretchViewCS.Forms
             this.mmAtaris.Name = "mmAtaris";
             this.mmAtaris.Size = new System.Drawing.Size(126, 22);
             this.mmAtaris.Text = "操作投影";
-            this.mmAtaris.Click += new System.EventHandler(this.MmAtarisClick);
             this.mmAtaris.DropDownOpening += new System.EventHandler(this.MmAtarisClick);
+            this.mmAtaris.Click += new System.EventHandler(this.MmAtarisClick);
             // 
             // mmFix
             // 
@@ -627,29 +755,6 @@ namespace StretchViewCS.Forms
             this.mmWindowText.Name = "mmWindowText";
             this.mmWindowText.Size = new System.Drawing.Size(151, 22);
             this.mmWindowText.Text = "ウィンドウテキスト";
-            // 
-            // mmHelp
-            // 
-            this.mmHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Help2,
-            this.About1});
-            this.mmHelp.Name = "mmHelp";
-            this.mmHelp.Size = new System.Drawing.Size(65, 20);
-            this.mmHelp.Text = "ヘルプ(&H)";
-            // 
-            // Help2
-            // 
-            this.Help2.Name = "Help2";
-            this.Help2.Size = new System.Drawing.Size(180, 22);
-            this.Help2.Text = "ヘルプを開く";
-            this.Help2.Click += new System.EventHandler(this.Help2Click);
-            // 
-            // About1
-            // 
-            this.About1.Name = "About1";
-            this.About1.Size = new System.Drawing.Size(180, 22);
-            this.About1.Text = "バージョン情報";
-            this.About1.Click += new System.EventHandler(this.About1Click);
             // 
             // panelBarBase
             // 
@@ -686,7 +791,6 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator13,
             this.tbColorPicker,
             this.toolStripSeparator15,
-            this.tbRuler,
             this.toolStripSeparator14});
             this.toolbarMain.Location = new System.Drawing.Point(0, 26);
             this.toolbarMain.Name = "toolbarMain";
@@ -868,17 +972,6 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator15.Name = "toolStripSeparator15";
             this.toolStripSeparator15.Size = new System.Drawing.Size(6, 56);
             // 
-            // tbRuler
-            // 
-            this.tbRuler.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.tbRuler.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbRuler.ForeColor = System.Drawing.Color.Blue;
-            this.tbRuler.Name = "tbRuler";
-            this.tbRuler.Size = new System.Drawing.Size(57, 53);
-            this.tbRuler.Text = "画面定規";
-            this.tbRuler.ToolTipText = "画面定規でデスクトップ上の幅・高さを計測します。";
-            this.tbRuler.Click += new System.EventHandler(this.TbRulerClick);
-            // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
@@ -901,18 +994,18 @@ namespace StretchViewCS.Forms
             // 
             // btnOpenSettings
             // 
-            this.btnOpenSettings.Location = new System.Drawing.Point(479, 1);
+            this.btnOpenSettings.Location = new System.Drawing.Point(508, 1);
             this.btnOpenSettings.Name = "btnOpenSettings";
-            this.btnOpenSettings.Size = new System.Drawing.Size(41, 19);
+            this.btnOpenSettings.Size = new System.Drawing.Size(57, 19);
             this.btnOpenSettings.TabIndex = 4;
-            this.btnOpenSettings.Text = "設定";
+            this.btnOpenSettings.Text = "設定..";
             this.btnOpenSettings.UseVisualStyleBackColor = true;
             this.btnOpenSettings.Click += new System.EventHandler(this.MmOptionClick);
             // 
             // txtState
             // 
             this.txtState.BackColor = System.Drawing.SystemColors.Menu;
-            this.txtState.Location = new System.Drawing.Point(295, 2);
+            this.txtState.Location = new System.Drawing.Point(319, 1);
             this.txtState.Name = "txtState";
             this.txtState.Size = new System.Drawing.Size(178, 19);
             this.txtState.TabIndex = 3;
@@ -922,9 +1015,9 @@ namespace StretchViewCS.Forms
             this.chkHotkeysEnabled.AutoSize = true;
             this.chkHotkeysEnabled.Location = new System.Drawing.Point(205, 2);
             this.chkHotkeysEnabled.Name = "chkHotkeysEnabled";
-            this.chkHotkeysEnabled.Size = new System.Drawing.Size(84, 16);
+            this.chkHotkeysEnabled.Size = new System.Drawing.Size(108, 16);
             this.chkHotkeysEnabled.TabIndex = 2;
-            this.chkHotkeysEnabled.Text = "ホットキー";
+            this.chkHotkeysEnabled.Text = "ホットキー有効";
             this.chkHotkeysEnabled.UseVisualStyleBackColor = true;
             this.chkHotkeysEnabled.CheckedChanged += new System.EventHandler(this.ChkHotkeysEnabled_CheckedChanged);
             // 
@@ -957,13 +1050,10 @@ namespace StretchViewCS.Forms
             this.toolbarAdvanced.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolbarAdvanced.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbFixSimu,
-            this.tbGrid,
-            this.tbAtariMode,
-            this.tbAtariVisible,
-            this.tbClear});
+            this.tbGrid});
             this.toolbarAdvanced.Location = new System.Drawing.Point(0, 0);
             this.toolbarAdvanced.Name = "toolbarAdvanced";
-            this.toolbarAdvanced.Size = new System.Drawing.Size(303, 48);
+            this.toolbarAdvanced.Size = new System.Drawing.Size(123, 48);
             this.toolbarAdvanced.TabIndex = 1;
             this.toolbarAdvanced.Visible = false;
             // 
@@ -990,6 +1080,17 @@ namespace StretchViewCS.Forms
             this.tbGrid.Text = "方眼";
             this.tbGrid.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbGridMouseDown);
+            // 
+            // tbRuler
+            // 
+            this.tbRuler.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tbRuler.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.tbRuler.ForeColor = System.Drawing.Color.Blue;
+            this.tbRuler.Name = "tbRuler";
+            this.tbRuler.Size = new System.Drawing.Size(57, 53);
+            this.tbRuler.Text = "画面定規";
+            this.tbRuler.ToolTipText = "画面定規でデスクトップ上の幅・高さを計測します。";
+            this.tbRuler.Click += new System.EventHandler(this.TbRulerClick);
             // 
             // tbAtariMode
             // 
@@ -1046,7 +1147,6 @@ namespace StretchViewCS.Forms
             this.toolStripStatusLabel1.AutoSize = false;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(80, 17);
-            this.toolStripStatusLabel1.Text = "表示レイヤ:off";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripStatusLabel2
@@ -1085,108 +1185,6 @@ namespace StretchViewCS.Forms
             this.pbMainView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PbMainView_MouseDown);
             this.pbMainView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PbMainView_MouseMove);
             this.pbMainView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PbMainView_MouseUp);
-            // 
-            // mmGraph
-            // 
-            this.mmGraph.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mmGraph30,
-            this.mmGraph40,
-            this.mmGraph50,
-            this.mmGraph60,
-            this.mmGraphFlex});
-            this.mmGraph.Name = "mmGraph";
-            this.mmGraph.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.mmGraph.Size = new System.Drawing.Size(180, 22);
-            this.mmGraph.Text = "方眼表示";
-            // 
-            // mmGraph30
-            // 
-            this.mmGraph30.Name = "mmGraph30";
-            this.mmGraph30.Size = new System.Drawing.Size(180, 22);
-            this.mmGraph30.Text = "30ピクセル線";
-            this.mmGraph30.Click += new System.EventHandler(this.MmGraph30Click);
-            // 
-            // mmGraph40
-            // 
-            this.mmGraph40.Name = "mmGraph40";
-            this.mmGraph40.Size = new System.Drawing.Size(180, 22);
-            this.mmGraph40.Text = "40ピクセル線";
-            this.mmGraph40.Click += new System.EventHandler(this.MmGraph40Click);
-            // 
-            // mmGraph50
-            // 
-            this.mmGraph50.Name = "mmGraph50";
-            this.mmGraph50.Size = new System.Drawing.Size(180, 22);
-            this.mmGraph50.Text = "50ピクセル線";
-            this.mmGraph50.Click += new System.EventHandler(this.MmGraph50Click);
-            // 
-            // mmGraph60
-            // 
-            this.mmGraph60.Name = "mmGraph60";
-            this.mmGraph60.Size = new System.Drawing.Size(180, 22);
-            this.mmGraph60.Text = "60ピクセル線";
-            this.mmGraph60.Click += new System.EventHandler(this.MmGraph60Click);
-            // 
-            // mmGraphFlex
-            // 
-            this.mmGraphFlex.Name = "mmGraphFlex";
-            this.mmGraphFlex.Size = new System.Drawing.Size(180, 22);
-            this.mmGraphFlex.Text = "任意";
-            this.mmGraphFlex.Click += new System.EventHandler(this.MmGraphFlexClick);
-            // 
-            // mmGrid
-            // 
-            this.mmGrid.Name = "mmGrid";
-            this.mmGrid.Size = new System.Drawing.Size(180, 22);
-            this.mmGrid.Text = "中心線表示";
-            this.mmGrid.Click += new System.EventHandler(this.MmGridClick);
-            // 
-            // mmWndSize
-            // 
-            this.mmWndSize.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mm200x200,
-            this.mm300x300,
-            this.N400x3001,
-            this.N400x4001,
-            this.mm300x400});
-            this.mmWndSize.Name = "mmWndSize";
-            this.mmWndSize.Size = new System.Drawing.Size(180, 22);
-            this.mmWndSize.Text = "ウィンドウ定型サイズ";
-            // 
-            // mm200x200
-            // 
-            this.mm200x200.Name = "mm200x200";
-            this.mm200x200.Size = new System.Drawing.Size(215, 22);
-            this.mm200x200.Text = "200 x 200 サイズ (小 正方形)";
-            this.mm200x200.Click += new System.EventHandler(this.Mm200x200Click);
-            // 
-            // mm300x300
-            // 
-            this.mm300x300.Name = "mm300x300";
-            this.mm300x300.Size = new System.Drawing.Size(215, 22);
-            this.mm300x300.Text = "300 x 300 サイズ (正方形)";
-            this.mm300x300.Click += new System.EventHandler(this.Mm300x300Click);
-            // 
-            // N400x3001
-            // 
-            this.N400x3001.Name = "N400x3001";
-            this.N400x3001.Size = new System.Drawing.Size(215, 22);
-            this.N400x3001.Text = "400 x 300 サイズ (横長)";
-            this.N400x3001.Click += new System.EventHandler(this.N400x3001Click);
-            // 
-            // N400x4001
-            // 
-            this.N400x4001.Name = "N400x4001";
-            this.N400x4001.Size = new System.Drawing.Size(215, 22);
-            this.N400x4001.Text = "400 x 400 サイズ (中 正方形)";
-            this.N400x4001.Click += new System.EventHandler(this.N400x4001Click);
-            // 
-            // mm300x400
-            // 
-            this.mm300x400.Name = "mm300x400";
-            this.mm300x400.Size = new System.Drawing.Size(215, 22);
-            this.mm300x400.Text = "300 x 400 サイズ (縦長)";
-            this.mm300x400.Click += new System.EventHandler(this.Mm300x400Click);
             // 
             // frmCap
             // 
@@ -1315,6 +1313,7 @@ namespace StretchViewCS.Forms
         private System.Windows.Forms.ToolStripMenuItem mmWindowText;
         private System.Windows.Forms.ToolStripMenuItem ttsMmTool;
         private System.Windows.Forms.ToolStripMenuItem mmColorPicker;
+        private System.Windows.Forms.ToolStripMenuItem mmSettings;
         private System.Windows.Forms.ToolStripMenuItem mmRuler;
         private System.Windows.Forms.ToolStripMenuItem mmSaveAsImageFile;
         private System.Windows.Forms.ToolStripMenuItem mmSaveViewFile;
