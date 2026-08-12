@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using StretchViewCS.Utils;
 
 namespace StretchViewCS.Forms
 {
@@ -13,6 +14,7 @@ namespace StretchViewCS.Forms
         public frmLicense()
         {
             InitializeComponent();
+            ApplyLocalization();
         }
 
         private void InitializeComponent()
@@ -37,9 +39,14 @@ namespace StretchViewCS.Forms
             this.MinimizeBox = false;
             this.Name = "frmLicense";
             this.StartPosition = FormStartPosition.CenterParent;
-            this.Text = "ライセンス";
+            this.Text = "License";
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+
+        private void ApplyLocalization()
+        {
+            this.Text = LocalizationManager.Text("License.Title");
         }
     }
 }

@@ -192,6 +192,11 @@ namespace StretchViewCS.Forms
             // mmAtariMode.Text = LocalizationManager.Text("Main.SurfaceDrawMode");
             // mmBltAtari.Text = LocalizationManager.Text("Main.SurfaceVisible");
             // mmClearAtari.Text = LocalizationManager.Text("Main.SurfaceClear");
+            mmAtaris.Text = LocalizationManager.Text("Main.OperationProjection");
+            mmFix.Text = LocalizationManager.Text("Main.OperationProjectionToggle");
+            mmWndInfo.Text = LocalizationManager.Text("Main.SelectedObject");
+            mmClassName.Text = LocalizationManager.Text("Main.ClassName");
+            mmWindowText.Text = LocalizationManager.Text("Main.WindowText");
             mmHelp.Text = LocalizationManager.Text("Main.Help");
             Help2.Text = LocalizationManager.Text("Main.OpenHelp");
             About1.Text = LocalizationManager.Text("Main.About");
@@ -206,12 +211,23 @@ namespace StretchViewCS.Forms
             tbColorPicker.Text = LocalizationManager.Text("Main.ColorPicker");
             // 画面定規機能は廃止済み。
             // tbRuler.Text = LocalizationManager.Text("Main.RulerButton");
+            tbRuler.ToolTipText = LocalizationManager.Text("Main.RulerTooltip");
             btnOpenSettings.Text = LocalizationManager.Text("Main.SettingsButton");
             chkHotkeysEnabled.Text = LocalizationManager.Text("Main.Hotkeys");
             chkFixSubjectRange.Text = LocalizationManager.Text("Main.FixView");
             chkDisplayTopMost.Text = LocalizationManager.Text("Main.TopMost");
+            tbFixSimu.Text = LocalizationManager.Text("Main.FixSimulationButton");
             tbGrid.Text = LocalizationManager.Text("Main.GridButton");
+            tbAtariMode.Text = LocalizationManager.Text("Main.SurfaceDrawButton");
+            tbAtariVisible.Text = LocalizationManager.Text("Main.SurfaceVisibleButton");
             tbClear.Text = LocalizationManager.Text("Main.Clear");
+            tbZoomUp.ToolTipText = LocalizationManager.Text("Tooltip.ZoomUp");
+            tbZoomOut.ToolTipText = LocalizationManager.Text("Tooltip.ZoomOut");
+            tbResetStretch.ToolTipText = LocalizationManager.Text("Tooltip.ResetZoom");
+            tbLRotate.ToolTipText = LocalizationManager.Text("Tooltip.Rotate");
+            tbRRotate.ToolTipText = LocalizationManager.Text("Tooltip.Rotate");
+            tbResetRotation.ToolTipText = LocalizationManager.Text("Tooltip.ResetRotation");
+            tbColorPicker.ToolTipText = LocalizationManager.Text("Tooltip.ColorPicker");
             mmGraph.Text = LocalizationManager.Text("Main.Graph");
             mmGraph30.Text = LocalizationManager.Text("Main.Graph30");
             mmGraph40.Text = LocalizationManager.Text("Main.Graph40");
@@ -220,7 +236,12 @@ namespace StretchViewCS.Forms
             mmGraphFlex.Text = LocalizationManager.Text("Main.Custom");
             mmGrid.Text = LocalizationManager.Text("Main.CenterLine");
             mmWndSize.Text = LocalizationManager.Text("Main.WindowPreset");
-            toolStripStatusLabel1.Text = LocalizationManager.Text("Main.LayerStatusOff");
+            mm200x200.Text = LocalizationManager.Text("Main.WindowPreset200x200");
+            mm300x300.Text = LocalizationManager.Text("Main.WindowPreset300x300");
+            N400x3001.Text = LocalizationManager.Text("Main.WindowPreset400x300");
+            N400x4001.Text = LocalizationManager.Text("Main.WindowPreset400x400");
+            mm300x400.Text = LocalizationManager.Text("Main.WindowPreset300x400");
+            toolStripStatusLabel1.Text = "";
         }
 
         private void frmCap_Load(object? sender, EventArgs e)
@@ -398,7 +419,7 @@ namespace StretchViewCS.Forms
                 desktopDC = Win32API.GetWindowDC(desktopWindow);
                 if (desktopDC == IntPtr.Zero)
                 {
-                    throw new InvalidOperationException("デスクトップ DC の取得に失敗しました。");
+                    throw new InvalidOperationException(LocalizationManager.Text("Message.DesktopDcFailed"));
                 }
 
                 if (capRate == 0) capRate = 1;
@@ -1316,9 +1337,9 @@ namespace StretchViewCS.Forms
 
                     // ウィンドウ情報をメニューに表示
                     if (mmClassName != null)
-                        mmClassName.Text = "<クラス名>\"" + strClassName + "\"";
+                        mmClassName.Text = "<" + LocalizationManager.Text("WindowInfo.ClassName") + ">\"" + strClassName + "\"";
                     if (mmWindowText != null)
-                        mmWindowText.Text = "<ウィンドウテキスト>\"" + strWindowText + "\"";
+                        mmWindowText.Text = "<" + LocalizationManager.Text("WindowInfo.WindowText") + ">\"" + strWindowText + "\"";
 
                     Win32API.GetWindowRect(hTarget, out rW);
                     baseX = Cursor.Position.X - capSizeW / 2;
@@ -1895,54 +1916,47 @@ namespace StretchViewCS.Forms
         private void UpdateCaption()
         {
             string state = "";
-            if (bHFlip) state = "反転(左右)";
-            if (bVFlip) state = "反転(上下)";
+            if (bHFlip) state = LocalizationManager.Text("State.FlipHorizontal");
+            if (bVFlip) state = LocalizationManager.Text("State.FlipVertical");
             if (gAngle != 0)
             {
-                state = (gAngle / 10).ToString() + "度回転";
+                state = string.Format(LocalizationManager.Text("State.Rotated"), gAngle / 10);
             }
 
             string state2 = "";
             if (bFixed)
             {
-                state2 = "表示固定 & ウィンドウ固定モードです";
+                state2 = LocalizationManager.Text("State.FixedMode");
                 if (sbMain.Items.Count > 3)
                     sbMain.Items[3].Text = ":" + strClassName;
             }
-            if (bAtariMode)
+            // 表面レイヤ機能は廃止済みのため、ステータスバーには表示しない。
+            if (!bFixed && !bMouseCap)
             {
-                state2 = "表示レイヤ描画モードです";
-                if (sbMain.Items.Count > 3)
-                    sbMain.Items[3].Text = "Ctrl+マウス:消去実行";
-            }
-            if (!bFixed && !bAtariMode && !bMouseCap)
-            {
-                state2 = "表示モード";
+                state2 = LocalizationManager.Text("State.ViewMode");
             }
             if (bMouseCap)
             {
                 if (bForFixViewCap)
                 {
-                    state2 = "表示範囲を指定してください:左クリックで固定";
+                    state2 = LocalizationManager.Text("State.SelectViewRange");
                 }
                 else
                 {
-                    state2 = "対象を選択してください:左クリックで固定";
+                    state2 = LocalizationManager.Text("State.SelectTarget");
                 }
             }
-
-            string state3 = bBltAtari ? "on" : "off";
 
             try
             {
                 if (sbMain.Items.Count > 0)
-                    sbMain.Items[0].Text = "表示レイヤ:" + state3;
+                    sbMain.Items[0].Text = "";
                 if (sbMain.Items.Count > 1)
                     sbMain.Items[1].Text = state;
                 if (sbMain.Items.Count > 3)
                     sbMain.Items[3].Text = state2;
 
-                string stateText = $"倍率:{capRate:F1}倍 角度:{gAngle}度";
+                string stateText = string.Format(LocalizationManager.Text("State.Main"), capRate, gAngle);
 
                 if (txtState != null)
                 {
@@ -2002,7 +2016,7 @@ namespace StretchViewCS.Forms
         {
             if (bmpAtari == null)
             {
-                throw new InvalidOperationException("表面レイヤ画像が初期化されていません。");
+                throw new InvalidOperationException(LocalizationManager.Text("Message.SurfaceBitmapNotInitialized"));
             }
 
             using (Graphics graphics = Graphics.FromImage(bmpAtari))
@@ -2439,17 +2453,17 @@ namespace StretchViewCS.Forms
 
         private void MmAtariModeClick(object? sender, EventArgs e)
         {
-            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
+            throw new NotSupportedException(LocalizationManager.Text("Message.SurfaceLayerRemoved"));
         }
 
         private void MmBltAtariClick(object? sender, EventArgs e)
         {
-            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
+            throw new NotSupportedException(LocalizationManager.Text("Message.SurfaceLayerRemoved"));
         }
 
         private void MmClearAtariClick(object? sender, EventArgs e)
         {
-            throw new NotSupportedException("表面レイヤ機能は廃止されました。");
+            throw new NotSupportedException(LocalizationManager.Text("Message.SurfaceLayerRemoved"));
         }
 
         private void MmTopMostClick(object? sender, EventArgs e)
@@ -2536,7 +2550,7 @@ namespace StretchViewCS.Forms
 
         private void OpenRuler()
         {
-            throw new NotSupportedException("画面定規機能は廃止されました。");
+            throw new NotSupportedException(LocalizationManager.Text("Message.RulerRemoved"));
         }
 
         private Bitmap CreateMainViewBitmap()
@@ -2555,7 +2569,7 @@ namespace StretchViewCS.Forms
             try
             {
                 SaveFileDialog dlg = new SaveFileDialog();
-                dlg.Filter = "画像ファイル|*.bmp;*.jpg;*.png|すべてのファイル|*.*";
+                dlg.Filter = LocalizationManager.Text("Dialog.ImageFilter");
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     using (Bitmap bmpClip = CreateMainViewBitmap())
@@ -3151,7 +3165,7 @@ namespace StretchViewCS.Forms
         {
             if (bmpBackUp == null)
             {
-                throw new InvalidOperationException("バックアップ用ビットマップが初期化されていません。");
+                throw new InvalidOperationException(LocalizationManager.Text("Message.BackupBitmapNotInitialized"));
             }
 
             using (Graphics backupGraphics = Graphics.FromImage(bmpBackUp))
@@ -3169,7 +3183,7 @@ namespace StretchViewCS.Forms
         {
             if (bmpBackUp == null)
             {
-                throw new InvalidOperationException("復元対象のバックアップがありません。");
+                throw new InvalidOperationException(LocalizationManager.Text("Message.BackupNotAvailable"));
             }
 
             desktopGraphics.DrawImageUnscaled(bmpBackUp, rcLastDraw.Left, rcLastDraw.Top);
