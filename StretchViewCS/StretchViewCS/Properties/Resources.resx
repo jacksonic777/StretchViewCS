@@ -127,4 +127,34 @@
   <data name="右回転" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\bmp\右回転.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ToolbarZoomIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\拡大.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarZoomOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\縮小.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarResetZoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\拡縮リセット.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarFlipHorizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\左右反転.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarFlipVertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\上下反転.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarRotateLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\左回転.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarRotateRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\右回転.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarResetRotation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\回転戻す.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarColorPicker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\spoit.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ToolbarGrid" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bmp\方眼.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

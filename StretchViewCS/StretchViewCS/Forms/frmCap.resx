@@ -132,51 +132,10 @@
   <metadata name="toolbarAdvanced.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>436, 17</value>
   </metadata>
-  <metadata name="toolbarMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>317, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="tbZoomUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABZSURBVDhPY2CgNpDR9/6PjNHlcQJ0jegYXT0GQFHcchyCkcTR1aMADJuQDECWR9aDAjBsRsN0NAAGSPUCCOAKA6I0gwBMIT6MrgcrwKYJnU8WGKaGoIuTBQDchJSeplbfpAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="tbZoomOut.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABSSURBVDhPY2CgNpDR9/6PjNHlcQJ0jegYXT0GwKUYmxgGwKUZBvDJgQFcQctxrJiOBuAAhOTBAJciXOIYAKYQH0bXgxVg04TOJwsMU0PQxckCANUjgk5bKOmvAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="tbResetStretch.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABdSURBVDhPY2CgCmg5/h8DkwTQNVNqgIy+N06MrhUC0G3H4QLCBqCz0QBuAwhJQgFeNRiSWLyDoQYZYEhSbAAWgFcNXkkQIBTQ6PGNjlG8hM0AogBFBqBrpr8BOAAAV56gK3gAuBoAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="tbFlipH.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABFSURBVDhPY2AY1EBG3/s/uhhJYIAMaDkO10S6ASDN+AxAkkMFMI1oGG4AFjlUw9AlSDYABtAkiPcCMsBnAKlgGBhAFwAA3L9cPWdJNCAAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="tbFlipV.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABCSURBVDhPY2CgKWg5/h+MyQYUGQDTTJYByJrJNgQEKNIMAqQYIKPv/Z8UjK6fRoAUL2AFZBuAHoUUG0I2GHgDiAAA1qNcPdJ5bM0AAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="tbResetRotation.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABPSURBVDhPY2AYtEBpWth/ZIwujxOga0TH6OpRAD6F+OTggJAifHL4JYkBMANk9L3xYnR9cEA1A9DFSQIUG0IoFogCyIagY3S1eAFFmukKAMIeebSVceekAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="tbColorPicker.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABKSURBVDhPY2AY/KDl+H8wJgvANJNtCLoBA2KIjL43pgHEGgLSDMMkG4CiGQYo0kwsGDjNX+dx/4dhdDmiAEUGKE0L+4+M0eVpCgB9RW8BBaORDAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <metadata name="toolbarAdvanced.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>436, 17</value>
-  </metadata>
   <metadata name="sbMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>581, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAcAEBAAAAEAIAD0AgAAdgAAABgYAAABACAAqAQAAGoDAAAgIAAAAQAgAC8FAAASCAAAMDAAAAEA

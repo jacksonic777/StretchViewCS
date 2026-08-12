@@ -21,11 +21,13 @@
       <h2>Contents</h2>
       <ul>
         <li><a href="#overview">Overview</a></li>
+        <li><a href="#usecases">Use Cases</a></li>
         <li><a href="#range">Target Range</a></li>
         <li><a href="#view">View Controls</a></li>
         <li><a href="#tools">Tools</a></li>
         <li><a href="#settings">Settings</a></li>
         <li><a href="#files">Save and Output</a></li>
+        <li><a href="#removed">Removed Features</a></li>
         <li><a href="#trouble">Troubleshooting</a></li>
       </ul>
     </nav>
@@ -39,6 +41,16 @@
         </p>
       </section>
 
+      <section id="usecases" class="card">
+        <h2>Use Cases</h2>
+        <ul class="feature-list">
+          <li>Enlarge part of the screen during document work, screen sharing, or review sessions.</li>
+          <li>Flip or rotate UI, images, and diagrams to check visual balance or layout issues.</li>
+          <li>Fix the target range to keep part of another application visible while you work.</li>
+          <li>Use the color picker to inspect and copy on-screen colors as HEX / RGB values.</li>
+        </ul>
+      </section>
+
       <section id="range" class="card">
         <h2>Target Range</h2>
         <ul class="feature-list">
@@ -46,6 +58,7 @@
           <li>The red target-range frame can be dragged to adjust its position and size.</li>
           <li>Use the menu item or checkbox to enable or disable fixed target range mode.</li>
           <li>Use Ctrl + arrow keys to move the selected target range.</li>
+          <li>Selection Range is OFF at startup by default. To restore it on startup, enable Restore selection range on startup in Settings.</li>
         </ul>
       </section>
 
@@ -79,6 +92,14 @@
               <td>Grid / center lines</td>
               <td>Overlays grid lines or center lines for visual checking.</td>
             </tr>
+            <tr>
+              <td>Topmost</td>
+              <td>Keeps the main window in front of other windows. You can switch it from the checkbox.</td>
+            </tr>
+            <tr>
+              <td>Window size</td>
+              <td>Use the View menu to choose preset sizes such as 200x200 or 300x300.</td>
+            </tr>
           </tbody>
         </table>
       </section>
@@ -86,16 +107,21 @@
       <section id="tools" class="card">
         <h2>Tools</h2>
         <ul class="feature-list">
-          <li>The color picker samples a desktop color and copies the color code to the clipboard. A dedicated info form shows the cursor position, HEX value, RGB value, and color preview.</li>
+          <li>The color picker samples a desktop color and copies the color code to the clipboard.</li>
+          <li>The Color Picker Info form shows the cursor position, HEX value, RGB value, and color preview.</li>
+          <li>While the color picker is active, left-click to copy the color code and press Esc to exit.</li>
         </ul>
       </section>
 
       <section id="settings" class="card">
         <h2>Settings</h2>
         <ul class="feature-list">
+          <li>Open Settings from Tools &gt; Settings... or from the Settings button in the main window header.</li>
           <li>You can switch the display language between Japanese and English in Settings.</li>
           <li>Hotkeys are disabled by default. Enable them in Settings only when needed.</li>
-          <li>The default sampling rate is 400 ms. It can be changed in Settings.</li>
+          <li>The default sampling rate is 400 ms. It can be changed in Settings. Smaller values update the view more frequently.</li>
+          <li>You can choose whether Selection Range should be restored on the next startup. It is not restored by default.</li>
+          <li>You can register StretchViewCS in the Start menu.</li>
           <li>Settings are saved to `%AppData%\StretchViewCS\StretchViewCS.ini`.</li>
         </ul>
       </section>
@@ -109,12 +135,22 @@
         </ul>
       </section>
 
+      <section id="removed" class="card">
+        <h2>Removed Features</h2>
+        <ul class="feature-list">
+          <li>The surface layer feature has been removed and is not available from the current menu or toolbar.</li>
+          <li>The screen ruler feature has been removed and is not available from the current menu or toolbar.</li>
+          <li>Operation projection mode is excluded from normal stable-version workflows. Do not rely on it when operations must be reflected reliably in another application.</li>
+        </ul>
+      </section>
+
       <section id="trouble" class="card">
         <h2>Troubleshooting</h2>
         <ul class="feature-list">
           <li>If help does not open, check that the `help` folder exists next to the application.</li>
           <li>If hotkeys do not work, confirm that hotkeys are enabled in Settings.</li>
           <li>If the target range does not follow changes, check the range selection and fixed range state.</li>
+          <li>If the view feels heavy, set the sampling rate back to a larger value.</li>
         </ul>
       </section>
     </div>

@@ -94,6 +94,8 @@ function New-ReleasePackage {
     Ensure-DirectoryExists -Path (Join-Path $outputRoot "help")
     Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.ja.txt")
     Ensure-FileExists -Path (Join-Path $outputRoot "ReadMe.en.txt")
+    Ensure-FileExists -Path (Join-Path $outputRoot "README.ja.md")
+    Ensure-FileExists -Path (Join-Path $outputRoot "README.en.md")
 
     if (Test-Path -LiteralPath $packageDirectory) {
         Remove-Item -LiteralPath $packageDirectory -Recurse -Force
@@ -112,6 +114,8 @@ function New-ReleasePackage {
     Copy-Item -LiteralPath (Join-Path $outputRoot "help") -Destination $packageDirectory -Recurse
     Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.ja.txt") -Destination $packageDirectory
     Copy-Item -LiteralPath (Join-Path $outputRoot "ReadMe.en.txt") -Destination $packageDirectory
+    Copy-Item -LiteralPath (Join-Path $outputRoot "README.ja.md") -Destination $packageDirectory
+    Copy-Item -LiteralPath (Join-Path $outputRoot "README.en.md") -Destination $packageDirectory
 
     Compress-Archive -Path (Join-Path $packageDirectory "*") -DestinationPath $zipPath -CompressionLevel Optimal
 

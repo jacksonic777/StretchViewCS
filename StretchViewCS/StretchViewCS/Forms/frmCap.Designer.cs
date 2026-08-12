@@ -85,11 +85,11 @@ namespace StretchViewCS.Forms
             this.mmDowner = new System.Windows.Forms.ToolStripMenuItem();
             this.ttsMmTool = new System.Windows.Forms.ToolStripMenuItem();
             this.mmColorPicker = new System.Windows.Forms.ToolStripMenuItem();
-            this.mmSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mmSaveAsImageFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mmSaveViewFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mmCopyToClipBoard = new System.Windows.Forms.ToolStripMenuItem();
             this.mmPrint = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mmHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.Help2 = new System.Windows.Forms.ToolStripMenuItem();
             this.About1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,7 +125,6 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.tbColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.panelHeader = new System.Windows.Forms.Panel();
             this.btnOpenSettings = new System.Windows.Forms.Button();
             this.txtState = new System.Windows.Forms.TextBox();
@@ -600,16 +599,9 @@ namespace StretchViewCS.Forms
             // mmColorPicker
             // 
             this.mmColorPicker.Name = "mmColorPicker";
-            this.mmColorPicker.Size = new System.Drawing.Size(180, 22);
+            this.mmColorPicker.Size = new System.Drawing.Size(133, 22);
             this.mmColorPicker.Text = "カラーピッカー";
             this.mmColorPicker.Click += new System.EventHandler(this.MmColorPickerClick);
-            // 
-            // mmSettings
-            // 
-            this.mmSettings.Name = "mmSettings";
-            this.mmSettings.Size = new System.Drawing.Size(180, 22);
-            this.mmSettings.Text = "設定..";
-            this.mmSettings.Click += new System.EventHandler(this.MmOptionClick);
             // 
             // mmSaveAsImageFile
             // 
@@ -618,7 +610,7 @@ namespace StretchViewCS.Forms
             this.mmCopyToClipBoard,
             this.mmPrint});
             this.mmSaveAsImageFile.Name = "mmSaveAsImageFile";
-            this.mmSaveAsImageFile.Size = new System.Drawing.Size(180, 22);
+            this.mmSaveAsImageFile.Size = new System.Drawing.Size(133, 22);
             this.mmSaveAsImageFile.Text = "画像の保存";
             // 
             // mmSaveViewFile
@@ -641,6 +633,13 @@ namespace StretchViewCS.Forms
             this.mmPrint.Size = new System.Drawing.Size(243, 22);
             this.mmPrint.Text = "簡易印刷...";
             this.mmPrint.Click += new System.EventHandler(this.MmPrintClick);
+            // 
+            // mmSettings
+            // 
+            this.mmSettings.Name = "mmSettings";
+            this.mmSettings.Size = new System.Drawing.Size(133, 22);
+            this.mmSettings.Text = "設定..";
+            this.mmSettings.Click += new System.EventHandler(this.MmOptionClick);
             // 
             // mmHelp
             // 
@@ -790,8 +789,7 @@ namespace StretchViewCS.Forms
             this.tbResetRotation,
             this.toolStripSeparator13,
             this.tbColorPicker,
-            this.toolStripSeparator15,
-            this.toolStripSeparator14});
+            this.toolStripSeparator15});
             this.toolbarMain.Location = new System.Drawing.Point(0, 26);
             this.toolbarMain.Name = "toolbarMain";
             this.toolbarMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -804,7 +802,7 @@ namespace StretchViewCS.Forms
             this.tbZoomUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.tbZoomUp.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbZoomUp.ForeColor = System.Drawing.Color.Blue;
-            this.tbZoomUp.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomUp.Image")));
+            this.tbZoomUp.Image = global::StretchViewCS.Properties.Resources.ToolbarZoomIn;
             this.tbZoomUp.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbZoomUp.Name = "tbZoomUp";
             this.tbZoomUp.Size = new System.Drawing.Size(33, 53);
@@ -824,7 +822,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbZoomOut.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbZoomOut.ForeColor = System.Drawing.Color.Blue;
-            this.tbZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("tbZoomOut.Image")));
+            this.tbZoomOut.Image = global::StretchViewCS.Properties.Resources.ToolbarZoomOut;
             this.tbZoomOut.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbZoomOut.Name = "tbZoomOut";
             this.tbZoomOut.Size = new System.Drawing.Size(33, 53);
@@ -844,7 +842,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbResetStretch.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbResetStretch.ForeColor = System.Drawing.Color.Blue;
-            this.tbResetStretch.Image = ((System.Drawing.Image)(resources.GetObject("tbResetStretch.Image")));
+            this.tbResetStretch.Image = global::StretchViewCS.Properties.Resources.ToolbarResetZoom;
             this.tbResetStretch.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbResetStretch.Name = "tbResetStretch";
             this.tbResetStretch.Size = new System.Drawing.Size(81, 53);
@@ -863,7 +861,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbFlipH.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbFlipH.ForeColor = System.Drawing.Color.Blue;
-            this.tbFlipH.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipH.Image")));
+            this.tbFlipH.Image = global::StretchViewCS.Properties.Resources.ToolbarFlipHorizontal;
             this.tbFlipH.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbFlipH.Name = "tbFlipH";
             this.tbFlipH.Size = new System.Drawing.Size(57, 53);
@@ -881,7 +879,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbFlipV.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbFlipV.ForeColor = System.Drawing.Color.Blue;
-            this.tbFlipV.Image = ((System.Drawing.Image)(resources.GetObject("tbFlipV.Image")));
+            this.tbFlipV.Image = global::StretchViewCS.Properties.Resources.ToolbarFlipVertical;
             this.tbFlipV.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbFlipV.Name = "tbFlipV";
             this.tbFlipV.Size = new System.Drawing.Size(57, 53);
@@ -899,7 +897,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbLRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbLRotate.ForeColor = System.Drawing.Color.Blue;
-            this.tbLRotate.Image = global::StretchViewCS.Properties.Resources.左回転;
+            this.tbLRotate.Image = global::StretchViewCS.Properties.Resources.ToolbarRotateLeft;
             this.tbLRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbLRotate.Name = "tbLRotate";
             this.tbLRotate.Size = new System.Drawing.Size(45, 53);
@@ -919,7 +917,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbRRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbRRotate.ForeColor = System.Drawing.Color.Blue;
-            this.tbRRotate.Image = global::StretchViewCS.Properties.Resources.右回転;
+            this.tbRRotate.Image = global::StretchViewCS.Properties.Resources.ToolbarRotateRight;
             this.tbRRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbRRotate.Name = "tbRRotate";
             this.tbRRotate.Size = new System.Drawing.Size(45, 53);
@@ -939,7 +937,7 @@ namespace StretchViewCS.Forms
             // 
             this.tbResetRotation.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbResetRotation.ForeColor = System.Drawing.Color.Blue;
-            this.tbResetRotation.Image = ((System.Drawing.Image)(resources.GetObject("tbResetRotation.Image")));
+            this.tbResetRotation.Image = global::StretchViewCS.Properties.Resources.ToolbarResetRotation;
             this.tbResetRotation.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbResetRotation.Name = "tbResetRotation";
             this.tbResetRotation.Size = new System.Drawing.Size(81, 53);
@@ -958,7 +956,8 @@ namespace StretchViewCS.Forms
             // 
             this.tbColorPicker.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.tbColorPicker.ForeColor = System.Drawing.Color.Blue;
-            this.tbColorPicker.Image = ((System.Drawing.Image)(resources.GetObject("tbColorPicker.Image")));
+            this.tbColorPicker.Image = global::StretchViewCS.Properties.Resources.ToolbarColorPicker;
+            this.tbColorPicker.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbColorPicker.Name = "tbColorPicker";
             this.tbColorPicker.Size = new System.Drawing.Size(93, 53);
             this.tbColorPicker.Text = "カラーピッカー";
@@ -971,11 +970,6 @@ namespace StretchViewCS.Forms
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
             this.toolStripSeparator15.Size = new System.Drawing.Size(6, 56);
-            // 
-            // toolStripSeparator14
-            // 
-            this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size(6, 56);
             // 
             // panelHeader
             // 
@@ -1284,7 +1278,6 @@ namespace StretchViewCS.Forms
         internal System.Windows.Forms.ToolStripButton tbRRotate;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         internal System.Windows.Forms.ToolStripButton tbColorPicker;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         internal System.Windows.Forms.ToolStripButton tbRuler;
         private System.Windows.Forms.ToolStrip toolbarAdvanced;
         internal System.Windows.Forms.ToolStripButton tbFixSimu;
