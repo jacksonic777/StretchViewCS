@@ -111,7 +111,7 @@ namespace StretchViewCS.Forms
         {
             base.OnPaint(e);
 
-            using (Pen pen = new Pen(Color.Red, 2))
+            using (Pen pen = new Pen(Color.LimeGreen, 1))
             {
                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 if (!selectionRect.IsEmpty)

@@ -13,7 +13,7 @@ namespace StretchViewCS.Forms
         private const uint SwpNoActivate = 0x0010;
         private const int WM_NCHITTEST = 0x0084;
         private const int HTTRANSPARENT = -1;
-        private const int SelectionBorderWidth = 2;
+        private const int SelectionBorderWidth = 1;
         private const int InvalidateMargin = SelectionBorderWidth + 4;
         private readonly Color transparentColorKey = Color.Magenta;
         private Rectangle selectionRect = Rectangle.Empty;
@@ -107,7 +107,7 @@ namespace StretchViewCS.Forms
             drawRect.Width -= 1;
             drawRect.Height -= 1;
 
-            using (Pen pen = new Pen(Color.OrangeRed, SelectionBorderWidth))
+            using (Pen pen = new Pen(Color.LimeGreen, SelectionBorderWidth))
             {
                 pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 e.Graphics.DrawRectangle(pen, drawRect);

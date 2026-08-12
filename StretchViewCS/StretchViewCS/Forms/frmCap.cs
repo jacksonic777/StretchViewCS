@@ -27,6 +27,8 @@ namespace StretchViewCS.Forms
         private const int RotationStepUnit = 10;
         private const int MinRotationStep = RotationStepUnit;
         private const int MaxRotationStep = 900;
+        private const int MinMainViewSize = 10;
+        private const int WindowScreenMargin = 24;
 
         // ホットキーID
         private enum HotKeyID
@@ -564,7 +566,8 @@ namespace StretchViewCS.Forms
                             ref bmpFlipWork,
                             ref bmpFlipGraphics,
                             gAngle,
-                            (bHFlip || bVFlip),
+                            bHFlip,
+                            bVFlip,
                             false);
                     }
                     else if (gAngle != 0)
@@ -576,7 +579,8 @@ namespace StretchViewCS.Forms
                                 ref bmpFlipWork,
                                 ref bmpFlipGraphics,
                                 0,
-                                (bHFlip || bVFlip),
+                                bHFlip,
+                                bVFlip,
                                 false);
                         }
 
@@ -585,6 +589,7 @@ namespace StretchViewCS.Forms
                             ref bmpRotateWork,
                             ref bmpRotateGraphics,
                             gAngle,
+                            false,
                             false,
                             false);
                     }
@@ -1562,20 +1567,13 @@ namespace StretchViewCS.Forms
         /// </summary>
         private void UpdateTransFromClientSize()
         {
-            int cw = this.ClientSize.Width;
-            int ch = this.ClientSize.Height;
-            int menuHeight = mMainMenu?.Height ?? 24;
-            int controlBarHeight = panelBarBase != null ? panelBarBase.Height : 48;
-            int statusBarHeight = sbMain?.Height ?? 22;
-            int infoBarHeight = sbMain != null ? sbMain.Height : 0;
-
             transX = 0;
-            transY = controlBarHeight + menuHeight;
-            transW = cw;
-            transH = ch - (statusBarHeight + infoBarHeight + transY);
+            transY = pbMainView.Top;
+            transW = pbMainView.ClientSize.Width;
+            transH = pbMainView.ClientSize.Height;
 
-            if (transW < 10) transW = 10;
-            if (transH < 10) transH = 10;
+            if (transW < MinMainViewSize) transW = MinMainViewSize;
+            if (transH < MinMainViewSize) transH = MinMainViewSize;
 
             if (bmpBackUp != null)
             {
@@ -1588,38 +1586,21 @@ namespace StretchViewCS.Forms
 
         private void ChgWindowSize(int iSizeW, int iSizeH)
         {
-            int maxH = Screen.PrimaryScreen.Bounds.Height;
-            int maxW = Screen.PrimaryScreen.Bounds.Width;
+            Rectangle workingArea = Screen.FromControl(this).WorkingArea;
+            int maxH = workingArea.Height;
+            int maxW = workingArea.Width;
 
             try
             {
-                if (iSizeW >= 10 && iSizeW <= maxW && iSizeH >= 10 && iSizeH <= maxH)
+                if (iSizeW >= MinMainViewSize && iSizeW <= maxW && iSizeH >= MinMainViewSize && iSizeH <= maxH)
                 {
                     this.ClientSize = new Size(iSizeW, iSizeH);
-                    transX = 0;
-                    int menuHeight = mMainMenu.Height;
-                    int controlBarHeight = panelBarBase != null ? panelBarBase.Height : 48;
-                    transY = controlBarHeight + menuHeight; // ControlBar1.Height + Menu.Height
-                    transW = iSizeW;
-                    int statusBarHeight = sbMain.Height;
-            int infoBarHeight = sbMain != null ? sbMain.Height : 0;
-                    transH = iSizeH - (statusBarHeight + infoBarHeight + transY);
-
-                    // 最小サイズチェック
-                    if (transW < 10) transW = 10;
-                    if (transH < 10) transH = 10;
+                    UpdateTransFromClientSize();
 
                     if (bAtariBmpCreate)
                     {
                         EnsureAtariBitmap();
                     }
-
-                    // バックアップビットマップも更新
-                    if (bmpBackUp != null)
-                    {
-                        bmpBackUp.Dispose();
-                    }
-                    bmpBackUp = new Bitmap(transW, transH);
                 }
                 else
                 {
@@ -1631,6 +1612,110 @@ namespace StretchViewCS.Forms
                 MessageBox.Show(LocalizationManager.Text("Message.ValueOutOfRange") + ": " + ex.Message, LocalizationManager.Text("Message.Title"));
             }
             bStateUpdate = true;
+        }
+
+        private void FitWindowToSelectionRect(Rectangle selectionRect)
+        {
+            if (selectionRect.Width < MinMainViewSize || selectionRect.Height < MinMainViewSize)
+            {
+                return;
+            }
+
+            if (WindowState != FormWindowState.Normal)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+
+            Rectangle workingArea = Screen.FromRectangle(selectionRect).WorkingArea;
+            int verticalChromeHeight = ClientSize.Height - pbMainView.ClientSize.Height;
+            int horizontalChromeWidth = Width - ClientSize.Width;
+            int verticalWindowFrameHeight = Height - ClientSize.Height;
+            int maxClientWidth = workingArea.Width - horizontalChromeWidth - WindowScreenMargin;
+            int maxClientHeight = workingArea.Height - verticalWindowFrameHeight - WindowScreenMargin;
+            int maxMainViewWidth = maxClientWidth;
+            int maxMainViewHeight = maxClientHeight - verticalChromeHeight;
+
+            if (maxMainViewWidth < MinMainViewSize)
+            {
+                maxMainViewWidth = MinMainViewSize;
+            }
+
+            if (maxMainViewHeight < MinMainViewSize)
+            {
+                maxMainViewHeight = MinMainViewSize;
+            }
+
+            float scaleByWidth = (float)maxMainViewWidth / selectionRect.Width;
+            float scaleByHeight = (float)maxMainViewHeight / selectionRect.Height;
+            float fitRate = Math.Min(1.0f, Math.Min(scaleByWidth, scaleByHeight));
+
+            if (fitRate < MinCapRate)
+            {
+                fitRate = MinCapRate;
+            }
+
+            if (fitRate > MaxCapRate)
+            {
+                fitRate = MaxCapRate;
+            }
+
+            int targetMainViewWidth = (int)Math.Round(selectionRect.Width * fitRate);
+            int targetMainViewHeight = (int)Math.Round(selectionRect.Height * fitRate);
+
+            if (targetMainViewWidth < MinMainViewSize)
+            {
+                targetMainViewWidth = MinMainViewSize;
+            }
+
+            if (targetMainViewHeight < MinMainViewSize)
+            {
+                targetMainViewHeight = MinMainViewSize;
+            }
+
+            if (targetMainViewWidth > maxMainViewWidth)
+            {
+                targetMainViewWidth = maxMainViewWidth;
+            }
+
+            if (targetMainViewHeight > maxMainViewHeight)
+            {
+                targetMainViewHeight = maxMainViewHeight;
+            }
+
+            ClientSize = new Size(targetMainViewWidth, targetMainViewHeight + verticalChromeHeight);
+            KeepWindowInsideWorkingArea(workingArea);
+            UpdateTransFromClientSize();
+            capRate = fitRate;
+            bStateUpdate = true;
+            UpdateCaption();
+        }
+
+        private void KeepWindowInsideWorkingArea(Rectangle workingArea)
+        {
+            int nextLeft = Left;
+            int nextTop = Top;
+
+            if (nextLeft + Width > workingArea.Right)
+            {
+                nextLeft = workingArea.Right - Width;
+            }
+
+            if (nextTop + Height > workingArea.Bottom)
+            {
+                nextTop = workingArea.Bottom - Height;
+            }
+
+            if (nextLeft < workingArea.Left)
+            {
+                nextLeft = workingArea.Left;
+            }
+
+            if (nextTop < workingArea.Top)
+            {
+                nextTop = workingArea.Top;
+            }
+
+            Location = new Point(nextLeft, nextTop);
         }
 
         private FormWindowState lastWindowState = FormWindowState.Normal;
@@ -1811,6 +1896,11 @@ namespace StretchViewCS.Forms
 
         private void ApplyFixViewState(bool enabled, int x, int y, Rectangle? selectionRect)
         {
+            if (enabled && selectionRect.HasValue && !selectionRect.Value.IsEmpty)
+            {
+                FitWindowToSelectionRect(selectionRect.Value);
+            }
+
             FixView(enabled, x, y);
             if (enabled)
             {
@@ -1931,10 +2021,7 @@ namespace StretchViewCS.Forms
                     sbMain.Items[3].Text = ":" + strClassName;
             }
             // 表面レイヤ機能は廃止済みのため、ステータスバーには表示しない。
-            if (!bFixed && !bMouseCap)
-            {
-                state2 = LocalizationManager.Text("State.ViewMode");
-            }
+            // 通常の表示モード名はステータスバーに表示しない。
             if (bMouseCap)
             {
                 if (bForFixViewCap)
@@ -3142,6 +3229,32 @@ namespace StretchViewCS.Forms
                 out resultGraphics);
 
             XRotateBitmap.RotateBitmapX(sourceBitmap, resultBitmap, resultGraphics, angleDeg, flgMirror, flgCircum);
+            return resultBitmap;
+        }
+
+        private Bitmap RotateIntoWorkBitmap(
+            Bitmap sourceBitmap,
+            ref Bitmap? targetBitmap,
+            ref Graphics? targetGraphics,
+            int angleDeg,
+            bool flgMirrorHorizontal,
+            bool flgMirrorVertical,
+            bool flgCircum)
+        {
+            GetRotationResultSize(sourceBitmap, angleDeg, flgCircum, out int resultWidth, out int resultHeight);
+
+            Bitmap resultBitmap;
+            Graphics resultGraphics;
+            GetOrCreateWorkSurface(
+                ref targetBitmap,
+                ref targetGraphics,
+                resultWidth,
+                resultHeight,
+                sourceBitmap.PixelFormat,
+                out resultBitmap,
+                out resultGraphics);
+
+            XRotateBitmap.RotateBitmapX(sourceBitmap, resultBitmap, resultGraphics, angleDeg, flgMirrorHorizontal, flgMirrorVertical, flgCircum);
             return resultBitmap;
         }
 

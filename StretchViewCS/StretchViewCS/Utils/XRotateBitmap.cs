@@ -22,6 +22,11 @@ namespace StretchViewCS.Utils
         /// <returns>回転後のビットマップ</returns>
         public static Bitmap RotateBitmapX(Bitmap bitmap, int angleDeg, bool flgMirror, bool flgCircum)
         {
+            return RotateBitmapX(bitmap, angleDeg, flgMirror, false, flgCircum);
+        }
+
+        public static Bitmap RotateBitmapX(Bitmap bitmap, int angleDeg, bool flgMirrorHorizontal, bool flgMirrorVertical, bool flgCircum)
+        {
             if (bitmap == null || bitmap.Width == 0 || bitmap.Height == 0)
                 throw new ArgumentException("Bitmap Size Error");
 
@@ -32,13 +37,18 @@ namespace StretchViewCS.Utils
 
             using (Graphics g = Graphics.FromImage(result))
             {
-                RotateBitmapX(bitmap, result, g, angleDeg, flgMirror, flgCircum);
+                RotateBitmapX(bitmap, result, g, angleDeg, flgMirrorHorizontal, flgMirrorVertical, flgCircum);
             }
 
             return result;
         }
 
         public static void RotateBitmapX(Bitmap sourceBitmap, Bitmap destinationBitmap, Graphics destinationGraphics, int angleDeg, bool flgMirror, bool flgCircum)
+        {
+            RotateBitmapX(sourceBitmap, destinationBitmap, destinationGraphics, angleDeg, flgMirror, false, flgCircum);
+        }
+
+        public static void RotateBitmapX(Bitmap sourceBitmap, Bitmap destinationBitmap, Graphics destinationGraphics, int angleDeg, bool flgMirrorHorizontal, bool flgMirrorVertical, bool flgCircum)
         {
             if (sourceBitmap == null || sourceBitmap.Width == 0 || sourceBitmap.Height == 0)
                 throw new ArgumentException("Bitmap Size Error");
@@ -61,9 +71,11 @@ namespace StretchViewCS.Utils
             destinationGraphics.PixelOffsetMode = PixelOffsetMode.Half;
             destinationGraphics.TranslateTransform(newWidth / 2.0f, newHeight / 2.0f);
 
-            if (flgMirror)
+            if (flgMirrorHorizontal || flgMirrorVertical)
             {
-                destinationGraphics.ScaleTransform(-1, 1);
+                float scaleX = flgMirrorHorizontal ? -1.0f : 1.0f;
+                float scaleY = flgMirrorVertical ? -1.0f : 1.0f;
+                destinationGraphics.ScaleTransform(scaleX, scaleY);
             }
 
             destinationGraphics.RotateTransform(angleDeg / 10.0f);
