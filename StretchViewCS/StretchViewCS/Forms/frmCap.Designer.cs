@@ -51,6 +51,10 @@ namespace StretchViewCS.Forms
             this.mmRate = new System.Windows.Forms.ToolStripMenuItem();
             this.mmUP = new System.Windows.Forms.ToolStripMenuItem();
             this.mmDown = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmResetStretch = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmRotateLeft = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmRotateRight = new System.Windows.Forms.ToolStripMenuItem();
+            this.mmResetRotation = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mmRate05 = new System.Windows.Forms.ToolStripMenuItem();
             this.mmRate08 = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,15 +129,14 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.tbColorPicker = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
-            this.panelHeader = new System.Windows.Forms.Panel();
-            this.btnOpenSettings = new System.Windows.Forms.Button();
-            this.txtState = new System.Windows.Forms.TextBox();
-            this.chkHotkeysEnabled = new System.Windows.Forms.CheckBox();
-            this.chkFixSubjectRange = new System.Windows.Forms.CheckBox();
-            this.chkDisplayTopMost = new System.Windows.Forms.CheckBox();
             this.toolbarAdvanced = new System.Windows.Forms.ToolStrip();
             this.tbFixSimu = new System.Windows.Forms.ToolStripButton();
             this.tbGrid = new System.Windows.Forms.ToolStripButton();
+            this.panelHeader = new System.Windows.Forms.Panel();
+            this.btnOpenSettings = new System.Windows.Forms.Button();
+            this.chkHotkeysEnabled = new System.Windows.Forms.CheckBox();
+            this.chkFixSubjectRange = new System.Windows.Forms.CheckBox();
+            this.chkDisplayTopMost = new System.Windows.Forms.CheckBox();
             this.tbRuler = new System.Windows.Forms.ToolStripButton();
             this.tbAtariMode = new System.Windows.Forms.ToolStripButton();
             this.tbAtariVisible = new System.Windows.Forms.ToolStripButton();
@@ -147,8 +150,8 @@ namespace StretchViewCS.Forms
             this.mMainMenu.SuspendLayout();
             this.panelBarBase.SuspendLayout();
             this.toolbarMain.SuspendLayout();
-            this.panelHeader.SuspendLayout();
             this.toolbarAdvanced.SuspendLayout();
+            this.panelHeader.SuspendLayout();
             this.sbMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainView)).BeginInit();
             this.SuspendLayout();
@@ -301,6 +304,15 @@ namespace StretchViewCS.Forms
             this.mmRate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mmUP,
             this.mmDown,
+            this.mmResetStretch,
+            this.mmRotateLeft,
+            this.mmRotateRight,
+            this.mmFlexRotate,
+            this.mmResetRotation,
+            this.mmFlipH,
+            this.mmFlipV,
+            this.mmSrcNot,
+            this.mmRedrawDesk,
             this.toolStripSeparator1,
             this.mmRate05,
             this.mmRate08,
@@ -318,17 +330,12 @@ namespace StretchViewCS.Forms
             this.mmRate100,
             this.mmRate160,
             this.toolStripSeparator2,
-            this.mmFlipH,
-            this.mmFlipV,
-            this.mmFlexRotate,
-            this.mmSrcNot,
             this.toolStripSeparator3,
-            this.mmRedrawDesk,
             this.toolStripSeparator4,
             this.Exit2});
             this.mmRate.Name = "mmRate";
-            this.mmRate.Size = new System.Drawing.Size(117, 20);
-            this.mmRate.Text = "拡大・反転・回転(&E)";
+            this.mmRate.Size = new System.Drawing.Size(57, 20);
+            this.mmRate.Text = "操作(&E)";
             this.mmRate.DropDownOpening += new System.EventHandler(this.MmRateClick);
             this.mmRate.Click += new System.EventHandler(this.MmRateClick);
             // 
@@ -347,6 +354,34 @@ namespace StretchViewCS.Forms
             this.mmDown.Size = new System.Drawing.Size(215, 22);
             this.mmDown.Text = "倍率を下げる";
             this.mmDown.Click += new System.EventHandler(this.MmDownClick);
+            // 
+            // mmResetStretch
+            // 
+            this.mmResetStretch.Name = "mmResetStretch";
+            this.mmResetStretch.Size = new System.Drawing.Size(215, 22);
+            this.mmResetStretch.Text = "拡縮リセット";
+            this.mmResetStretch.Click += new System.EventHandler(this.MmResetStretchClick);
+            // 
+            // mmRotateLeft
+            // 
+            this.mmRotateLeft.Name = "mmRotateLeft";
+            this.mmRotateLeft.Size = new System.Drawing.Size(215, 22);
+            this.mmRotateLeft.Text = "左回転";
+            this.mmRotateLeft.Click += new System.EventHandler(this.MmRotateLeftClick);
+            // 
+            // mmRotateRight
+            // 
+            this.mmRotateRight.Name = "mmRotateRight";
+            this.mmRotateRight.Size = new System.Drawing.Size(215, 22);
+            this.mmRotateRight.Text = "右回転";
+            this.mmRotateRight.Click += new System.EventHandler(this.MmRotateRightClick);
+            // 
+            // mmResetRotation
+            // 
+            this.mmResetRotation.Name = "mmResetRotation";
+            this.mmResetRotation.Size = new System.Drawing.Size(215, 22);
+            this.mmResetRotation.Text = "回転リセット";
+            this.mmResetRotation.Click += new System.EventHandler(this.MmResetRotationClick);
             // 
             // toolStripSeparator1
             // 
@@ -759,18 +794,19 @@ namespace StretchViewCS.Forms
             // 
             this.panelBarBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelBarBase.Controls.Add(this.toolbarMain);
-            this.panelBarBase.Controls.Add(this.panelHeader);
             this.panelBarBase.Controls.Add(this.toolbarAdvanced);
+            this.panelBarBase.Controls.Add(this.panelHeader);
             this.panelBarBase.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelBarBase.Location = new System.Drawing.Point(0, 24);
             this.panelBarBase.Name = "panelBarBase";
-            this.panelBarBase.Size = new System.Drawing.Size(724, 84);
+            this.panelBarBase.Size = new System.Drawing.Size(724, 86);
             this.panelBarBase.TabIndex = 3;
             // 
             // toolbarMain
             // 
+            this.toolbarMain.AutoSize = false;
             this.toolbarMain.BackColor = System.Drawing.SystemColors.Control;
-            this.toolbarMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolbarMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolbarMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tbZoomUp,
             this.toolStripSeparator7,
@@ -790,10 +826,10 @@ namespace StretchViewCS.Forms
             this.toolStripSeparator13,
             this.tbColorPicker,
             this.toolStripSeparator15});
-            this.toolbarMain.Location = new System.Drawing.Point(0, 26);
+            this.toolbarMain.Location = new System.Drawing.Point(0, 30);
             this.toolbarMain.Name = "toolbarMain";
-            this.toolbarMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.toolbarMain.Size = new System.Drawing.Size(722, 56);
+            this.toolbarMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.toolbarMain.Size = new System.Drawing.Size(722, 50);
             this.toolbarMain.TabIndex = 0;
             this.toolbarMain.Text = "toolbarMain";
             // 
@@ -801,11 +837,11 @@ namespace StretchViewCS.Forms
             // 
             this.tbZoomUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.tbZoomUp.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbZoomUp.ForeColor = System.Drawing.Color.Blue;
+            this.tbZoomUp.ForeColor = System.Drawing.Color.Black;
             this.tbZoomUp.Image = global::StretchViewCS.Properties.Resources.ToolbarZoomIn;
             this.tbZoomUp.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbZoomUp.Name = "tbZoomUp";
-            this.tbZoomUp.Size = new System.Drawing.Size(33, 53);
+            this.tbZoomUp.Size = new System.Drawing.Size(33, 47);
             this.tbZoomUp.Text = "拡大";
             this.tbZoomUp.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbZoomUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -816,16 +852,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 50);
             // 
             // tbZoomOut
             // 
             this.tbZoomOut.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbZoomOut.ForeColor = System.Drawing.Color.Blue;
+            this.tbZoomOut.ForeColor = System.Drawing.Color.Black;
             this.tbZoomOut.Image = global::StretchViewCS.Properties.Resources.ToolbarZoomOut;
             this.tbZoomOut.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbZoomOut.Name = "tbZoomOut";
-            this.tbZoomOut.Size = new System.Drawing.Size(33, 53);
+            this.tbZoomOut.Size = new System.Drawing.Size(33, 47);
             this.tbZoomOut.Text = "縮小";
             this.tbZoomOut.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbZoomOut.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -836,16 +872,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 50);
             // 
             // tbResetStretch
             // 
             this.tbResetStretch.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbResetStretch.ForeColor = System.Drawing.Color.Blue;
+            this.tbResetStretch.ForeColor = System.Drawing.Color.Black;
             this.tbResetStretch.Image = global::StretchViewCS.Properties.Resources.ToolbarResetZoom;
             this.tbResetStretch.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbResetStretch.Name = "tbResetStretch";
-            this.tbResetStretch.Size = new System.Drawing.Size(81, 53);
+            this.tbResetStretch.Size = new System.Drawing.Size(81, 47);
             this.tbResetStretch.Text = "拡縮リセット";
             this.tbResetStretch.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbResetStretch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -855,16 +891,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator16
             // 
             this.toolStripSeparator16.Name = "toolStripSeparator16";
-            this.toolStripSeparator16.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator16.Size = new System.Drawing.Size(6, 50);
             // 
             // tbFlipH
             // 
             this.tbFlipH.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbFlipH.ForeColor = System.Drawing.Color.Blue;
+            this.tbFlipH.ForeColor = System.Drawing.Color.Black;
             this.tbFlipH.Image = global::StretchViewCS.Properties.Resources.ToolbarFlipHorizontal;
             this.tbFlipH.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbFlipH.Name = "tbFlipH";
-            this.tbFlipH.Size = new System.Drawing.Size(57, 53);
+            this.tbFlipH.Size = new System.Drawing.Size(57, 47);
             this.tbFlipH.Text = "左右反転";
             this.tbFlipH.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbFlipH.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -873,16 +909,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(6, 50);
             // 
             // tbFlipV
             // 
             this.tbFlipV.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbFlipV.ForeColor = System.Drawing.Color.Blue;
+            this.tbFlipV.ForeColor = System.Drawing.Color.Black;
             this.tbFlipV.Image = global::StretchViewCS.Properties.Resources.ToolbarFlipVertical;
             this.tbFlipV.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbFlipV.Name = "tbFlipV";
-            this.tbFlipV.Size = new System.Drawing.Size(57, 53);
+            this.tbFlipV.Size = new System.Drawing.Size(57, 47);
             this.tbFlipV.Text = "上下反転";
             this.tbFlipV.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbFlipV.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -891,16 +927,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(6, 50);
             // 
             // tbLRotate
             // 
             this.tbLRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbLRotate.ForeColor = System.Drawing.Color.Blue;
+            this.tbLRotate.ForeColor = System.Drawing.Color.Black;
             this.tbLRotate.Image = global::StretchViewCS.Properties.Resources.ToolbarRotateLeft;
             this.tbLRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbLRotate.Name = "tbLRotate";
-            this.tbLRotate.Size = new System.Drawing.Size(45, 53);
+            this.tbLRotate.Size = new System.Drawing.Size(45, 47);
             this.tbLRotate.Text = "左回転";
             this.tbLRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbLRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -911,16 +947,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(6, 50);
             // 
             // tbRRotate
             // 
             this.tbRRotate.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbRRotate.ForeColor = System.Drawing.Color.Blue;
+            this.tbRRotate.ForeColor = System.Drawing.Color.Black;
             this.tbRRotate.Image = global::StretchViewCS.Properties.Resources.ToolbarRotateRight;
             this.tbRRotate.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbRRotate.Name = "tbRRotate";
-            this.tbRRotate.Size = new System.Drawing.Size(45, 53);
+            this.tbRRotate.Size = new System.Drawing.Size(45, 47);
             this.tbRRotate.Text = "右回転";
             this.tbRRotate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbRRotate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -931,16 +967,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(6, 50);
             // 
             // tbResetRotation
             // 
             this.tbResetRotation.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbResetRotation.ForeColor = System.Drawing.Color.Blue;
+            this.tbResetRotation.ForeColor = System.Drawing.Color.Black;
             this.tbResetRotation.Image = global::StretchViewCS.Properties.Resources.ToolbarResetRotation;
             this.tbResetRotation.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbResetRotation.Name = "tbResetRotation";
-            this.tbResetRotation.Size = new System.Drawing.Size(81, 53);
+            this.tbResetRotation.Size = new System.Drawing.Size(81, 47);
             this.tbResetRotation.Text = "回転リセット";
             this.tbResetRotation.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbResetRotation.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -950,16 +986,16 @@ namespace StretchViewCS.Forms
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 56);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 50);
             // 
             // tbColorPicker
             // 
             this.tbColorPicker.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.tbColorPicker.ForeColor = System.Drawing.Color.Blue;
+            this.tbColorPicker.ForeColor = System.Drawing.Color.Black;
             this.tbColorPicker.Image = global::StretchViewCS.Properties.Resources.ToolbarColorPicker;
             this.tbColorPicker.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.tbColorPicker.Name = "tbColorPicker";
-            this.tbColorPicker.Size = new System.Drawing.Size(93, 53);
+            this.tbColorPicker.Size = new System.Drawing.Size(93, 47);
             this.tbColorPicker.Text = "カラーピッカー";
             this.tbColorPicker.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbColorPicker.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -969,73 +1005,7 @@ namespace StretchViewCS.Forms
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size(6, 56);
-            // 
-            // panelHeader
-            // 
-            this.panelHeader.BackColor = System.Drawing.SystemColors.MenuBar;
-            this.panelHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelHeader.Controls.Add(this.btnOpenSettings);
-            this.panelHeader.Controls.Add(this.txtState);
-            this.panelHeader.Controls.Add(this.chkHotkeysEnabled);
-            this.panelHeader.Controls.Add(this.chkFixSubjectRange);
-            this.panelHeader.Controls.Add(this.chkDisplayTopMost);
-            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelHeader.Location = new System.Drawing.Point(0, 0);
-            this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(722, 26);
-            this.panelHeader.TabIndex = 2;
-            // 
-            // btnOpenSettings
-            // 
-            this.btnOpenSettings.Location = new System.Drawing.Point(508, 1);
-            this.btnOpenSettings.Name = "btnOpenSettings";
-            this.btnOpenSettings.Size = new System.Drawing.Size(57, 19);
-            this.btnOpenSettings.TabIndex = 4;
-            this.btnOpenSettings.Text = "設定..";
-            this.btnOpenSettings.UseVisualStyleBackColor = true;
-            this.btnOpenSettings.Click += new System.EventHandler(this.MmOptionClick);
-            // 
-            // txtState
-            // 
-            this.txtState.BackColor = System.Drawing.SystemColors.Menu;
-            this.txtState.Location = new System.Drawing.Point(319, 1);
-            this.txtState.Name = "txtState";
-            this.txtState.Size = new System.Drawing.Size(178, 19);
-            this.txtState.TabIndex = 3;
-            // 
-            // chkHotkeysEnabled
-            // 
-            this.chkHotkeysEnabled.AutoSize = true;
-            this.chkHotkeysEnabled.Location = new System.Drawing.Point(205, 2);
-            this.chkHotkeysEnabled.Name = "chkHotkeysEnabled";
-            this.chkHotkeysEnabled.Size = new System.Drawing.Size(108, 16);
-            this.chkHotkeysEnabled.TabIndex = 2;
-            this.chkHotkeysEnabled.Text = "ホットキー有効";
-            this.chkHotkeysEnabled.UseVisualStyleBackColor = true;
-            this.chkHotkeysEnabled.CheckedChanged += new System.EventHandler(this.ChkHotkeysEnabled_CheckedChanged);
-            // 
-            // chkFixSubjectRange
-            // 
-            this.chkFixSubjectRange.AutoSize = true;
-            this.chkFixSubjectRange.Location = new System.Drawing.Point(91, 3);
-            this.chkFixSubjectRange.Name = "chkFixSubjectRange";
-            this.chkFixSubjectRange.Size = new System.Drawing.Size(108, 16);
-            this.chkFixSubjectRange.TabIndex = 1;
-            this.chkFixSubjectRange.Text = "対象範囲の選択";
-            this.chkFixSubjectRange.UseVisualStyleBackColor = true;
-            this.chkFixSubjectRange.CheckedChanged += new System.EventHandler(this.ChkFixSubjectRange_CheckedChanged);
-            // 
-            // chkDisplayTopMost
-            // 
-            this.chkDisplayTopMost.AutoSize = true;
-            this.chkDisplayTopMost.Location = new System.Drawing.Point(10, 3);
-            this.chkDisplayTopMost.Name = "chkDisplayTopMost";
-            this.chkDisplayTopMost.Size = new System.Drawing.Size(84, 16);
-            this.chkDisplayTopMost.TabIndex = 0;
-            this.chkDisplayTopMost.Text = "最前面表示";
-            this.chkDisplayTopMost.UseVisualStyleBackColor = true;
-            this.chkDisplayTopMost.CheckedChanged += new System.EventHandler(this.ChkDisplayTopMost_CheckedChanged);
+            this.toolStripSeparator15.Size = new System.Drawing.Size(6, 50);
             // 
             // toolbarAdvanced
             // 
@@ -1074,6 +1044,63 @@ namespace StretchViewCS.Forms
             this.tbGrid.Text = "方眼";
             this.tbGrid.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.tbGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TbGridMouseDown);
+            // 
+            // panelHeader
+            // 
+            this.panelHeader.BackColor = System.Drawing.SystemColors.MenuBar;
+            this.panelHeader.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelHeader.Controls.Add(this.btnOpenSettings);
+            this.panelHeader.Controls.Add(this.chkHotkeysEnabled);
+            this.panelHeader.Controls.Add(this.chkFixSubjectRange);
+            this.panelHeader.Controls.Add(this.chkDisplayTopMost);
+            this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelHeader.Location = new System.Drawing.Point(0, 0);
+            this.panelHeader.Name = "panelHeader";
+            this.panelHeader.Size = new System.Drawing.Size(722, 30);
+            this.panelHeader.TabIndex = 2;
+            // 
+            // btnOpenSettings
+            // 
+            this.btnOpenSettings.Location = new System.Drawing.Point(388, 2);
+            this.btnOpenSettings.Name = "btnOpenSettings";
+            this.btnOpenSettings.Size = new System.Drawing.Size(61, 21);
+            this.btnOpenSettings.TabIndex = 4;
+            this.btnOpenSettings.Text = "設定..";
+            this.btnOpenSettings.UseVisualStyleBackColor = true;
+            this.btnOpenSettings.Click += new System.EventHandler(this.MmOptionClick);
+            // 
+            // chkHotkeysEnabled
+            // 
+            this.chkHotkeysEnabled.AutoSize = true;
+            this.chkHotkeysEnabled.Location = new System.Drawing.Point(259, 6);
+            this.chkHotkeysEnabled.Name = "chkHotkeysEnabled";
+            this.chkHotkeysEnabled.Size = new System.Drawing.Size(108, 16);
+            this.chkHotkeysEnabled.TabIndex = 2;
+            this.chkHotkeysEnabled.Text = "ホットキー有効";
+            this.chkHotkeysEnabled.UseVisualStyleBackColor = true;
+            this.chkHotkeysEnabled.CheckedChanged += new System.EventHandler(this.ChkHotkeysEnabled_CheckedChanged);
+            // 
+            // chkFixSubjectRange
+            // 
+            this.chkFixSubjectRange.AutoSize = true;
+            this.chkFixSubjectRange.Location = new System.Drawing.Point(127, 5);
+            this.chkFixSubjectRange.Name = "chkFixSubjectRange";
+            this.chkFixSubjectRange.Size = new System.Drawing.Size(108, 16);
+            this.chkFixSubjectRange.TabIndex = 1;
+            this.chkFixSubjectRange.Text = "対象範囲の選択";
+            this.chkFixSubjectRange.UseVisualStyleBackColor = true;
+            this.chkFixSubjectRange.CheckedChanged += new System.EventHandler(this.ChkFixSubjectRange_CheckedChanged);
+            // 
+            // chkDisplayTopMost
+            // 
+            this.chkDisplayTopMost.AutoSize = true;
+            this.chkDisplayTopMost.Location = new System.Drawing.Point(10, 5);
+            this.chkDisplayTopMost.Name = "chkDisplayTopMost";
+            this.chkDisplayTopMost.Size = new System.Drawing.Size(84, 16);
+            this.chkDisplayTopMost.TabIndex = 0;
+            this.chkDisplayTopMost.Text = "最前面表示";
+            this.chkDisplayTopMost.UseVisualStyleBackColor = true;
+            this.chkDisplayTopMost.CheckedChanged += new System.EventHandler(this.ChkDisplayTopMost_CheckedChanged);
             // 
             // tbRuler
             // 
@@ -1170,9 +1197,9 @@ namespace StretchViewCS.Forms
             this.pbMainView.BackColor = System.Drawing.SystemColors.ControlLight;
             this.pbMainView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pbMainView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pbMainView.Location = new System.Drawing.Point(0, 108);
+            this.pbMainView.Location = new System.Drawing.Point(0, 110);
             this.pbMainView.Name = "pbMainView";
-            this.pbMainView.Size = new System.Drawing.Size(724, 232);
+            this.pbMainView.Size = new System.Drawing.Size(724, 230);
             this.pbMainView.TabIndex = 4;
             this.pbMainView.TabStop = false;
             this.pbMainView.Paint += new System.Windows.Forms.PaintEventHandler(this.PbMainView_Paint);
@@ -1187,8 +1214,8 @@ namespace StretchViewCS.Forms
             this.BackColor = System.Drawing.SystemColors.GrayText;
             this.ClientSize = new System.Drawing.Size(724, 362);
             this.Controls.Add(this.pbMainView);
-            this.Controls.Add(this.sbMain);
             this.Controls.Add(this.panelBarBase);
+            this.Controls.Add(this.sbMain);
             this.Controls.Add(this.mMainMenu);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Font = new System.Drawing.Font("ＭＳ ゴシック", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
@@ -1214,10 +1241,10 @@ namespace StretchViewCS.Forms
             this.panelBarBase.PerformLayout();
             this.toolbarMain.ResumeLayout(false);
             this.toolbarMain.PerformLayout();
-            this.panelHeader.ResumeLayout(false);
-            this.panelHeader.PerformLayout();
             this.toolbarAdvanced.ResumeLayout(false);
             this.toolbarAdvanced.PerformLayout();
+            this.panelHeader.ResumeLayout(false);
+            this.panelHeader.PerformLayout();
             this.sbMain.ResumeLayout(false);
             this.sbMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbMainView)).EndInit();
@@ -1234,6 +1261,10 @@ namespace StretchViewCS.Forms
         private System.Windows.Forms.ToolStripMenuItem mmRate;
         private System.Windows.Forms.ToolStripMenuItem mmUP;
         private System.Windows.Forms.ToolStripMenuItem mmDown;
+        private System.Windows.Forms.ToolStripMenuItem mmResetStretch;
+        private System.Windows.Forms.ToolStripMenuItem mmRotateLeft;
+        private System.Windows.Forms.ToolStripMenuItem mmRotateRight;
+        private System.Windows.Forms.ToolStripMenuItem mmResetRotation;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem mmRate05;
         private System.Windows.Forms.ToolStripMenuItem mmRate08;
@@ -1325,7 +1356,6 @@ namespace StretchViewCS.Forms
         private System.Windows.Forms.CheckBox chkDisplayTopMost;
         private System.Windows.Forms.PictureBox pbMainView;
         private System.Windows.Forms.CheckBox chkHotkeysEnabled;
-        private System.Windows.Forms.TextBox txtState;
         internal System.Windows.Forms.ToolStripButton tbResetStretch;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
         private System.Windows.Forms.Button btnOpenSettings;

@@ -29,6 +29,10 @@ namespace StretchViewCS.Forms
         private const int MaxRotationStep = 900;
         private const int MinMainViewSize = 10;
         private const int WindowScreenMargin = 24;
+        private const int StatusMainStateIndex = 0;
+        private const int StatusTransformStateIndex = 1;
+        private const int StatusScaleStateIndex = 2;
+        private const int StatusModeStateIndex = 3;
 
         // ホットキーID
         private enum HotKeyID
@@ -171,6 +175,10 @@ namespace StretchViewCS.Forms
             mmRate.Text = LocalizationManager.Text("Main.Transform");
             mmUP.Text = LocalizationManager.Text("Main.ZoomUp");
             mmDown.Text = LocalizationManager.Text("Main.ZoomDown");
+            mmResetStretch.Text = LocalizationManager.Text("Main.ResetZoom");
+            mmRotateLeft.Text = LocalizationManager.Text("Main.RotateLeft");
+            mmRotateRight.Text = LocalizationManager.Text("Main.RotateRight");
+            mmResetRotation.Text = LocalizationManager.Text("Main.ResetRotation");
             mmFlipH.Text = LocalizationManager.Text("Main.FlipH");
             mmFlipV.Text = LocalizationManager.Text("Main.FlipV");
             mmFlexRotate.Text = LocalizationManager.Text("Main.RotateCustom");
@@ -2017,8 +2025,8 @@ namespace StretchViewCS.Forms
             if (bFixed)
             {
                 state2 = LocalizationManager.Text("State.FixedMode");
-                if (sbMain.Items.Count > 3)
-                    sbMain.Items[3].Text = ":" + strClassName;
+                if (sbMain.Items.Count > StatusModeStateIndex)
+                    sbMain.Items[StatusModeStateIndex].Text = ":" + strClassName;
             }
             // 表面レイヤ機能は廃止済みのため、ステータスバーには表示しない。
             // 通常の表示モード名はステータスバーに表示しない。
@@ -2036,19 +2044,21 @@ namespace StretchViewCS.Forms
 
             try
             {
-                if (sbMain.Items.Count > 0)
-                    sbMain.Items[0].Text = "";
-                if (sbMain.Items.Count > 1)
-                    sbMain.Items[1].Text = state;
-                if (sbMain.Items.Count > 3)
-                    sbMain.Items[3].Text = state2;
-
                 string stateText = string.Format(LocalizationManager.Text("State.Main"), capRate, gAngle);
 
-                if (txtState != null)
-                {
-                    txtState.Text = stateText;
-                }
+                if (sbMain.Items.Count > StatusMainStateIndex)
+                    sbMain.Items[StatusMainStateIndex].Text = "";
+                if (sbMain.Items.Count > StatusTransformStateIndex)
+                    sbMain.Items[StatusTransformStateIndex].Text = state;
+                if (sbMain.Items.Count > StatusScaleStateIndex)
+                    sbMain.Items[StatusScaleStateIndex].Text = stateText;
+                if (sbMain.Items.Count > StatusModeStateIndex)
+                    sbMain.Items[StatusModeStateIndex].Text = state2;
+
+                //if (txtState != null)
+                //{
+                //    txtState.Text = "";
+                //}
 
                 this.Text = AppTitle;
             }
@@ -2866,6 +2876,28 @@ namespace StretchViewCS.Forms
         private void TbResetStretchClick(object? sender, EventArgs e)
         {
             ChgCapRate(1.0f);
+        }
+
+        private void MmResetStretchClick(object? sender, EventArgs e)
+        {
+            TbResetStretchClick(sender, e);
+        }
+
+        private void MmRotateLeftClick(object? sender, EventArgs e)
+        {
+            gAngle -= iIncAngle;
+            RotateAngle(-iIncAngle);
+        }
+
+        private void MmRotateRightClick(object? sender, EventArgs e)
+        {
+            gAngle += iIncAngle;
+            RotateAngle(iIncAngle);
+        }
+
+        private void MmResetRotationClick(object? sender, EventArgs e)
+        {
+            TbResetClick(sender, e);
         }
 
         private void TbClearClick(object? sender, EventArgs e)
