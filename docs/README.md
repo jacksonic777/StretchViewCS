@@ -107,4 +107,13 @@ StretchViewCS/
 
 ## ライセンス
 
-元のDelphiアプリケーションのライセンスに準拠します。
+StretchViewCS はフリーソフトとして配布する。
+
+フリーソフト表記は、利用料なしで使用できることを示す。著作権の放棄やパブリックドメイン化を意味しない。
+
+配布前には、アプリ同梱の `ReadMe.ja.txt`、`ReadMe.en.txt`、`README.ja.md`、`README.en.md`、HTMLヘルプに同じ方針が反映されていることを確認する。
+
+## 作者への連絡先
+
+- ホームページ: https://yoshino-tech.com
+- メール: jacksonic777@gmail.com

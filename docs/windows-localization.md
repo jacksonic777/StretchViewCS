@@ -22,6 +22,11 @@ Inno Setup インストーラーから導入した場合は、インストーラ
 ユーザーINIに `Language` がまだ存在しない場合は、このインストール時初期値をアプリの表示言語として使用する。
 ユーザーINIに `Language` がある場合は、ユーザーINIを優先する。
 
+Microsoft Store / MSIX 版では、Inno Setup の言語選択画面や `StretchViewCS.install.ini` の自動生成は使用しない。
+初回起動時にユーザーINIの `Language` が存在しない場合は、Windows の UI カルチャから表示言語を自動判定する。
+Windows の UI カルチャが日本語の場合は `ja`、それ以外の場合は `en` を使用する。
+その後、アプリ終了時にユーザーINIへ `Language` が保存され、次回以降はユーザー設定を優先する。
+
 ## 文言追加ルール
 
 - UI文言は `LocalizationManager.Text("Key.Name")` で取得する。

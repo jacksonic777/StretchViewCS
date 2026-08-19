@@ -4,6 +4,7 @@ StretchViewCS ReadMe
 Overview
 --------
 StretchViewCS is a Windows application for viewing part of the screen with zoom, shrink, rotation, and flip controls.
+This software is freeware.
 
 Main Features
 -------------
@@ -20,6 +21,8 @@ Settings are saved to:
 
 %AppData%\StretchViewCS\StretchViewCS.ini
 
+On first startup, the display language is automatically set to Japanese or English based on the Windows display language.
+
 Hotkeys
 -------
 Hotkeys are disabled by default.
@@ -29,6 +32,17 @@ Help
 ----
 You can open the local HTML help from the Help menu.
 StretchViewCS opens the Japanese or English help file according to the current display language.
+
+License
+-------
+StretchViewCS is freeware. You can use it without a license fee.
+The freeware notice does not mean that copyright is waived or that the software is placed in the public domain.
+Before redistributing or reposting the software, check the distribution information and bundled documents.
+
+Contact
+-------
+Website: https://yoshino-tech.com
+Email: jacksonic777@gmail.com
 
 Uninstall
 ---------
